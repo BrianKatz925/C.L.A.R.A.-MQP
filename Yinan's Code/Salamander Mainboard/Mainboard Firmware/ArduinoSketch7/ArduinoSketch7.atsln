@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "triple_motor_control_ls7366r_i2c_cur_sensing_atmeg", "ArduinoSketch7\triple_motor_control_with_ls7366r_and_i2c_and_cur_sensing_atmeg\triple_motor_control_ls7366r_i2c_cur_sensing_atmeg.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "ArduinoCore", "ArduinoSketch7\ArduinoCore\ArduinoCore.cppproj", "{35EEE0C3-5D92-40AA-A843-7631B0BFC9EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.ActiveCfg = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{35EEE0C3-5D92-40AA-A843-7631B0BFC9EA}.Debug|AVR.ActiveCfg = Debug|AVR
+		{35EEE0C3-5D92-40AA-A843-7631B0BFC9EA}.Debug|AVR.Build.0 = Debug|AVR
+		{35EEE0C3-5D92-40AA-A843-7631B0BFC9EA}.Release|AVR.ActiveCfg = Release|AVR
+		{35EEE0C3-5D92-40AA-A843-7631B0BFC9EA}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
