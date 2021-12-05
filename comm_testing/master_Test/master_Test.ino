@@ -6,6 +6,8 @@
 
 
 #include <Wire.h> //include Wire.h library
+#include <esp_now.h> //ESP-Wifi comms
+#include <WiFi.h> 
 
 
 void setup()
@@ -15,16 +17,38 @@ void setup()
   while (!Serial); // Waiting for Serial Monitor to initialize
   Serial.println("\nI2C Scanner"); 
 
+  //Set device as a Wi-Fi Station
+  WiFi.mode(WIFI_STA);
+
+  //Init ESP-NOW
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  // Once ESPNow is successfully Init, we will register for recv CB to
+  // get recv packer info
+  esp_now_register_recv_cb(OnDataRecv);
+
 }
 
 String data = "";
 char buf[2]; //preset character array with 2 bytes of information 
-void loop() {
 
+
+void loop() {
+  findDevices(); //find all I2C devices on bus
+  delay(1000); // wait 1 seconds for the next I2C scan
+}
+
+/**
+ * I2C helper functions
+ */
+void readI2C() {
   //since we are only requesting 2 bytes, we should expect to receive only 2 bytes of information
-  Wire.requestFrom(0x01, 2); //create a request from an individual motor driver board for 2 bytes of information
-  if ( Wire.available() > 1) {
-    for (int i = 0; i < 2; i++)
+  Wire.requestFrom(0x01, 4); //create a request from an individual motor driver board for 2 bytes of information
+  if (Wire.available() > 1) {
+    for (int i = 0; i < 4; i++)
     {
       buf[i] = Wire.read();  //read along i2C line if data is available //arduino buf[8] = Wire.read();  //arduino
     }
@@ -34,8 +58,9 @@ void loop() {
     Serial.println(buf);
   }
  
-  data = "";
-  
+  data = ""; //clear data cache
+}
+void findDevices() {
   byte error, address; //variable for error and I2C address
   int nDevices; //number of devices found on I2C bus
 
@@ -73,6 +98,31 @@ void loop() {
     Serial.println("No I2C devices found\n");
   else
     Serial.println("done\n");
+}
 
-  delay(1000); // wait 1 seconds for the next I2C scan
+
+/**
+ * ESP-NOW helper functions
+ */
+ 
+//Structure example to receive data
+//Must match the sender structure
+typedef struct data_struct {
+  int wifiData;
+} data_struct;
+
+//Create a struct_message called myData
+data_struct myData;
+
+//callback function that will be executed when data is received
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+  memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
+  Serial.print("Bytes received: ");
+  Serial.println(len);
+  Serial.print("Data Received: ");
+  Serial.println(myData.wifiData);
+  Serial.println();
+
+  //when receiving a WiFi command from a TinyPico, request data on I2C bus
+  readI2C();
 }

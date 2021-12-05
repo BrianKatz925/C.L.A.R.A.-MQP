@@ -24,12 +24,11 @@ uint8_t broadcastAddress1[] = {0x50, 0x02, 0x91, 0xA1, 0x96, 0x6C};
 
 
 //type struct with two integer variables
-typedef struct test_struct {
-  int x;
-  int y;
-} test_struct;
+typedef struct data_struct {
+  int wifiData;
+} data_struct;
 
-test_struct test; //store variable values
+data_struct test; //store variable values
 
 // callback when data is sent
 // executed when data is sent, prints if message was successfully delivered to know if board received message
@@ -45,7 +44,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
  
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   //initialize device as wifi station
   WiFi.mode(WIFI_STA);
@@ -73,11 +72,10 @@ void setup() {
 }
  
 void loop() {
-  test.x = random(0,20);
-  test.y = random(0,20);
+  test.wifiData = 1;
 
   //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
-  esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(test_struct));
+  esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
    
   if (result == ESP_OK) {
     Serial.println("Sent with success");

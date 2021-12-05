@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-  printString( "hello");
+  //printString( "hello");
   delay(1000);
 
 }
@@ -59,6 +59,7 @@ void requestEvent() {
 
   //print to Serial and insert a new line after transmission is complete
   // Serial.write(buffer);
+  printString("hello");
   Serial.println(buffer);
   Serial.write('\n');
 }
