@@ -12,7 +12,7 @@
 
 void setup()
 {
-  Wire.begin(); // Wire communication begin
+  Wire.begin(); // I2C communication begin
   Serial.begin(9600); // The baudrate of Serial monitor is set in 9600 - lower baudrates work best with motor driver modules
   while (!Serial); // Waiting for Serial Monitor to initialize
   Serial.println("\nI2C Scanner"); 
@@ -32,7 +32,7 @@ void setup()
 
 }
 
-String data = "";
+
 char buf[2]; //preset character array with 2 bytes of information 
 
 
@@ -41,8 +41,12 @@ void loop() {
   delay(1000); // wait 1 seconds for the next I2C scan
 }
 
-/**
+/****************************************
  * I2C helper functions
+ ************************************/
+
+/** 
+ *  This function requests data from a motor driver module, puts it into a data cache, and prints it through Serial
  */
 void readI2C() {
   //since we are only requesting 2 bytes, we should expect to receive only 2 bytes of information
@@ -57,9 +61,12 @@ void readI2C() {
     Serial.print("Data: ");
     Serial.println(buf);
   }
- 
-  data = ""; //clear data cache
 }
+
+
+/**
+ * Finds all available I2C devices on the current bus
+ */
 void findDevices() {
   byte error, address; //variable for error and I2C address
   int nDevices; //number of devices found on I2C bus
@@ -114,7 +121,9 @@ typedef struct data_struct {
 //Create a struct_message called myData
 data_struct myData;
 
-//callback function that will be executed when data is received
+/**
+ * callback function that will be executed when data is received - currently calls master to request data along I2C line
+ */
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
   Serial.print("Bytes received: ");
