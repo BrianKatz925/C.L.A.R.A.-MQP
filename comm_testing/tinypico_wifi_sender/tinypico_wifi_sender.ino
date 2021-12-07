@@ -22,6 +22,8 @@
  */
 uint8_t broadcastAddress1[] = {0x50, 0x02, 0x91, 0xA1, 0x96, 0x6C};
 
+String deviceBData = "";
+
 
 //type struct with two integer variables
 typedef struct data_struct {
@@ -54,8 +56,7 @@ void setup() {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
-
-
+  
   //register callback function to be called when a message is sent
   esp_now_register_send_cb(OnDataSent);
    
@@ -72,18 +73,30 @@ void setup() {
 }
  
 void loop() {
-  test.wifiData = 1;
-
-  //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
-  esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
-   
-  if (result == ESP_OK) {
-    Serial.println("Sent with success");
+  if(Serial.available() > 0) {
+    if(Serial.peek() != '\n') //if we press enter in the serial monitor and sent data
+    {
+      deviceBData += (char)Serial.read(); //add read string into a data cache
+    }
+    else {
+      Serial.read();
+      Serial.print("You said: ");
+      Serial.println(deviceBData);
+      
+      test.wifiData = deviceBData.toInt(); //convert data to an integer
+      //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
+      esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
+      if (result == ESP_OK) {
+        Serial.println("Sent with success");
+      }
+      else {
+        Serial.println("Error sending the data");
+      }
+       deviceBData = "";
+    }
   }
-  else {
-    Serial.println("Error sending the data");
-  }
-  delay(2000);
+ 
+  delay(1000);
 }
 
 

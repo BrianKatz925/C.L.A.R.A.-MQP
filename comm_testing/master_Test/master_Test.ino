@@ -33,7 +33,7 @@ void setup()
 }
 
 
-char buf[2]; //preset character array with 2 bytes of information 
+char buf[3]; //preset character array with 2 bytes of information 
 
 
 void loop() {
@@ -50,9 +50,9 @@ void loop() {
  */
 void readI2C() {
   //since we are only requesting 2 bytes, we should expect to receive only 2 bytes of information
-  Wire.requestFrom(0x01, 4); //create a request from an individual motor driver board for 2 bytes of information
+  Wire.requestFrom(0x01, 3); //create a request from an individual motor driver board for 2 bytes of information
   if (Wire.available() > 1) {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
     {
       buf[i] = Wire.read();  //read along i2C line if data is available //arduino buf[8] = Wire.read();  //arduino
     }
@@ -133,5 +133,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println();
 
   //when receiving a WiFi command from a TinyPico, request data on I2C bus
-  readI2C();
+  if(myData.wifiData == 1) {
+     readI2C();
+  }
+
 }
