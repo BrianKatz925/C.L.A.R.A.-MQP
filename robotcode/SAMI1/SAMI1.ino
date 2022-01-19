@@ -47,7 +47,8 @@ void setup() {
    Wire.begin(0x01); 
   
   //upon receiving a request from the master, call requestEvent
-  Wire.onRequest(requestEvent); 
+ // Wire.onRequest(requestEvent); 
+    Wire.onReceive(msgEvent);
 }
 
 void loop() {
@@ -109,10 +110,25 @@ void brake(){
 }
 
 /**
- * Callback function upon receiving a request via I2C from master- this deciphers the correct operation
+ * Callback function upon receiving a request for data via I2C from master
+ * This will request a set number of bytes as a message that will be formed when its time 
  */
 void requestEvent() {
   I2CFlag==true;
+  //send message - i guess this will be global variables we are reguarly updating or something hmmmm 
+  samiData = 0;
+  Wire.write(samiData);
+}
+
+//callback function for recieving messages and setting the appropriate status
+void msgEvent(int numBytes){
+ I2CFlag = true;
+ while (1 < Wire.available()) { // loop through all but the last
+    int x = Wire.read(); // receive byte as a character
+    Serial.print(x); // print the character
+    I2Cstatus = x;
+  }
+
 }
 
 //will be used for sending the count - may be a more generic sending function later idk 
