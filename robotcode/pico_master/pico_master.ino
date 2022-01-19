@@ -30,7 +30,7 @@ void setup()
 //  // get recv packer info
 //  esp_now_register_recv_cb(OnDataRecv);
 
-  //findDevices() ; //run once on startup to verify SAMIs connected 
+findDevices() ; //run once on startup to verify SAMIs connected 
 
 }
 
@@ -43,23 +43,29 @@ void loop() {
    if (Serial.available()>0){
     char commanddata = Serial.read();
     if (commanddata=='1'){
-      sendMsg(0x01, 1);
+      sendMsg(0x01, '1');
       Serial.println("drive forward");
       
     }
      else if (commanddata=='2'){
-      sendMsg(0x01, 2);
+      sendMsg(0x01, '2');
       Serial.println("drive back");
     }}
  
 }
 
 
-void sendMsg(int address, int message){
-  Wire.beginTransmission(1);
+void sendMsg(int address, char message){
+  Wire.beginTransmission(address);
   Wire.write(message);
-  Wire.endTransmission();
-  Serial.println("message sent");
+  int error = Wire.endTransmission();
+  if (error != 0){
+    Serial.println("Error sending command: ");
+    Serial.println(error);
+  }
+  else {
+    Serial.println("Message sent");
+  }
 }
 
 void requestData(int address, int numBytes){

@@ -52,38 +52,39 @@ void setup() {
 }
 
 void loop() {
+  //forward(fast);
   //main state machine to call functions based on what's being recieved on I2C
-  if (I2CFlag){ //we have a new message
-    switch(I2Cstatus){
-      default: //no message- status defaults to zero
-        break;
-      case 1: //motor stop
-        brake();
-        I2CFlag = false; //since it's complete
-        break;
-      case 2: //motor forward slowly
-        forward(slow);
-        I2CFlag = false;
-        break;
-      case 3: //motor forward fast
-        forward(fast);
-        I2CFlag = false;
-        break;
-      case 4: //motor reverse slowly
-        reverse(slow);
-        I2CFlag = false;
-        break;
-      case 5: //motor reverse fast
-        reverse(fast);
-        I2CFlag = false;
-        break;
-      case 6: //get encoder count from motors
-        count = getEncCount();
-        sendEncCount(count);
-        I2CFlag = false;
-        break;
-    }
-  }
+//  if (I2CFlag){ //we have a new message
+//    switch(I2Cstatus){
+//      default: //no message- status defaults to zero
+//        break;
+//      case 1: //motor stop
+//        brake();
+//        I2CFlag = false; //since it's complete
+//        break;
+//      case 2: //motor forward slowly
+//        forward(slow);
+//        I2CFlag = false;
+//        break;
+//      case 3: //motor forward fast
+//        forward(fast);
+//        I2CFlag = false;
+//        break;
+//      case 4: //motor reverse slowly
+//        reverse(slow);
+//        I2CFlag = false;
+//        break;
+//      case 5: //motor reverse fast
+//        reverse(fast);
+//        I2CFlag = false;
+//        break;
+//      case 6: //get encoder count from motors
+//        count = getEncCount();
+//        sendEncCount(count);
+//        I2CFlag = false;
+//        break;
+//    }
+//  }
 
 }
 //update the current encoder count
@@ -122,16 +123,25 @@ void requestEvent() {
 
 //callback function for recieving messages and setting the appropriate status
 void msgEvent(int numBytes){
- I2CFlag = true;
- while (1 < Wire.available()) { // loop through all but the last
-    int x = Wire.read(); // receive byte as a character
-    Serial.print(x); // print the character
-    I2Cstatus = x;
+ //I2CFlag = true;
+// while (1 < Wire.available()) { // loop through all but the last
+//    int x = Wire.read(); // receive byte as a character
+//    Serial.print(x); // print the character
+//    I2Cstatus = x;
+//  }
+
+  char data = Wire.read();
+  if (data == '1') {
+    forward(fast);
   }
-  forward(fast);
-  delay(2000);
-  brake();
+  else if (data == '2') {
+    reverse(fast);
+  }
+  else {
+    brake();
+  }
   
+  delay(2000); 
 
 }
 
