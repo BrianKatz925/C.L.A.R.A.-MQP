@@ -49,6 +49,8 @@ void setup() {
   //upon receiving a request from the master, call requestEvent
  // Wire.onRequest(requestEvent); 
     Wire.onReceive(msgEvent);
+
+    digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 }
 
 void loop() {
@@ -93,19 +95,16 @@ int getEncCount(){
 }
 
 void forward(int speed){
-  digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
   analogWrite(INPUT1, 0);
   analogWrite(INPUT2, speed);
 }
 
 void reverse(int speed){
-  digitalWrite(NSLEEP, HIGH);
   analogWrite(INPUT1, speed);
   analogWrite(INPUT2, 0);
 }
 
 void brake(){
-  digitalWrite(NSLEEP, HIGH);
   analogWrite(INPUT1, 255);
   analogWrite(INPUT2, 255);
 }
@@ -129,21 +128,22 @@ void msgEvent(int numBytes){
 //    Serial.print(x); // print the character
 //    I2Cstatus = x;
 //  }
-
-  char data = Wire.read();
+  while (Wire.available() > 0) {
+    char data = Wire.read();
   if (data == '1') {
+    brake();
     forward(fast);
   }
   else if (data == '2') {
+    brake();
     reverse(fast);
   }
   else {
     brake();
   }
-  
-  delay(2000); 
-
 }
+  }
+  
 
 //will be used for sending the count - may be a more generic sending function later idk 
 void sendEncCount(int count){
