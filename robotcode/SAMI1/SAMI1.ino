@@ -116,8 +116,8 @@ void brake(){
 void requestEvent() {
   I2CFlag==true;
   //send message - i guess this will be global variables we are reguarly updating or something hmmmm 
-  samiData = 0;
-  Wire.write(samiData);
+  //samiData = 0;
+  //Wire.write(samiData);
 }
 
 //callback function for recieving messages and setting the appropriate status
@@ -128,6 +128,10 @@ void msgEvent(int numBytes){
     Serial.print(x); // print the character
     I2Cstatus = x;
   }
+  forward(fast);
+  delay(2000);
+  brake();
+  
 
 }
 
