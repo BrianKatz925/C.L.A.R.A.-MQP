@@ -33,7 +33,7 @@
 #define enc1 2 //replace
 #define enc2 3 //replace 
 
-int I2Cstatus = 0;
+char I2Cstatus = '0';
 int slow = 100; //default slow speed 
 int fast = 255; //default fast speed
 int count = 0; //for encoder count
@@ -54,39 +54,10 @@ void setup() {
 }
 
 void loop() {
-  //forward(fast);
+
   //main state machine to call functions based on what's being recieved on I2C
-//  if (I2CFlag){ //we have a new message
-//    switch(I2Cstatus){
-//      default: //no message- status defaults to zero
-//        break;
-//      case 1: //motor stop
-//        brake();
-//        I2CFlag = false; //since it's complete
-//        break;
-//      case 2: //motor forward slowly
-//        forward(slow);
-//        I2CFlag = false;
-//        break;
-//      case 3: //motor forward fast
-//        forward(fast);
-//        I2CFlag = false;
-//        break;
-//      case 4: //motor reverse slowly
-//        reverse(slow);
-//        I2CFlag = false;
-//        break;
-//      case 5: //motor reverse fast
-//        reverse(fast);
-//        I2CFlag = false;
-//        break;
-//      case 6: //get encoder count from motors
-//        count = getEncCount();
-//        sendEncCount(count);
-//        I2CFlag = false;
-//        break;
-//    }
-//  }
+ //we have a new message
+   
 
 }
 //update the current encoder count
@@ -122,26 +93,57 @@ void requestEvent() {
 
 //callback function for recieving messages and setting the appropriate status
 void msgEvent(int numBytes){
- //I2CFlag = true;
-// while (1 < Wire.available()) { // loop through all but the last
-//    int x = Wire.read(); // receive byte as a character
-//    Serial.print(x); // print the character
-//    I2Cstatus = x;
+ // I2CFlag = true;
+ while (Wire.available()>0) { // loop through all but the last
+    char x = Wire.read(); // receive byte as a character
+    Serial.print(x); // print the character
+    I2Cstatus = x;
+  }
+   switch(I2Cstatus){
+      default: //no message- status defaults to zero
+        break;
+      case '1': //motor stop
+        brake();
+        I2CFlag = false; //since it's complete
+        break;
+      case '2': //motor forward slowly
+        forward(slow);
+        I2CFlag = false;
+        break;
+      case '3': //motor forward fast
+        forward(fast);
+        I2CFlag = false;
+        break;
+      case '4': //motor reverse slowly
+        reverse(slow);
+        I2CFlag = false;
+        break;
+      case '5': //motor reverse fast
+        reverse(fast);
+        I2CFlag = false;
+        break;
+    }
+  
+
+
+
+
+
+
+//  while (Wire.available() > 0) {
+//    char data = Wire.read();
+//  if (data == '1') {
+//    brake();
+//    forward(fast);
 //  }
-  while (Wire.available() > 0) {
-    char data = Wire.read();
-  if (data == '1') {
-    brake();
-    forward(fast);
-  }
-  else if (data == '2') {
-    brake();
-    reverse(fast);
-  }
-  else {
-    brake();
-  }
-}
+//  else if (data == '2') {
+//    brake();
+//    reverse(fast);
+//  }
+//  else {
+//    brake();
+//  }
+//}
   }
   
 

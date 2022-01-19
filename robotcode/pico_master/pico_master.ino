@@ -44,13 +44,28 @@ void loop() {
     char commanddata = Serial.read();
     if (commanddata=='1'){
       sendMsg(0x01, '1');
-      Serial.println("drive forward");
+      Serial.println("brake");
       
     }
      else if (commanddata=='2'){
       sendMsg(0x01, '2');
-      Serial.println("drive back");
-    }}
+      Serial.println("forward slow");
+    }
+    else if (commanddata=='3'){
+      sendMsg(0x01, '3');
+      Serial.println("forward fast");
+    }
+    else if (commanddata=='4'){
+      sendMsg(0x01, '4');
+      Serial.println("reverse slow");
+    }
+    else if (commanddata=='5'){
+      sendMsg(0x01, '5');
+      Serial.println("reverse fast");
+    }
+    
+    
+    }
  
 }
 
