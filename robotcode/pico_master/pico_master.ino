@@ -39,7 +39,14 @@ char buf[3]; //preset character array with 2 bytes of information
 
 
 void loop() {
-  
+  //try to bs read off of the terminal to figure out what to send to the sami
+    if (Serial.read()==1){
+      sendMsg(0x01, 1);
+    }
+     if (Serial.read()==2){
+      sendMsg(0x01, 2);
+    }
+ 
 }
 
 
