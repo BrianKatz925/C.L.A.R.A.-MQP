@@ -6,7 +6,7 @@
 
 
 #include <Wire.h> //include Wire.h library
-#include <esp_now.h> //ESP-Wifi comms
+//#include <esp_now.h> //ESP-Wifi comms
 #include <WiFi.h> 
 
 
@@ -18,17 +18,17 @@ void setup()
   Serial.println("\nI2C Scanner"); 
 
   //Set device as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
-
-  //Init ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
-
-  // Once ESPNow is successfully Init, we will register for recv CB to
-  // get recv packer info
-  esp_now_register_recv_cb(OnDataRecv);
+//  WiFi.mode(WIFI_STA);
+//
+//  //Init ESP-NOW
+//  if (esp_now_init() != ESP_OK) {
+//    Serial.println("Error initializing ESP-NOW");
+//    return;
+//  }
+//
+//  // Once ESPNow is successfully Init, we will register for recv CB to
+//  // get recv packer info
+//  esp_now_register_recv_cb(OnDataRecv);
 
   findDevices() ; //run once on startup to verify SAMIs connected 
 
@@ -39,14 +39,13 @@ char buf[3]; //preset character array with 2 bytes of information
 
 
 void loop() {
-  findDevices(); //find all I2C devices on bus
-  delay(1000); // wait 1 seconds for the next I2C scan
+  
 }
 
 
 void sendMsg(int address, int message){
   Wire.beginTransmission(address);
-  Wire.write(message)
+  Wire.write(message);
   Wire.endTransmission();
 }
 
@@ -120,7 +119,7 @@ void findDevices() {
 
 /**
  * ESP-NOW helper functions
- */
+ 
  
 //Structure example to receive data
 //Must match the sender structure
@@ -133,7 +132,7 @@ data_struct myData;
 
 /**
  * callback function that will be executed when data is received - currently calls master to request data along I2C line
- */
+ 
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
   Serial.print("Bytes received: ");
@@ -147,4 +146,4 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
      readI2C();
   }
 
-}
+}*/
