@@ -64,8 +64,8 @@ void loop() {
       Serial.println("reverse fast");
     }
     else if (commanddata=='6'){
+      Serial.println("requesting Data");
       requestData(0x02,2);
-      Serial.println("get the count ");
     }
     
     }
@@ -101,25 +101,25 @@ void sendMsg(int address, char message){
   }
   else {
     Serial.println("Message sent");
+    
   }
 }
-char count;
-char current;
+char count = 'a';
+char current = 0;
 void requestData(int address, int numBytes){
-  Serial.println("requesting data");
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
-  if (Wire.available() >= 2) {
+  if (Wire.available() == 2) {
     for (int i = 0; i < numBytes; i++)
-    { Serial.println("dataread");
-      //buf[i] = Wire.read();
+    { 
       count = Wire.read();
       current = Wire.read();
+      //Serial.println("dataread");
     }
 
     //print out received data
-    Serial.print("Data: ");
-    int readcount = count - '0';
-    int readcurrent = (current-'0')*1023/255;
+    Serial.print("Encoder: ");
+    int readcount = count;
+    int readcurrent = current ;
     Serial.print(readcount);
     Serial.print('\t');
     Serial.print("Current: ");

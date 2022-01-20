@@ -39,8 +39,6 @@ int slow = 100; //default slow speed
 int fast = 500; //default fast speed
 int count = 0; //for encoder count
 
-bool I2CFlag = false; // motor pwm on i2c request flag
-
 //Encoder Setup 
 Encoder motor(enc1, enc2);
 long motorPosition = 0;
@@ -51,42 +49,43 @@ void setup() {
   
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
    Wire.begin(0x02); 
+   pinMode(currentRead, INPUT);
+   pinMode(enc1, INPUT);
+   pinMode(enc2, INPUT);
   
   //upon receiving a request from the master, call requestEvent
     Wire.onRequest(requestEvent); 
     Wire.onReceive(msgEvent);
-
     digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 }
 
-int encInterval = 10;
+int encInterval = 20;
 int lastTime = 0;
 
 void loop() {
   if(millis()-lastTime >= encInterval){
     getEncCount();
-    readCurrent();
+     readCurrent();
     lastTime=millis();
-  }
-  
-   
+  }     
+}
 
-}
+
 int motorCurrent = 0;
+
 void readCurrent(){
-  int current = analogRead(currentRead);
-  current = current*255/1023;
-  motorCurrent = current;
-  
+  motorCurrent=analogRead(currentRead);//*255/1023;
 }
+
 long difference, newRead; 
 int rpm;
+
 void getEncCount(){
     newRead = motor.read(); //read the encoder
     difference = newRead - motorPosition; //get the difference
-    rpm = difference /12 *1000*60/150; //RPM
+    rpm = difference ;///12 *1000*60/150; //RPM
     motorPosition = newRead;//update last position
-    motorSpeed = rpm; //set the speed 
+    motorSpeed =rpm;// newRead; //set the speed 
 } 
 
 void forward(int speed){
@@ -110,6 +109,7 @@ void brake(){
  */
 void requestEvent() {
   //send message - i guess this will be global variables we are reguarly updating or something hmmmm 
+  
   Wire.write(motorSpeed);
   Wire.write(motorCurrent);
 }
@@ -127,23 +127,23 @@ void msgEvent(int numBytes){
         break;
       case '1': //motor stop
         brake();
-        I2CFlag = false; //since it's complete
+
         break;
       case '2': //motor forward slowly
         forward(slow);
-        I2CFlag = false;
+
         break;
       case '3': //motor forward fast
         forward(fast);
-        I2CFlag = false;
+
         break;
       case '4': //motor reverse slowly
         reverse(slow);
-        I2CFlag = false;
+
         break;
       case '5': //motor reverse fast
         reverse(fast);
-        I2CFlag = false;
+
         break;
     }
  
