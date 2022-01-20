@@ -25,45 +25,69 @@
 
 #include <Wire.h>
 #include <math.h>
+#include <Encoder.h>
 
 #define NSLEEP 5
 #define INPUT1 9
 #define INPUT2 10
-#define currentRead 1 //replace
-#define enc1 2 //replace
-#define enc2 3 //replace 
+#define currentRead 17 //26
+#define enc1 2 //32
+#define enc2 3 //1 
 
 char I2Cstatus = '0';
 int slow = 100; //default slow speed 
-int fast = 255; //default fast speed
+int fast = 500; //default fast speed
 int count = 0; //for encoder count
 
 bool I2CFlag = false; // motor pwm on i2c request flag
+
+//Encoder Setup 
+Encoder motor(enc1, enc2);
+long motorPosition = 0;
+int motorSpeed = 0;
 
 void setup() {
   Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
   
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-   Wire.begin(0x01); 
+   Wire.begin(0x02); 
   
   //upon receiving a request from the master, call requestEvent
- // Wire.onRequest(requestEvent); 
+    Wire.onRequest(requestEvent); 
     Wire.onReceive(msgEvent);
 
     digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 }
 
-void loop() {
+int encInterval = 10;
+int lastTime = 0;
 
-  //main state machine to call functions based on what's being recieved on I2C
- //we have a new message
+void loop() {
+  if(millis()-lastTime >= encInterval){
+    getEncCount();
+    readCurrent();
+    lastTime=millis();
+  }
+  
    
 
 }
-//update the current encoder count
-int getEncCount(){
-  return 0;
+int motorCurrent = 0;
+void readCurrent(){
+  int current = analogRead(currentRead);
+  current = current*255/1023;
+  motorCurrent = current;
+  
 }
+long difference, newRead; 
+int rpm;
+void getEncCount(){
+    newRead = motor.read(); //read the encoder
+    difference = newRead - motorPosition; //get the difference
+    rpm = difference /12 *1000*60/150; //RPM
+    motorPosition = newRead;//update last position
+    motorSpeed = rpm; //set the speed 
+} 
 
 void forward(int speed){
   analogWrite(INPUT1, 0);
@@ -85,10 +109,9 @@ void brake(){
  * This will request a set number of bytes as a message that will be formed when its time 
  */
 void requestEvent() {
-  I2CFlag==true;
   //send message - i guess this will be global variables we are reguarly updating or something hmmmm 
-  //samiData = 0;
-  //Wire.write(samiData);
+  Wire.write(motorSpeed);
+  Wire.write(motorCurrent);
 }
 
 //callback function for recieving messages and setting the appropriate status
@@ -123,31 +146,6 @@ void msgEvent(int numBytes){
         I2CFlag = false;
         break;
     }
-  
-
-
-
-
-
-
-//  while (Wire.available() > 0) {
-//    char data = Wire.read();
-//  if (data == '1') {
-//    brake();
-//    forward(fast);
-//  }
-//  else if (data == '2') {
-//    brake();
-//    reverse(fast);
-//  }
-//  else {
-//    brake();
-//  }
-//}
+ 
   }
   
-
-//will be used for sending the count - may be a more generic sending function later idk 
-void sendEncCount(int count){
-  
-}

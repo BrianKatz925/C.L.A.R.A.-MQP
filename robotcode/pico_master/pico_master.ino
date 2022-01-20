@@ -30,7 +30,7 @@ void setup()
 //  // get recv packer info
 //  esp_now_register_recv_cb(OnDataRecv);
 
-findDevices() ; //run once on startup to verify SAMIs connected 
+  findDevices() ; //run once on startup to verify SAMIs connected 
 
 }
 
@@ -43,30 +43,51 @@ void loop() {
    if (Serial.available()>0){
     char commanddata = Serial.read();
     if (commanddata=='1'){
-      sendMsg(0x01, '1');
+      drive(0);
       Serial.println("brake");
       
     }
      else if (commanddata=='2'){
-      sendMsg(0x01, '2');
+      drive(100);
       Serial.println("forward slow");
     }
     else if (commanddata=='3'){
-      sendMsg(0x01, '3');
+      drive(255);
       Serial.println("forward fast");
     }
     else if (commanddata=='4'){
-      sendMsg(0x01, '4');
+      drive(-100);
       Serial.println("reverse slow");
     }
     else if (commanddata=='5'){
-      sendMsg(0x01, '5');
+      drive(-255);
       Serial.println("reverse fast");
     }
-    
+    else if (commanddata=='6'){
+      requestData(0x02,2);
+      Serial.println("get the count ");
+    }
     
     }
  
+}
+
+//drives at the speed given, will work on sending an actual ramped speed later
+void drive(int speed){
+  if (speed>0){
+    sendMsg(0x01, '3');
+    sendMsg(0x02, '3');
+    sendMsg(0x03,'3');
+  }
+  else if(speed<0){
+    sendMsg(0x01, '5');
+    sendMsg(0x02, '5');
+    sendMsg(0x03,'5');
+  }else if(speed ==0){
+    sendMsg(0x01, '1');
+    sendMsg(0x02, '1');
+    sendMsg(0x03,'1');
+  }
 }
 
 
@@ -82,18 +103,27 @@ void sendMsg(int address, char message){
     Serial.println("Message sent");
   }
 }
-
+char count;
+char current;
 void requestData(int address, int numBytes){
-  Wire.requestFrom(address, numBytes); //create a request from an individual motor driver board for 2 bytes of information
-  if (Wire.available() > 1) {
-    for (int i = 0; i < 3; i++)
-    {
-      buf[i] = Wire.read();  //read along i2C line if data is available //arduino buf[8] = Wire.read();  //arduino
+  Serial.println("requesting data");
+  Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
+  if (Wire.available() >= 2) {
+    for (int i = 0; i < numBytes; i++)
+    { Serial.println("dataread");
+      //buf[i] = Wire.read();
+      count = Wire.read();
+      current = Wire.read();
     }
 
     //print out received data
     Serial.print("Data: ");
-    Serial.println(buf);
+    int readcount = count - '0';
+    int readcurrent = (current-'0')*1023/255;
+    Serial.print(readcount);
+    Serial.print('\t');
+    Serial.print("Current: ");
+    Serial.println(readcurrent);
   }
 }
 
