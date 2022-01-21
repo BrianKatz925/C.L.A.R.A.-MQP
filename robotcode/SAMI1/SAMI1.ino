@@ -122,33 +122,28 @@ void requestEvent() {
 void msgEvent(int numBytes){
  // I2CFlag = true;
  while (Wire.available()>0) { // loop through all but the last
-    char x = Wire.read(); // receive byte as a character
-    Serial.print(x); // print the character
+    int x = Wire.read(); // receive byte as a character
+    if (x>127){
+      x = 256-x;
+      x*=-1;
+    }
     I2Cstatus = x;
   }
    switch(I2Cstatus){
       default: //no message- status defaults to zero
         break;
-      case '1': //motor stop
+      case 0: //motor stop
         brake();
 
         break;
-      case '2': //motor forward slowly
-        forward(slow);
-
+      case 2: //motor forward slowly
+       
         break;
-      case '3': //motor forward fast
-        forward(fast);
-
-        break;
-      case '4': //motor reverse slowly
-        reverse(slow);
-
-        break;
-      case '5': //motor reverse fast
-        reverse(fast);
-
-        break;
+    }
+    if (I2Cstatus<0){
+      reverse(I2Cstatus);
+    }else if (I2Cstatus>10){
+      forward(I2Cstatus);
     }
  
   }
