@@ -5,7 +5,7 @@
 **/
 
 
-#include <Wire.h> //include Wire.h library
+#include <Wire.h> //include Wire.h libra
 //#include <esp_now.h> //ESP-Wifi comms
 #include <WiFi.h> 
 
@@ -111,8 +111,8 @@ void requestData(int address, int numBytes){
   if (Wire.available() == 2) {
     for (int i = 0; i < numBytes; i++)
     { 
-      count = Wire.read();
-      current = Wire.read();
+      count = Wire.read(); //encoder count sent first 
+      current = Wire.read(); //current sent second
       //Serial.println("dataread");
     }
 

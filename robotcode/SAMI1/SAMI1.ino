@@ -74,7 +74,7 @@ void loop() {
 int motorCurrent = 0;
 
 void readCurrent(){
-  motorCurrent=analogRead(currentRead);//*255/1023;
+  motorCurrent=analogRead(currentRead)*255/1023;
 }
 
 long difference, newRead; 
@@ -107,11 +107,13 @@ void brake(){
  * Callback function upon receiving a request for data via I2C from master
  * This will request a set number of bytes as a message that will be formed when its time 
  */
+
+char data[2];
 void requestEvent() {
-  //send message - i guess this will be global variables we are reguarly updating or something hmmmm 
-  
-  Wire.write(motorSpeed);
-  Wire.write(motorCurrent);
+  //write once with an array of multiple bytes
+   data[0] = motorSpeed;
+   data[1] = motorCurrent;
+   Wire.write(data);
 }
 
 //callback function for recieving messages and setting the appropriate status
