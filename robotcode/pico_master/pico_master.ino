@@ -41,24 +41,24 @@ char buf[3]; //preset character array with 2 bytes of information
 void loop() {
   //try to bs read off of the terminal to figure out what to send to the sami   
    
-   if (Serial.available()!=0){
-    int commanddata = Serial.parseInt();
+//   if (Serial.available()!=0){
+//    int commanddata = Serial.parseInt();
 //    Serial.print("data: ");
 //    Serial.println(commanddata);
-    if (commanddata==1){
-      drive(0);
-      Serial.println("brake");
-      
-    }
-    else if (commanddata==2){
-      Serial.println("requesting Data");
-      requestData(0x02,2);
-      
-    }else if (commanddata >10 || commanddata<0){
-      Serial.println("drive with speed");
-      drive(commanddata);
-    }
-   }
+//    if (commanddata==1){
+//      drive(0);
+//      Serial.println("brake");
+//      
+//    }
+//    else if (commanddata==2){
+//      Serial.println("requesting Data");
+//      requestData(0x02,2);
+//      
+//    }else if (commanddata >10 || commanddata<0){
+//      Serial.println("drive with speed");
+//      drive(commanddata);
+//    }
+//   }
 }
 
 //drives at the speed given, will work on sending an actual ramped speed later
@@ -67,22 +67,7 @@ void drive(int speed){
   //sendMsg(0x01,  speed);
   sendMsg(0x02,  speed);
  // sendMsg(0x03,  speed);
-  
-//  if (speed>0){
-//    sendMsg(0x01, '3');
-//    sendMsg(0x02, '3');
-//    sendMsg(0x03,'3');
-//  }
-//  else if(speed<0){
-//    sendMsg(0x01, '5');
-//    sendMsg(0x02, '4');
-//    sendMsg(0x03,'5');
-//  }else if(speed ==0){
-//    sendMsg(0x01, '1');
-//    sendMsg(0x02, '1');
-//    sendMsg(0x03,'1');
-//  }
-}
+} 
 
 
 void sendMsg(int address, char message){
@@ -204,9 +189,18 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(myData.wifiData);
   Serial.println();
 
-  //when receiving a WiFi command from a TinyPico, request data on I2C bus
-  if(myData.wifiData == 1) {
-     //readI2C();
-  }
-
-}
+  int commanddata = myData.wifiData;
+    if (commanddata==1){
+      drive(0);
+      Serial.println("brake");
+      
+    }
+    else if (commanddata==2){
+      Serial.println("requesting Data");
+      requestData(0x02,2);
+      
+    }else if (commanddata >10 || commanddata<0){
+      Serial.println("drive with speed");
+      drive(commanddata);
+    }
+   }
