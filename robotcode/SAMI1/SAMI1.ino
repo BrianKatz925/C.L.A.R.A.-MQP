@@ -108,7 +108,7 @@ void brake(){
  * This will request a set number of bytes as a message that will be formed when its time 
  */
 
-char data[2];
+char data[2]; // size of how many pieces of data we want to send 
 void requestEvent() {
   //write once with an array of multiple bytes
    data[0] = motorSpeed;
