@@ -81,7 +81,7 @@ void drive(int speed){
   }
   else if(speed<0){
     sendMsg(0x01, '5');
-    sendMsg(0x02, '5');
+    sendMsg(0x02, '4');
     sendMsg(0x03,'5');
   }else if(speed ==0){
     sendMsg(0x01, '1');
@@ -106,22 +106,27 @@ void sendMsg(int address, char message){
 }
 char count = 'a';
 char current = 0;
+int vRef = 3.3;
+int senseResistor = 0.5 ;
 void requestData(int address, int numBytes){
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
   if (Wire.available() == 2) {
-    for (int i = 0; i < numBytes; i++)
-    { 
       count = Wire.read(); //encoder count sent first 
       current = Wire.read(); //current sent second
-      //Serial.println("dataread");
-    }
+   
 
     //print out received data
     Serial.print("Encoder: ");
     int readcount = count;
-    int readcurrent = current ;
+    if (readcount >127){
+      readcount = 256-readcount;
+      readcount *=-1;
+    }
     Serial.print(readcount);
     Serial.print('\t');
+    
+    float readcurrent = current/510.0; //(255*senseResistor) ; //get the ADC reading 
+
     Serial.print("Current: ");
     Serial.println(readcurrent);
   }

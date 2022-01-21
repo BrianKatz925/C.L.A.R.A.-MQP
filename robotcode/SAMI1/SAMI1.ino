@@ -59,7 +59,7 @@ void setup() {
     digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 }
 
-int encInterval = 20;
+int encInterval = 5;
 int lastTime = 0;
 
 void loop() {
@@ -83,7 +83,7 @@ int rpm;
 void getEncCount(){
     newRead = motor.read(); //read the encoder
     difference = newRead - motorPosition; //get the difference
-    rpm = difference ;///12 *1000*60/150; //RPM
+    rpm = difference*12*60/150; //RPM
     motorPosition = newRead;//update last position
     motorSpeed =rpm;// newRead; //set the speed 
 } 
@@ -113,7 +113,9 @@ void requestEvent() {
   //write once with an array of multiple bytes
    data[0] = motorSpeed;
    data[1] = motorCurrent;
-   Wire.write(data);
+   //Wire.write(data);
+   Wire.write(motorSpeed);
+   Wire.write(motorCurrent);
 }
 
 //callback function for recieving messages and setting the appropriate status
