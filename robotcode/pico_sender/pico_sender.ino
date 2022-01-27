@@ -27,7 +27,7 @@ String deviceBData = "";
 
 //type struct with two integer variables
 typedef struct data_struct {
-  int wifiData;
+  String wifiData;
 } data_struct;
 
 data_struct test; //store variable values
@@ -41,7 +41,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   // Serial.print(macStr);
-  // Serial.print(" send status:\t");
+  //Serial.print(" send status:\t");
   //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
@@ -73,7 +73,7 @@ void setup() {
 }
 char deviceBdata;
 char input[43];
-char interpretData(String data) {
+String interpretData(String data) {
   data.toCharArray(input, 43);
   //Serial.println(data);
   //A button is index 0
@@ -100,38 +100,41 @@ char interpretData(String data) {
 
   //check buttons
   if (data[4] == '1') { //y button
-    return '1';
+    return "1";
   }
   if (data[5] == '1') { //x button
-    return '2';
+    return "2";
   }
   if (data[6] == '1') { //B button
-    return '3';
+    return "3";
   }
   if (data[7] == '1') { //A button
-    return '4';
+    return "4";
   }
   if (data[8] == '1') { //right bumper
-    return '5';
+    return "5";
   }
   if (data[9] == '1') { //right bumper
-    return '6';
+    return "6";
   }
   if (rjoyval !=128){  // < 130 && rjoyval > 125) { //stick has been moved 
     if (rjoyval < 10) {
-      return '11';
+      return "11";
     }
     else {
-      return rjoyval;
+      return String(rjoyval);
     }
   }
   else {
-    return '0';
+    return "0";
   }
 
   //
 }
-char newData;
+String newData="";
+
+
+
 void loop() {
   if (Serial.available() > 0) {
     if (Serial.peek() != '\n') //if we press enter in the serial monitor and sent data
@@ -144,9 +147,9 @@ void loop() {
       Serial.print("You said: ");
       newData = interpretData(deviceBData);
       Serial.println(newData);
-
-
-      test.wifiData = deviceBData.toInt(); //convert data to an integer
+      
+      //sends the actual data
+      test.wifiData = newData; //convert data to an integer
       //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
       esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
       if (result == ESP_OK) {

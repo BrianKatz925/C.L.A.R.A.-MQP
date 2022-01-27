@@ -172,7 +172,7 @@ void findDevices() {
 //Structure example to receive data
 //Must match the sender structure
 typedef struct data_struct {
-  int wifiData;
+  String wifiData;
 } data_struct;
 
 //Create a struct_message called myData
@@ -189,7 +189,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(myData.wifiData);
   Serial.println();
 
-  int commanddata = myData.wifiData;
+  int commanddata = myData.wifiData.toInt();
     if (commanddata==1){
       drive(0);
       Serial.println("brake");
@@ -199,7 +199,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
       Serial.println("requesting Data");
       requestData(0x02,2);
       
-    }else if (commanddata >10 || commanddata<0){
+    }else if (commanddata!=260 &&(commanddata >10 || commanddata<0)){
       Serial.println("drive with speed");
       drive(commanddata);
     }

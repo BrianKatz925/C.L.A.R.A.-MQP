@@ -45,10 +45,10 @@ long motorPosition = 0;
 int motorSpeed = 0;
 
 void setup() {
-  Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
+  //Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
   
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-   Wire.begin(0x02); 
+   Wire.begin(0x03); 
    pinMode(currentRead, INPUT);
    pinMode(enc1, INPUT);
    pinMode(enc2, INPUT);
