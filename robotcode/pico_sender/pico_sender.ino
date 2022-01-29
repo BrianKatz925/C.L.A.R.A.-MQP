@@ -41,8 +41,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   // Serial.print(macStr);
-  //Serial.print(" send status:\t");
-  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  Serial.print(" send status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
 void setup() {
@@ -86,12 +86,12 @@ String interpretData(String data) {
     if (data[i] == '1') dpadval++;
   }
   //make right joystick int 0-255 (128 is nothing)
-  String rjoy1 = "";
-  int rjoyval = 0;
-  for (int i = 34; i <= 42; i++) {
-    rjoyval *= 2;
-    if (data[i] == '1') rjoyval++;
-  }
+//  String rjoy1 = "";
+//  int rjoyval = 0;
+//  for (int i = 34; i <= 42; i++) {
+//    rjoyval *= 2;
+//    if (data[i] == '1') rjoyval++;
+//  }
   //Serial.print("rjoy: ");
   //Serial.println(rjoyval);
   //Serial.print("dpad: ");
@@ -112,19 +112,19 @@ String interpretData(String data) {
     return "4";
   }
   if (data[8] == '1') { //right bumper
-    return "5";
+    return "8";
   }
-  if (data[9] == '1') { //right bumper
-    return "6";
+  if (data[9] == '1') { //left bumper
+    return "9";
   }
-  if (rjoyval !=128){  // < 130 && rjoyval > 125) { //stick has been moved 
-    if (rjoyval < 10) {
-      return "11";
-    }
-    else {
-      return String(rjoyval);
-    }
-  }
+//  if (rjoyval !=128){  // < 130 && rjoyval > 125) { //stick has been moved 
+//    if (rjoyval < 10) {
+//      return "10";
+//    }
+//    else {
+//      return String(rjoyval);
+//    }
+//  }
   else {
     return "0";
   }

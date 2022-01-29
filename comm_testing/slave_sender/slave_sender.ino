@@ -33,10 +33,10 @@ String shape_sequence = "1, 1, 1, 4";  //test string
 bool I2CFlag = false; // motor pwm on i2c request flag
 
 void setup() {
-  Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
+  //Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
   
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
- // Wire.begin(0x01); 
+  Wire.begin(0x01); 
   
   //upon receiving a request from the master, call requestEvent
  // Wire.onRequest(requestEvent); 
@@ -44,19 +44,7 @@ void setup() {
 
 void loop() {
   //printString( "hello");
-  digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
-  analogWrite(INPUT1, 0);
-  analogWrite(INPUT2, 255);
-  delay(2500);
-  analogWrite(INPUT1, 255)  ;
-  analogWrite(INPUT2, 255);
-  delay(500);
-  analogWrite(INPUT1, 255);
-  analogWrite(INPUT2, 0);
-  delay(2500);
-  analogWrite(INPUT1, 255);
-  analogWrite(INPUT2, 255);
-  delay(500);
+
 
 }
 

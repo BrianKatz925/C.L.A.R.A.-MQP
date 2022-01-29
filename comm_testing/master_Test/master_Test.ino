@@ -12,10 +12,10 @@
 
 void setup()
 {
-  //Wire.begin(); // I2C communication begin
-  //Serial.begin(9600); // The baudrate of Serial monitor is set in 9600 - lower baudrates work best with motor driver modules
-  //while (!Serial); // Waiting for Serial Monitor to initialize
-  //Serial.println("\nI2C Scanner"); 
+  Wire.begin(); // I2C communication begin
+  Serial.begin(9600); // The baudrate of Serial monitor is set in 9600 - lower baudrates work best with motor driver modules
+  while (!Serial); // Waiting for Serial Monitor to initialize
+  Serial.println("\nI2C Scanner"); 
 
 //  //Set device as a Wi-Fi Station
 //  WiFi.mode(WIFI_STA);
@@ -37,8 +37,8 @@ char buf[3]; //preset character array with 2 bytes of information
 
 
 void loop() {
-  //findDevices(); //find all I2C devices on bus
-  //delay(1000); // wait 1 seconds for the next I2C scan
+  findDevices(); //find all I2C devices on bus
+  delay(1000); // wait 1 seconds for the next I2C scan
 }
 
 /****************************************

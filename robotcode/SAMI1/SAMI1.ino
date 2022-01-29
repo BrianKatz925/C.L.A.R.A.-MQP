@@ -123,10 +123,10 @@ void msgEvent(int numBytes){
  // I2CFlag = true;
  while (Wire.available()>0) { // loop through all but the last
     int x = Wire.read(); // receive byte as a character
-    if (x>127){
-      x = 256-x;
-      x*=-1;
-    }
+//    if (x>127){
+//      x = 256-x;
+//      x*=-1;
+//    }
     I2Cstatus = x;
   }
    switch(I2Cstatus){
@@ -139,11 +139,10 @@ void msgEvent(int numBytes){
       case 2: //motor forward slowly
        
         break;
-    }
-    if (I2Cstatus<0){
-      reverse(I2Cstatus);
-    }else if (I2Cstatus>10){
-      forward(I2Cstatus);
+      case 8:
+        reverse(255);
+      case 9:
+        forward(255);
     }
  
   }

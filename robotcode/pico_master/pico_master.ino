@@ -31,6 +31,7 @@ void setup()
   esp_now_register_recv_cb(OnDataRecv);
 
   findDevices() ; //run once on startup to verify SAMIs connected 
+  //drive(0);
 
 }
 
@@ -40,33 +41,17 @@ char buf[3]; //preset character array with 2 bytes of information
 
 void loop() {
   //try to bs read off of the terminal to figure out what to send to the sami   
-   
-//   if (Serial.available()!=0){
-//    int commanddata = Serial.parseInt();
-//    Serial.print("data: ");
-//    Serial.println(commanddata);
-//    if (commanddata==1){
-//      drive(0);
-//      Serial.println("brake");
-//      
-//    }
-//    else if (commanddata==2){
-//      Serial.println("requesting Data");
-//      requestData(0x02,2);
-//      
-//    }else if (commanddata >10 || commanddata<0){
-//      Serial.println("drive with speed");
-//      drive(commanddata);
-//    }
-//   }
+
 }
 
 //drives at the speed given, will work on sending an actual ramped speed later
 void drive(int speed){
 
-  //sendMsg(0x01,  speed);
+  sendMsg(0x01,  speed);
+  delay(10);
   sendMsg(0x02,  speed);
- // sendMsg(0x03,  speed);
+  delay(10);
+  sendMsg(0x03,  speed);
 } 
 
 
@@ -198,9 +183,29 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     else if (commanddata==2){
       Serial.println("requesting Data");
       requestData(0x02,2);
-      
-    }else if (commanddata!=260 &&(commanddata >10 || commanddata<0)){
-      Serial.println("drive with speed");
-      drive(commanddata);
     }
-   }
+    else if (commanddata==256){
+       drive(0);
+    }
+    else if (commanddata == 8){
+      Serial.println("drive forward");
+      drive(8);
+    }
+    else if (commanddata ==9){
+      drive(9);
+      Serial.println("drive backward");
+    }
+    else if (commanddata ==0){
+      drive(0);}
+    }
+//    }else if (commanddata>10 && commanddata<256){
+//      Serial.println("drive with speed");
+//      //drive(commanddata);
+//      if (commanddata == 11){
+//        drive(-255);
+//      }
+//      if (commanddata == 255){
+//        drive(255);
+//      }
+//    }
+   
