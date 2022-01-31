@@ -44,7 +44,26 @@ void setup() {
 
 void loop() {
   //printString( "hello");
+    
+  /***
+   * Motor operation code
+   */
+   digitalWrite(NSLEEP, HIGH); //nSleep should be kept high for normal operation
 
+   //turn motor off
+   if(I2CFlag) {
+   analogWrite(INPUT1, 0);
+   analogWrite(INPUT2, 0);
+   I2CFlag = false;
+   }
+
+   //turn motor on
+   else { 
+   analogWrite(INPUT1, 0);
+   analogWrite(INPUT2, 255);
+   I2CFlag = true;
+   }
+   
 
 }
 
