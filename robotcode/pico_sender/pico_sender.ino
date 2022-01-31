@@ -20,7 +20,7 @@
     REPLACE WITH YOUR ESP RECEIVER'S MAC ADDRESS
     ADD OR DELETE LINES DEPENDING ON NUMBER OF RECEIVER BOARDS
 */
-uint8_t broadcastAddress1[] = {0x50, 0x02, 0x91, 0xA1, 0x96, 0x6C};
+uint8_t broadcastAddress1[] = {0x24, 0xA1, 0x60, 0x75, 0xB8, 0xE0};
 
 String deviceBData = "";
 

@@ -48,7 +48,7 @@ void setup() {
   //Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
   
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-   Wire.begin(0x03); 
+   Wire.begin(0x02); 
    pinMode(currentRead, INPUT);
    pinMode(enc1, INPUT);
    pinMode(enc2, INPUT);
@@ -140,9 +140,11 @@ void msgEvent(int numBytes){
        
         break;
       case 8:
-        reverse(255);
-      case 9:
+        //reverse(255);
         forward(255);
+      case 9:
+       //forward(255);
+       reverse(255);
     }
  
   }

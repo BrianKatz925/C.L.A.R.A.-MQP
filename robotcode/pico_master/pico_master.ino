@@ -48,9 +48,7 @@ void loop() {
 void drive(int speed){
 
   sendMsg(0x01,  speed);
-  delay(10);
   sendMsg(0x02,  speed);
-  delay(10);
   sendMsg(0x03,  speed);
 } 
 
@@ -188,10 +186,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
        drive(0);
     }
     else if (commanddata == 8){
-      Serial.println("drive forward");
+      Serial.println("drive foruward");
       drive(8);
     }
-    else if (commanddata ==9){
+    else if (commanddata == 9){
       drive(9);
       Serial.println("drive backward");
     }
