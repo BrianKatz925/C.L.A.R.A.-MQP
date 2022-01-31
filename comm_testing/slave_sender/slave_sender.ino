@@ -50,19 +50,19 @@ void loop() {
    */
    digitalWrite(NSLEEP, HIGH); //nSleep should be kept high for normal operation
 
-   //turn motor off
-   if(I2CFlag) {
-   analogWrite(INPUT1, 0);
-   analogWrite(INPUT2, 0);
-   I2CFlag = false;
-   }
-
    //turn motor on
-   else { 
    analogWrite(INPUT1, 0);
    analogWrite(INPUT2, 255);
-   I2CFlag = true;
-   }
+   delay(100);
+   analogWrite(INPUT1, 255);
+   analogWrite(INPUT2, 255);
+   delay(100);
+   analogWrite(INPUT1, 255);
+   analogWrite(INPUT2, 00);
+   delay(100);
+   analogWrite(INPUT1, 255);
+   analogWrite(INPUT2, 255);
+
    
 
 }
