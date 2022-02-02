@@ -61,17 +61,44 @@ void setup() {
 
 int encInterval = 5;
 int lastTime = 0;
+float stall_current = 35;
+int dTstall = 10;
+int lastState = 0;
+int motorCurrent = 0;
+bool motorstalled = false;
+int stalltime = 0;
 
 void loop() {
-  if (millis() - lastTime >= encInterval) {
+  if ((millis() - lastTime) >= encInterval) {
     getEncCount();
     readCurrent();
     lastTime = millis();
   }
+  if (motorCurrent >= stall_current) {
+    motorstalled==true;
+    brake();
+    delay(10);
+    I2Cstatus = 0;
+  }
 }
 
 
-int motorCurrent = 0;
+//void stallcheck(int current) {
+//  if (current >= stall_current) {
+//    if (motorstalled == false) { //if it was already stalled we dont care
+//      stalltime = millis();
+//      motorstalled = true;
+//      //store the state
+//      // laststate = I2Cstatus;
+//    }
+//  }
+//  else {
+//    stalltime  = millis();
+//    motorstalled = false;
+//  }
+//}
+
+
 
 void readCurrent() {
   motorCurrent = analogRead(currentRead) * 255 / 1023;
@@ -137,10 +164,11 @@ void msgEvent(int numBytes) {
 
       break;
     case 2: //motor forward slowly
-      
+
       break;
     case 9:
-      reverse(255);
+        reverse(255);
+      
       break;
     case 8:
       forward(255);
