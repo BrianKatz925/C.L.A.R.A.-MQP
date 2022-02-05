@@ -163,8 +163,12 @@ void msgEvent(int numBytes) {
       brake();
 
       break;
-    case 2: //motor forward slowly
+    case 1: //lead screw up speed
+      forward(150);
 
+      break;
+    case 2: //lead screw down speed
+      reverse(150);
       break;
     case 9:
         reverse(255);
@@ -172,6 +176,12 @@ void msgEvent(int numBytes) {
       break;
     case 8:
       forward(255);
+      break;
+    case 12: //cable down speed
+      forward(150);
+      break;
+    case 13: //cable down speed
+      reverse(150);
       break;
 
   }

@@ -1,13 +1,13 @@
 /**
- * Uploaded to Mainboard - Handles I2C communication
- * Current setup - Mainboard requests data from motor driver, motor driver returns data
- * Need to do the opposite - Motor driver should send data and mainboard receives it - ESP32 doesn't have onreceive function in arduino core so we need to poll manually
+   Uploaded to Mainboard - Handles I2C communication
+   Current setup - Mainboard requests data from motor driver, motor driver returns data
+   Need to do the opposite - Motor driver should send data and mainboard receives it - ESP32 doesn't have onreceive function in arduino core so we need to poll manually
 **/
 
 
 #include <Wire.h> //include Wire.h libra
 #include <esp_now.h> //ESP-Wifi comms
-#include <WiFi.h> 
+#include <WiFi.h>
 
 
 void setup()
@@ -15,7 +15,7 @@ void setup()
   Wire.begin(); // I2C communication begin
   Serial.begin(9600); // The baudrate of Serial monitor is set in 9600 - lower baudrates work best with motor driver modules
   while (!Serial); // Waiting for Serial Monitor to initialize
-  Serial.println("\nI2C Scanner"); 
+  Serial.println("\nI2C Scanner");
 
   //Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -30,64 +30,71 @@ void setup()
   // get recv packer info
   esp_now_register_recv_cb(OnDataRecv);
 
-  findDevices() ; //run once on startup to verify SAMIs connected 
+  findDevices() ; //run once on startup to verify SAMIs connected
   //drive(0);
 
 }
 
 
-char buf[3]; //preset character array with 2 bytes of information 
+char buf[3]; //preset character array with 2 bytes of information
 
 
 void loop() {
-  //try to bs read off of the terminal to figure out what to send to the sami   
+  //try to bs read off of the terminal to figure out what to send to the sami
 
 }
 
 //drives at the speed given, will work on sending an actual ramped speed later
-void drive(int speed){
+void drive(int speed) {
 
   sendMsg(0x01,  speed);
   sendMsg(0x02,  speed);
   sendMsg(0x03,  speed);
-} 
+}
+void drivecables(int speed1, int speed2, int speed3) {
+  sendMsg(0x04,  speed1); //cable 1
+  sendMsg(0x05,  speed2); //cable 2
+  sendMsg(0x06,  speed3); //cable 3
+}
+void driveleadscrew(int speed){
+  sendMsg(0x07, speed); //im so gonna have to change this later not even gonna cap
+}
 
-
-void sendMsg(int address, char message){
+void sendMsg(int address, char message) {
   Wire.beginTransmission(address);
   Wire.write(message);
   int error = Wire.endTransmission();
-  if (error != 0){
+  if (error != 0) {
     Serial.println("Error sending command: ");
     Serial.println(error);
   }
   else {
     Serial.println("Message sent");
-    
+
   }
 }
 char count = 'a';
 char current = 0;
 int vRef = 3.3;
 int senseResistor = 0.5 ;
-void requestData(int address, int numBytes){
+void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
   if (Wire.available() == 2) {
-      count = Wire.read(); //encoder count sent first 
-      current = Wire.read(); //current sent second
-   
+    count = Wire.read(); //encoder count sent first
+    current = Wire.read(); //current sent second
+
 
     //print out received data
     Serial.print("Encoder: ");
     int readcount = count;
-    if (readcount >127){
-      readcount = 256-readcount;
-      readcount *=-1;
+    if (readcount > 127) {
+      readcount = 256 - readcount;
+      readcount *= -1;
     }
     Serial.print(readcount);
     Serial.print('\t');
-    
-    float readcurrent = current/510.0; //(255*senseResistor) ; //get the ADC reading 
+
+    float readcurrent = current / 510.0; //(255*senseResistor) ; //get the ADC reading
 
     Serial.print("Current: ");
     Serial.println(readcurrent);
@@ -101,12 +108,12 @@ void requestData(int address, int numBytes){
 
 
 /****************************************
- * I2C helper functions
+   I2C helper functions
  ************************************/
 
 /**
- * Finds all available I2C devices on the current bus - can be used for troubleshooting
- */
+   Finds all available I2C devices on the current bus - can be used for troubleshooting
+*/
 void findDevices() {
   byte error, address; //variable for error and I2C address
   int nDevices; //number of devices found on I2C bus
@@ -114,7 +121,7 @@ void findDevices() {
   Serial.println("Scanning...");
 
   nDevices = 0;
-  for (address = 1; address < 127; address++) 
+  for (address = 1; address < 127; address++)
   {
     // The i2c_scanner uses the return value of
     // the Write.endTransmisstion to see if
@@ -149,9 +156,9 @@ void findDevices() {
 
 
 /**
- * ESP-NOW helper functions
- */
- 
+   ESP-NOW helper functions
+*/
+
 //Structure example to receive data
 //Must match the sender structure
 typedef struct data_struct {
@@ -162,8 +169,8 @@ typedef struct data_struct {
 data_struct myData;
 
 /**
- * callback function that will be executed when data is received - currently calls master to request data along I2C line
- */
+   callback function that will be executed when data is received - currently calls master to request data along I2C line
+*/
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
   Serial.print("Bytes received: ");
@@ -173,29 +180,86 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println();
 
   int commanddata = myData.wifiData.toInt();
-    if (commanddata==1){
-      drive(0);
-      Serial.println("brake");
-      
-    }
-    else if (commanddata==2){
-      Serial.println("requesting Data");
-      requestData(0x02,2);
-    }
-    else if (commanddata==256){
-       drive(0);
-    }
-    else if (commanddata == 8){
-      Serial.println("drive foruward");
-      drive(8);
-    }
-    else if (commanddata == 9){
-      drive(9);
-      Serial.println("drive backward");
-    }
-    else if (commanddata ==0){
-      drive(0);}
-    }
+  //button pad 
+  if (commanddata == 1) { //Y button - lead screw up
+    driveleadscrew(1); /// fix
+    Serial.println("lead screw up");
+
+  }
+  else if (commanddata == 4) { //A button - lead screw down
+    driveleadscrew(0); /// fix
+    Serial.println("lead screw down");
+
+  }
+  else if (commanddata == 2) { //x button - send data back
+    Serial.println("requesting Data");
+    requestData(0x02, 2);
+  }
+
+ 
+  //dpad shit 
+  else if (commanddata == 10) { //dpad = 0 - home
+    Serial.println("homing cables");
+    //this will be something based off of current sensors later i imagine 
+  }
+   else if (commanddata == 11) { //dpad = 1 - all cables down
+    Serial.println("all cables down");
+    drivecables(12,12,12);
+  }
+   else if (commanddata == 12) { //dpad = 2 - cable 1 down
+    Serial.println("cable 1 down");
+    drivecables(12,0,0);
+  }
+   else if (commanddata == 13) { //dpad = 3 - cable 1 and 2 down
+    Serial.println("cable 1 and 2 down");
+    drivecables(12,12,0);
+  }
+     else if (commanddata == 14) { //dpad = 4 - cable 2 down
+    Serial.println("cable 2 down ");
+    drivecables(0,12,0);
+  }
+   else if (commanddata == 15) { //dpad = 5 - cable 2 and 3 down
+    Serial.println("cables 2 and 3 down");
+    drivecables(0,12,12);
+  }
+   else if (commanddata == 16) { //dpad = 6 - cable 3 down
+    Serial.println("cable 3 down");
+    drivecables(0,0,12);
+  }
+   else if (commanddata == 17) { //dpad = 7 - all cables up
+    Serial.println("all cables up");
+    drivecables(13,13,13);
+  }
+
+
+
+  //wheel driving 
+  else if (commanddata == 8) { //right bumper - drive forward 
+    Serial.println("drive forward");
+    drive(8);
+  }
+  else if (commanddata == 9) { //left bumper - drive backward 
+    drive(9);
+    Serial.println("drive backward");
+  }
+
+
+  //brake motors 
+  else if (commanddata == 0) { //brake all motors/do nothing
+    drive(0);
+    drivecables(0, 0, 0);
+  }
+  else if (commanddata == 256) { //brake all motors
+    drive(0);
+    drivecables(0, 0, 0);
+  }
+
+}
+
+
+
+
+
 //    }else if (commanddata>10 && commanddata<256){
 //      Serial.println("drive with speed");
 //      //drive(commanddata);
@@ -206,4 +270,3 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 //        drive(255);
 //      }
 //    }
-   
