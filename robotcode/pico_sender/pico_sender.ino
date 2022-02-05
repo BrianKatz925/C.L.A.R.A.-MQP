@@ -85,30 +85,20 @@ String interpretData(String data) {
     dpadval *= 2;
     if (data[i] == '1') dpadval++;
   }
-  //make right joystick int 0-255 (128 is nothing)
-//  String rjoy1 = "";
-//  int rjoyval = 0;
-//  for (int i = 34; i <= 42; i++) {
-//    rjoyval *= 2;
-//    if (data[i] == '1') rjoyval++;
-//  }
-  //Serial.print("rjoy: ");
-  //Serial.println(rjoyval);
-  //Serial.print("dpad: ");
-  //Serial.println(dpad);
+ 
 
 
   //check buttons
-  if (data[4] == '1') { //y button
+  if (data[4] == '1') { //y button - lead screw up
     return "1";
   }
-  if (data[5] == '1') { //x button
+  if (data[5] == '1') { //x button -send data 
     return "2";
   }
   if (data[6] == '1') { //B button
     return "3";
   }
-  if (data[7] == '1') { //A button
+  if (data[7] == '1') { //A button - lead screw down 
     return "4";
   }
   if (data[8] == '1') { //right bumper
@@ -117,6 +107,30 @@ String interpretData(String data) {
   if (data[9] == '1') { //left bumper
     return "9";
   }
+  if (dpadval == 0){ //dpad 0 = home
+    return "10";
+  }
+  if (dpadval == 1){ //dpad 1 = all down
+    return "11";
+  }
+  if (dpadval == 2){ //cable 1 down
+    return "12";
+  }
+  if (dpadval == 3){ //cable 1 +2 down
+    return "13";
+  }
+  if (dpadval == 4){ //cable 2 down
+    return "14";
+  }
+  if (dpadval == 5){ //cable 2 + 3 down
+    return "15";
+  }
+  if (dpadval == 6){ //cable 3 down
+    return "16";
+  }if (dpadval == 7){ //dpad 7 - all up
+    return "17";
+  }
+  
 //  if (rjoyval !=128){  // < 130 && rjoyval > 125) { //stick has been moved 
 //    if (rjoyval < 10) {
 //      return "10";
@@ -130,6 +144,19 @@ String interpretData(String data) {
   }
 
   //
+ //make right joystick int 0-255 (128 is nothing)
+//  String rjoy1 = "";
+//  int rjoyval = 0;
+//  for (int i = 34; i <= 42; i++) {
+//    rjoyval *= 2;
+//    if (data[i] == '1') rjoyval++;
+//  }
+  //Serial.print("rjoy: ");
+  //Serial.println(rjoyval);
+  //Serial.print("dpad: ");
+  //Serial.println(dpad);
+
+  
 }
 String newData="";
 
@@ -164,20 +191,3 @@ void loop() {
 
   delay(5);
 }
-
-
-/**
-   to send data to inidivudal boards
-   esp_err_t result1 = esp_now_send(
-  broadcastAddress1,
-  (uint8_t *) &test,
-  sizeof(test_struct));
-
-  if (result1 == ESP_OK) {
-  Serial.println("Sent with success");
-  }
-  else {
-  Serial.println("Error sending the data");
-  }
-
-*/
