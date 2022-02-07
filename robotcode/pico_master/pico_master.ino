@@ -200,6 +200,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   //dpad shit 
   else if (commanddata == 10) { //dpad = 0 - home
     Serial.println("homing cables");
+    drivecables(0,0,0);
     //this will be something based off of current sensors later i imagine 
   }
    else if (commanddata == 11) { //dpad = 1 - all cables down

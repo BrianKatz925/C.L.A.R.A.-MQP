@@ -178,10 +178,10 @@ void msgEvent(int numBytes) {
       forward(255);
       break;
     case 12: //cable down speed
-      forward(150);
+      forward(255);
       break;
     case 13: //cable down speed
-      reverse(150);
+      reverse(255);
       break;
 
   }
