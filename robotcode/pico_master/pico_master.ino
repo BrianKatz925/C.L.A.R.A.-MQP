@@ -9,6 +9,35 @@
 #include <esp_now.h> //ESP-Wifi comms
 #include <WiFi.h>
 
+/*
+    REPLACE WITH YOUR ESP RECEIVER'S MAC ADDRESS
+    ADD OR DELETE LINES DEPENDING ON NUMBER OF RECEIVER BOARDS
+*/
+uint8_t broadcastAddress1[] = {0x24, 0xA1, 0x60, 0x75, 0xB8, 0xE0}; //replace with ESP
+
+String deviceBData = "";
+
+
+//type struct with two integer variables
+typedef struct data_struct {
+  String wifiData;
+} data_struct;
+
+data_struct test; //store variable values
+
+// callback when data is sent
+// executed when data is sent, prints if message was successfully delivered to know if board received message
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  char macStr[18];
+  //Serial.print("Packet to: ");
+  // Copies the sender mac address to a string
+  snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+           mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+  // Serial.print(macStr);
+  Serial.print(" send status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
 
 void setup()
 {
@@ -31,7 +60,20 @@ void setup()
   esp_now_register_recv_cb(OnDataRecv);
 
   findDevices() ; //run once on startup to verify SAMIs connected
+  
   //drive(0);
+  //register callback function to be called when a message is sent
+  esp_now_register_send_cb(OnDataSent);
+
+  // register peer
+  esp_now_peer_info_t peerInfo;
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
+  // register first peer
+  memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+    Serial.println("Failed to add peer");
+    return;
 
 }
 
@@ -98,6 +140,9 @@ void requestData(int address, int numBytes) {
 
     Serial.print("Current: ");
     Serial.println(readcurrent);
+
+    //code to send the data here 
+    
   }
 }
 

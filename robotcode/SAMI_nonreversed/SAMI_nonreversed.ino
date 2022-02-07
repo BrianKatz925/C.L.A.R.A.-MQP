@@ -27,6 +27,8 @@
 #include <math.h>
 #include <Encoder.h>
 
+
+
 #define NSLEEP 5
 #define INPUT1 9
 #define INPUT2 10
@@ -52,7 +54,7 @@ void setup() {
   pinMode(currentRead, INPUT);
   pinMode(enc1, INPUT);
   pinMode(enc2, INPUT);
-
+  
   //upon receiving a request from the master, call requestEvent
   Wire.onRequest(requestEvent);
   Wire.onReceive(msgEvent);
@@ -164,15 +166,13 @@ void msgEvent(int numBytes) {
 
       break;
     case 1: //lead screw up speed
-      forward(150);
-
+      forward(150); 
       break;
     case 2: //lead screw down speed
       reverse(150);
       break;
     case 9:
-        reverse(255);
-      
+        reverse(255); 
       break;
     case 8:
       forward(255);
