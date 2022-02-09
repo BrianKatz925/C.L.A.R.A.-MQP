@@ -20,7 +20,10 @@ String deviceBData = "";
 
 //type struct with two integer variables
 typedef struct data_struct {
-  String wifiData;
+  int smdAddress;
+  float currentData;
+  int encoderData;
+
 } data_struct;
 
 data_struct test; //store variable values
@@ -60,8 +63,7 @@ void setup()
   esp_now_register_recv_cb(OnDataRecv);
 
   findDevices() ; //run once on startup to verify SAMIs connected
-  
-  //drive(0);
+
   //register callback function to be called when a message is sent
   esp_now_register_send_cb(OnDataSent);
 
@@ -74,7 +76,7 @@ void setup()
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");
     return;
-
+  }
 }
 
 
@@ -98,7 +100,7 @@ void drivecables(int speed1, int speed2, int speed3) {
   sendMsg(0x05,  speed2); //cable 2
   sendMsg(0x06,  speed3); //cable 3
 }
-void driveleadscrew(int speed){
+void driveleadscrew(int speed) {
   sendMsg(0x07, speed); //im so gonna have to change this later not even gonna cap
 }
 
@@ -115,6 +117,8 @@ void sendMsg(int address, char message) {
 
   }
 }
+
+
 char count = 'a';
 char current = 0;
 int vRef = 3.3;
@@ -141,10 +145,25 @@ void requestData(int address, int numBytes) {
     Serial.print("Current: ");
     Serial.println(readcurrent);
 
-    //code to send the data here 
-    
+    //code to send the data here
+    test.smdAddress = address;
+    test.currentData = readcurrent;
+    test.encoderData = readcount;
+    //send the data
+
+    //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
+    esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
+    if (result == ESP_OK) {
+      //Serial.println("Sent with success");
+    }
+    else {
+      //Serial.println("Error sending the data");
+    }
+
   }
 }
+
+
 
 
 
@@ -200,22 +219,20 @@ void findDevices() {
 }
 
 
+
 /**
    ESP-NOW helper functions
-*/
-
-//Structure example to receive data
+   callback function that will be executed when data is received - currently calls master to request data along I2C line
+*///Structure example to receive data
 //Must match the sender structure
-typedef struct data_struct {
+typedef struct data_struct_rec {
   String wifiData;
-} data_struct;
+} data_struct_rec;
 
 //Create a struct_message called myData
-data_struct myData;
+data_struct_rec myData;
 
-/**
-   callback function that will be executed when data is received - currently calls master to request data along I2C line
-*/
+
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
   Serial.print("Bytes received: ");
@@ -225,7 +242,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println();
 
   int commanddata = myData.wifiData.toInt();
-  //button pad 
+  //button pad
   if (commanddata == 1) { //Y button - lead screw up
     driveleadscrew(1); /// fix
     Serial.println("lead screw up");
@@ -238,59 +255,66 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
+    requestData(0x01, 2);
     requestData(0x02, 2);
+    requestData(0x03, 2);
+    requestData(0x04, 2);
+    requestData(0x05, 2);
+    requestData(0x06, 2);
+    requestData(0x07, 2);
+
   }
 
- 
-  //dpad shit 
+
+  //dpad shit
   else if (commanddata == 10) { //dpad = 0 - home
     Serial.println("homing cables");
-    drivecables(0,0,0);
-    //this will be something based off of current sensors later i imagine 
+    drivecables(0, 0, 0);
+    //this will be something based off of current sensors later i imagine
   }
-   else if (commanddata == 11) { //dpad = 1 - all cables down
+  else if (commanddata == 11) { //dpad = 1 - all cables down
     Serial.println("all cables down");
-    drivecables(12,12,12);
+    drivecables(12, 12, 12);
   }
-   else if (commanddata == 12) { //dpad = 2 - cable 1 down
+  else if (commanddata == 12) { //dpad = 2 - cable 1 down
     Serial.println("cable 1 down");
-    drivecables(12,0,0);
+    drivecables(12, 0, 0);
   }
-   else if (commanddata == 13) { //dpad = 3 - cable 1 and 2 down
+  else if (commanddata == 13) { //dpad = 3 - cable 1 and 2 down
     Serial.println("cable 1 and 2 down");
-    drivecables(12,12,0);
+    drivecables(12, 12, 0);
   }
-     else if (commanddata == 14) { //dpad = 4 - cable 2 down
+  else if (commanddata == 14) { //dpad = 4 - cable 2 down
     Serial.println("cable 2 down ");
-    drivecables(0,12,0);
+    drivecables(0, 12, 0);
   }
-   else if (commanddata == 15) { //dpad = 5 - cable 2 and 3 down
+  else if (commanddata == 15) { //dpad = 5 - cable 2 and 3 down
     Serial.println("cables 2 and 3 down");
-    drivecables(0,12,12);
+    drivecables(0, 12, 12);
   }
-   else if (commanddata == 16) { //dpad = 6 - cable 3 down
+  else if (commanddata == 16) { //dpad = 6 - cable 3 down
     Serial.println("cable 3 down");
-    drivecables(0,0,12);
+    drivecables(0, 0, 12);
   }
-   else if (commanddata == 17) { //dpad = 7 - all cables up
+  else if (commanddata == 17) { //dpad = 7 - all cables up
     Serial.println("all cables up");
-    drivecables(13,13,13);
+    drivecables(13, 13, 13);
   }
 
 
 
-  //wheel driving 
-  else if (commanddata == 8) { //right bumper - drive forward 
+  //wheel driving
+  else if (commanddata == 8) { //right bumper - drive forward
     Serial.println("drive forward");
     drive(8);
   }
-  else if (commanddata == 9) { //left bumper - drive backward 
+  else if (commanddata == 9) { //left bumper - drive backward
     drive(9);
     Serial.println("drive backward");
   }
 
 
-  //brake motors 
+  //brake motors
   else if (commanddata == 0) { //brake all motors/do nothing
     drive(0);
     drivecables(0, 0, 0);
@@ -301,18 +325,3 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
 
 }
-
-
-
-
-
-//    }else if (commanddata>10 && commanddata<256){
-//      Serial.println("drive with speed");
-//      //drive(commanddata);
-//      if (commanddata == 11){
-//        drive(-255);
-//      }
-//      if (commanddata == 255){
-//        drive(255);
-//      }
-//    }
