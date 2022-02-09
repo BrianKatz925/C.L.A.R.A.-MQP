@@ -248,13 +248,13 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
-    requestData(0x01, 2);
     requestData(0x02, 2);
-    requestData(0x03, 2);
-    requestData(0x04, 2);
-    requestData(0x05, 2);
-    requestData(0x06, 2);
-    requestData(0x07, 2);
+//    requestData(0x02, 2);
+//    requestData(0x03, 2);
+//    requestData(0x04, 2);
+//    requestData(0x05, 2);
+//    requestData(0x06, 2);
+//    requestData(0x07, 2);
 
   }
 
