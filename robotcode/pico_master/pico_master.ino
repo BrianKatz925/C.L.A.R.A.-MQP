@@ -23,7 +23,6 @@ typedef struct data_struct {
   int smdAddress;
   float currentData;
   int encoderData;
-
 } data_struct;
 
 data_struct test; //store variable values
@@ -149,8 +148,9 @@ void requestData(int address, int numBytes) {
     test.smdAddress = address;
     test.currentData = readcurrent;
     test.encoderData = readcount;
-    //send the data
-
+    Serial.print("test sructs   ");
+    Serial.print(test.currentData);
+    Serial.println(test.encoderData);
     //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
     esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
     if (result == ESP_OK) {
@@ -162,13 +162,6 @@ void requestData(int address, int numBytes) {
 
   }
 }
-
-
-
-
-
-
-
 
 
 /****************************************
@@ -270,6 +263,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   else if (commanddata == 10) { //dpad = 0 - home
     Serial.println("homing cables");
     drivecables(0, 0, 0);
+    drive(0);
     //this will be something based off of current sensors later i imagine
   }
   else if (commanddata == 11) { //dpad = 1 - all cables down

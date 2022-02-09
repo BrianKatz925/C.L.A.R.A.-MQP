@@ -61,7 +61,7 @@ void setup() {
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 }
 
-int encInterval = 5;
+int encInterval = 10;
 int lastTime = 0;
 float stall_current = 35;
 int dTstall = 10;
@@ -79,7 +79,6 @@ void loop() {
   if (motorCurrent >= stall_current) {
     motorstalled==true;
     brake();
-    delay(10);
     I2Cstatus = 0;
   }
 }
