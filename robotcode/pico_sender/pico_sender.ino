@@ -32,7 +32,7 @@ typedef struct data_struct_rec {
 
 typedef struct data_struct {
   int smdAddress;
-  float currentData;
+  int currentData;
   int encoderData;
 } data_struct;
 

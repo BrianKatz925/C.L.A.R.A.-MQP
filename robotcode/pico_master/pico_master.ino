@@ -13,7 +13,7 @@
     REPLACE WITH YOUR ESP RECEIVER'S MAC ADDRESS
     ADD OR DELETE LINES DEPENDING ON NUMBER OF RECEIVER BOARDS
 */
-uint8_t broadcastAddress1[] = {0xA8, 0x48, 0xFA, 0x57, 0x1D, 0xBC}; //replace with ESP
+uint8_t broadcastAddress1[] = {0x98, 0xCD, 0xAC, 0x61, 0x58, 0xAC}; //replace with ESP
 
 String deviceBData = "";
 
@@ -21,7 +21,7 @@ String deviceBData = "";
 //type struct with two integer variables
 typedef struct data_struct {
   int smdAddress;
-  float currentData;
+  int currentData;
   int encoderData;
 } data_struct;
 
@@ -146,7 +146,7 @@ void requestData(int address, int numBytes) {
 
     //code to send the data here
     test.smdAddress = address;
-    test.currentData = readcurrent;
+    test.currentData = readcurrent*100;
     test.encoderData = readcount;
     Serial.print("test sructs   ");
     Serial.print(test.currentData);
