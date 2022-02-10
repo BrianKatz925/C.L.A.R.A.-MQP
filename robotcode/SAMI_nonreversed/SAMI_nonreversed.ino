@@ -25,8 +25,8 @@
 
 #include <Wire.h>
 #include <math.h>
-#include <Encoder.h>
-
+#include <QuadratureEncoder.h>
+//#include <EnableInterrupt.h>
 
 
 #define NSLEEP 5
@@ -42,7 +42,7 @@ int fast = 500; //default fast speed
 int count = 0; //for encoder count
 
 //Encoder Setup
-Encoder motor(enc1, enc2);
+Encoders motor(enc1, enc2);
 long motorPosition = 0;
 int motorSpeed = 0;
 
@@ -50,7 +50,7 @@ void setup() {
   //Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
 
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-  Wire.begin(0x04);
+  Wire.begin(0x02);
   pinMode(currentRead, INPUT);
   pinMode(enc1, INPUT);
   pinMode(enc2, INPUT);
@@ -69,10 +69,11 @@ int lastState = 0;
 int motorCurrent = 0;
 bool motorstalled = false;
 int stalltime = 0;
+long currentmotcount;
 
 void loop() {
-  if ((millis() - lastTime) >= encInterval) {
-    getEncCount();
+  if ((millis() - lastTime) >= 50) {
+    currentmotcount =motor.getEncoderCount();
     readCurrent();
     lastTime = millis();
   }
@@ -107,13 +108,14 @@ void readCurrent() {
 
 long difference, newRead;
 int rpm;
-
+long lastCount =0;
 void getEncCount() {
-  newRead = motor.read(); //read the encoder
-  difference = newRead - motorPosition; //get the difference
+  newRead = currentmotcount;
+  difference = currentmotcount - lastCount;
   rpm = difference * 12 * 60 / 150; //RPM
   motorPosition = newRead;//update last position
   motorSpeed = rpm; // newRead; //set the speed
+  lastCount = currentmotcount;
 }
 
 void forward(int speed) {
