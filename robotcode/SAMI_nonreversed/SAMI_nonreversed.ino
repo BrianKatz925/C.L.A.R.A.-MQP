@@ -26,6 +26,9 @@
 #include <Wire.h>
 #include <math.h>
 
+/*******************************************
+ *   PIN DEFINITIONS - Arduino Nano pins
+ *****************************************/
 #define NSLEEP 5
 #define INPUT1 9
 #define INPUT2 10
@@ -33,83 +36,107 @@
 #define enc1 2 //32
 #define enc2 3 //1 
 
-char I2Cstatus = '0';
+/******************************************
+ *               VARIABLES
+ *****************************************/
+char I2Cstatus = '0'; //I2C command sent from Mainboard
+
+//Motor speed definitions
 int slow = 100; //default slow speed
 int fast = 500; //default fast speed
 
-void setup() {
-  //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-  Wire.begin(0x03);
-  pinMode(currentRead, INPUT);
-  pinMode(enc1, INPUT);
-  pinMode(enc2, INPUT);
-  attachInterrupt(digitalPinToInterrupt(enc1), isr, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(enc2), isr, CHANGE);
-  //upon receiving a request from the master, call requestEvent
-  Wire.onRequest(requestEvent);
-  Wire.onReceive(msgEvent);
-  digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
-
-
-}
-
-int lastTime = 0;
-float stall_current = 35;
-int lastState = 0;
-int motorCurrent = 0;
+//Current Sensor variables
+const float stall_current = 35; //current value when motor is stalled
+int motorCurrent = 0; //data variable representing motor current sent through I2C to mainboard 
 bool motorstalled = false;
-int stalltime = 0;
+int lastTime = 0; //previous time current was checked
 
-
-void loop() {
-  if ((millis() - lastTime) >= 50) {
-    readCurrent();
-    lastTime = millis();
-  }
-  if (motorCurrent >= stall_current) {
-    motorstalled == true;
-    brake();
-    I2Cstatus = 0;
-  }
-}
-
-
-void readCurrent() {
-  motorCurrent = analogRead(currentRead) * 255 / 1023;
-}
-
-
-const int X = 5;
-int encoderArray[4][4] = {
+//Quadrature encoder constants
+const int X = 5; //invalid state definition
+int encoderArray[4][4] = { //state matrix
   {0, -1, 1, X},
   {1, 0, X, -1},
   { -1, X, 0, 1},
   {X, 1, -1, 0}
 };
 
-int newValue;
-int errorCount = 0;
-int oldValue = 0;
-int count = 0;
+int newValue; //integer between 0 and 3 representing quadrature encoder state
+int errorCount = 0; //count of 'X's or invalid encoder states
+int oldValue = 0; //previous encoder reading
+int count = 0; //current encoder count - sent through I2C to mainboard
 
+//I2C
+char data[2]; // size of how many pieces of data we want to send over I2C
+
+
+void setup() {
+  //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
+  Wire.begin(0x03);
+
+  // set up sensor pins
+  pinMode(currentRead, INPUT);
+  pinMode(enc1, INPUT);
+  pinMode(enc2, INPUT);
+
+  //attach interrupts on both encoders w/ isr callback function
+  attachInterrupt(digitalPinToInterrupt(enc1), isr, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(enc2), isr, CHANGE);
+  
+  //set up I2C event channels
+  Wire.onRequest(requestEvent); //upon receiving a request from the master, call requestEvent
+  Wire.onReceive(msgEvent); //upon receiving a message the I2C device, call msgEvent
+  
+  digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation of the MD9927 motor driver
+
+}
+
+void loop() {
+  
+  if ((millis() - lastTime) >= 50) { //if 50 ms passed since the last reading, read the current
+    readCurrent();
+    lastTime = millis();
+  }
+  
+  if (motorCurrent >= stall_current) { //if the current reading is above the preset stall current value, break the motor
+    motorstalled == true;
+    brake();
+    I2Cstatus = 0;
+  }
+}
+
+/***********************************
+ *       HELPER FUNCTIONS
+ *******************************/
+
+/**
+ * Function to set the motorCurrent variable to the current sensor reading
+ */
+void readCurrent() {
+  motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
+}
+
+/**
+ * Quadrature Encoder Interrupt Service Routine callbac function
+ */
 void isr() {
-    newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
-    int value = encoderArray[oldValue][newValue];
-    if (value == X)   {
+    newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); //bit shift value of encoder reading to be binary value between 0 and 3 
+    int value = encoderArray[oldValue][newValue]; //find encoder value count change by indexing quadrature array
+    if (value == X)   { //if the value is invalid increase error count
       errorCount++;
     }
-    else {
+    else { //decrement count
       count -= value;
     }
-    oldValue = newValue;
+    oldValue = newValue; //replace old value
     
     //count = newValue;
 
 }
 
 
-
-//driving functions
+/***********************
+ * DRIVING FUNCTIONS
+ *********************/
 
 void forward(int speed) {
   analogWrite(INPUT1, 0);
@@ -126,22 +153,24 @@ void brake() {
   analogWrite(INPUT2, 255);
 }
 
+
 /**
    Callback function upon receiving a request for data via I2C from master
    This will request a set number of bytes as a message that will be formed when its time
 */
-
-char data[2]; // size of how many pieces of data we want to send
 void requestEvent() {
   //write once with an array of multiple bytes
   data[0] = count;
   data[1] = motorCurrent;
   //Wire.write(data);
+  //Write encoder count and current values along i2C for a request
   Wire.write(count);
   Wire.write(motorCurrent);
 }
 
-//callback function for recieving messages and setting the appropriate status
+/**
+ * callback function for recieving messages and setting the appropriate status
+ */
 void msgEvent(int numBytes) {
   // I2CFlag = true;
   while (Wire.available() > 0) { // loop through all but the last
@@ -152,12 +181,13 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
+
+  //switch statement given i2c input command from command line or controller
   switch (I2Cstatus) {
     default: //no message- status defaults to zero
       break;
     case 0: //motor stop
       brake();
-
       break;
     case 1: //lead screw up speed
       forward(150);
