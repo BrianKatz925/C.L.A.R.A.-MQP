@@ -25,9 +25,6 @@
 
 #include <Wire.h>
 #include <math.h>
-#include <QuadratureEncoder.h>
-//#include <EnableInterrupt.h>
-
 
 #define NSLEEP 5
 #define INPUT1 9
@@ -39,41 +36,33 @@
 char I2Cstatus = '0';
 int slow = 100; //default slow speed
 int fast = 500; //default fast speed
-int count = 0; //for encoder count
-
-//Encoder Setup
-Encoders motor(enc1, enc2);
-long motorPosition = 0;
-int motorSpeed = 0;
 
 void setup() {
-  //Serial.begin(9600); //begin Serial - lower baud rates work better for AtMega328 board
-
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
   Wire.begin(0x02);
   pinMode(currentRead, INPUT);
   pinMode(enc1, INPUT);
   pinMode(enc2, INPUT);
-  
+  attachInterrupt(digitalPinToInterrupt(enc1), isr, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(enc2), isr, CHANGE);
   //upon receiving a request from the master, call requestEvent
   Wire.onRequest(requestEvent);
   Wire.onReceive(msgEvent);
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
+
+  
 }
 
-int encInterval = 10;
 int lastTime = 0;
 float stall_current = 35;
-int dTstall = 10;
 int lastState = 0;
 int motorCurrent = 0;
 bool motorstalled = false;
 int stalltime = 0;
-long currentmotcount;
+
 
 void loop() {
   if ((millis() - lastTime) >= 50) {
-    currentmotcount =motor.getEncoderCount();
     readCurrent();
     lastTime = millis();
   }
@@ -85,38 +74,40 @@ void loop() {
 }
 
 
-//void stallcheck(int current) {
-//  if (current >= stall_current) {
-//    if (motorstalled == false) { //if it was already stalled we dont care
-//      stalltime = millis();
-//      motorstalled = true;
-//      //store the state
-//      // laststate = I2Cstatus;
-//    }
-//  }
-//  else {
-//    stalltime  = millis();
-//    motorstalled = false;
-//  }
-//}
-
-
-
 void readCurrent() {
   motorCurrent = analogRead(currentRead) * 255 / 1023;
 }
 
-long difference, newRead;
-int rpm;
-long lastCount =0;
-void getEncCount() {
-  newRead = currentmotcount;
-  difference = currentmotcount - lastCount;
-  rpm = difference * 12 * 60 / 150; //RPM
-  motorPosition = newRead;//update last position
-  motorSpeed = rpm; // newRead; //set the speed
-  lastCount = currentmotcount;
+
+const char X = 5; 
+char encoderArray[4][4] = { 
+    {0, -1, 1, X}, 
+    {1, 0, X, -1}, 
+    {-1, X, 0, 1}, 
+    {X, 1, -1, 0}};
+    
+int newValue = 0;
+int errorCount = 0;
+int oldValue = 0; 
+int count = 0;
+
+void isr() { 
+//  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); 
+//  char value = encoderArray[oldValue][newValue]; 
+//  if (value == X)   { 
+//    errorCount++; 
+//  } 
+//  else { 
+//    count -= value; 
+//  } 
+//  oldValue = newValue; 
+count = digitalRead(enc2);
+
 }
+
+
+
+//driving functions
 
 void forward(int speed) {
   analogWrite(INPUT1, 0);
@@ -141,10 +132,10 @@ void brake() {
 char data[2]; // size of how many pieces of data we want to send
 void requestEvent() {
   //write once with an array of multiple bytes
-  data[0] = motorSpeed;
+  data[0] = count;
   data[1] = motorCurrent;
   //Wire.write(data);
-  Wire.write(motorSpeed);
+  Wire.write(count);
   Wire.write(motorCurrent);
 }
 
