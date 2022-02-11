@@ -39,7 +39,7 @@ int fast = 500; //default fast speed
 
 void setup() {
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-  Wire.begin(0x02);
+  Wire.begin(0x03);
   pinMode(currentRead, INPUT);
   pinMode(enc1, INPUT);
   pinMode(enc2, INPUT);
@@ -50,7 +50,7 @@ void setup() {
   Wire.onReceive(msgEvent);
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation
 
-  
+
 }
 
 int lastTime = 0;
@@ -67,7 +67,7 @@ void loop() {
     lastTime = millis();
   }
   if (motorCurrent >= stall_current) {
-    motorstalled==true;
+    motorstalled == true;
     brake();
     I2Cstatus = 0;
   }
@@ -79,29 +79,31 @@ void readCurrent() {
 }
 
 
-const char X = 5; 
-char encoderArray[4][4] = { 
-    {0, -1, 1, X}, 
-    {1, 0, X, -1}, 
-    {-1, X, 0, 1}, 
-    {X, 1, -1, 0}};
-    
-int newValue = 0;
+const int X = 5;
+int encoderArray[4][4] = {
+  {0, -1, 1, X},
+  {1, 0, X, -1},
+  { -1, X, 0, 1},
+  {X, 1, -1, 0}
+};
+
+int newValue;
 int errorCount = 0;
-int oldValue = 0; 
+int oldValue = 0;
 int count = 0;
 
-void isr() { 
-//  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); 
-//  char value = encoderArray[oldValue][newValue]; 
-//  if (value == X)   { 
-//    errorCount++; 
-//  } 
-//  else { 
-//    count -= value; 
-//  } 
-//  oldValue = newValue; 
-count = digitalRead(enc2);
+void isr() {
+    newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
+    int value = encoderArray[oldValue][newValue];
+    if (value == X)   {
+      errorCount++;
+    }
+    else {
+      count -= value;
+    }
+    oldValue = newValue;
+    
+    //count = newValue;
 
 }
 
@@ -158,13 +160,13 @@ void msgEvent(int numBytes) {
 
       break;
     case 1: //lead screw up speed
-      forward(150); 
+      forward(150);
       break;
     case 2: //lead screw down speed
       reverse(150);
       break;
     case 9:
-        reverse(255); 
+      reverse(255);
       break;
     case 8:
       forward(255);

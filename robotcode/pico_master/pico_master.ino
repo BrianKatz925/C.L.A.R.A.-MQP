@@ -132,10 +132,10 @@ void requestData(int address, int numBytes) {
     //print out received data
     Serial.print("Encoder: ");
     int readcount = count;
-    if (readcount > 127) {
-      readcount = 256 - readcount;
-      readcount *= -1;
-    }
+//    if (readcount > 127) {
+//      readcount = 256 - readcount;
+//      readcount *= -1;
+//    }
     Serial.print(readcount);
     Serial.print('\t');
 
@@ -248,9 +248,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
+    requestData(0x01, 2);
     requestData(0x02, 2);
-//    requestData(0x02, 2);
-//    requestData(0x03, 2);
+    requestData(0x03, 2);
 //    requestData(0x04, 2);
 //    requestData(0x05, 2);
 //    requestData(0x06, 2);
