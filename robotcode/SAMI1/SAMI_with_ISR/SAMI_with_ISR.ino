@@ -62,7 +62,7 @@ int encoderArray[4][4] = { //state matrix
 };
 
 int newValue; //integer between 0 and 3 representing quadrature encoder state
-int error = 0; //count of 'X's or invalid encoder states
+int errorCount = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
 
@@ -112,48 +112,6 @@ void loop() {
     brake();
     I2Cstatus = 0;
   }
-  //increment encoders without ISR
-  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); 
-  switch (oldValue)
-  {
-    case 0:
-      switch (newValue)
-      {
-        case 0: break;
-        case 1: count--; break;
-        case 2: count++; break;
-        case 3: error++; break;
-      }
-      break;
-    case 1:
-      switch (newValue)
-      {
-        case 0: count++; break;
-        case 1: break;
-        case 2: error++; break;
-        case 3: count--; break;
-      }
-      break;
-    case 2:
-      switch (newValue)
-      {
-        case 0: count--; break;
-        case 1: error++; break;
-        case 2: break;
-        case 3: count++; break;
-      }
-      break;
-    case 3:
-      switch (newValue)
-      {
-        case 0: error++; break;
-        case 1: count++; break;
-        case 2: count--; break;
-        case 3: break;
-      }
-      break;
-  }
-  oldValue = newValue;
 
   int slowRPM = 25;
   int fastRPM = 50;
@@ -188,6 +146,8 @@ void loop() {
       pidSpeed.setpoint(-slowRPM);
       reverse(calcSpeedPID);
       break;
+
+
   }
 
 }
@@ -206,7 +166,7 @@ void readCurrent() {
 /**
    Quadrature Encoder Interrupt Service Routine callbac function
 
-  void isr() {
+void isr() {
   //sei();
   newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); //bit shift value of encoder reading to be binary value between 0 and 3
   int value = encoderArray[oldValue][newValue]; //find encoder value count change by indexing quadrature array
@@ -218,7 +178,7 @@ void readCurrent() {
   }
   oldValue = newValue; //replace old value
 
-  }*/
+}*/
 
 
 /***********************
@@ -250,7 +210,7 @@ void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
-  data[2] = motorCurrent;
+  data[3] = motorCurrent;
   //Write encoder count and current values along i2C for a request
   Wire.write(data, 3);
 }

@@ -118,19 +118,20 @@ void sendMsg(int address, char message) {
 
 
 //reading back data from the smart motor drivers 
-char count = 'a';
+int count = 0;
 char current = 0;
 int vRef = 3.3;
 int senseResistor = 0.5 ;
 byte enc1,enc2;
 void requestData(int address, int numBytes) {
+  Serial.println("data is requested bitch");
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
   if (Wire.available() == 3) {
+    Serial.println("three bytes recieved");
     enc1= Wire.read();
-    enc2 = Wire.read ();
+    enc2 = Wire.read();
     count = enc1;
     count = (count<<8)| enc2; //put the two bytes back together
-    
     current = Wire.read(); //current sent second
 
 
@@ -138,7 +139,7 @@ void requestData(int address, int numBytes) {
     Serial.print("Encoder: ");
     int readcount = count;
     if (readcount > 32768) { //gotta undo the negatives 
-      readcount = 32768 - readcount;
+      readcount = 65535 - readcount;
       readcount *= -1;
     }
     Serial.print(readcount);
@@ -253,9 +254,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
-    requestData(0x01, 2);
+    //requestData(0x01, 3);
     requestData(0x02, 2);
-    requestData(0x03, 2);
+   // requestData(0x03, 2);
 //    requestData(0x04, 2);
 //    requestData(0x05, 2);
 //    requestData(0x06, 2);
