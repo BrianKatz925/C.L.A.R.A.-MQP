@@ -25,9 +25,10 @@
 
 #include <Wire.h>
 #include <math.h>
+#include <PIDController.h>
 
 /*******************************************
- *   PIN DEFINITIONS - Arduino Nano pins
+     PIN DEFINITIONS - Arduino Nano pins
  *****************************************/
 #define NSLEEP 5
 #define INPUT1 9
@@ -36,8 +37,9 @@
 #define enc1 2 //32
 #define enc2 3 //1 
 
+PIDController pidSpeed;
 /******************************************
- *               VARIABLES
+                 VARIABLES
  *****************************************/
 char I2Cstatus = '0'; //I2C command sent from Mainboard
 
@@ -47,7 +49,7 @@ int fast = 500; //default fast speed
 
 //Current Sensor variables
 const float stall_current = 35; //current value when motor is stalled
-int motorCurrent = 0; //data variable representing motor current sent through I2C to mainboard 
+int motorCurrent = 0; //data variable representing motor current sent through I2C to mainboard
 bool motorstalled = false;
 int lastTime = 0; //previous time current was checked
 
@@ -65,9 +67,6 @@ int errorCount = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
 
-//I2C
-char data[2]; // size of how many pieces of data we want to send over I2C
-
 
 void setup() {
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
@@ -81,107 +80,42 @@ void setup() {
   //attach interrupts on both encoders w/ isr callback function
   attachInterrupt(digitalPinToInterrupt(enc1), isr, CHANGE);
   attachInterrupt(digitalPinToInterrupt(enc2), isr, CHANGE);
-  
+
   //set up I2C event channels
   Wire.onRequest(requestEvent); //upon receiving a request from the master, call requestEvent
   Wire.onReceive(msgEvent); //upon receiving a message the I2C device, call msgEvent
-  
+
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation of the MD9927 motor driver
 
+  pidSpeed.begin();
+  pidSpeed.tune(1, 0, 0);
+  pidSpeed.limit(0, 255);
 }
 
+int lastcount = 0;
+int motSpeed;
+int countdiff = 0;
+int calcSpeedPID;
+int Ngear = 150;
 void loop() {
-  
-  if ((millis() - lastTime) >= 50) { //if 50 ms passed since the last reading, read the current
+
+  if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
     readCurrent();
-    lastTime = millis();
+    //calculate current RPM and compute PID with it
+    countdiff = count - lastcount;
+    motSpeed = (countdiff / 12) * (1000 / 1) * (60 / 1) / Ngear;
+    calcSpeedPID = pidSpeed.compute(motSpeed)
+                   lastTime = millis();
   }
-  
+
   if (motorCurrent >= stall_current) { //if the current reading is above the preset stall current value, break the motor
     motorstalled == true;
     brake();
     I2Cstatus = 0;
   }
-}
 
-/***********************************
- *       HELPER FUNCTIONS
- *******************************/
-
-/**
- * Function to set the motorCurrent variable to the current sensor reading
- */
-void readCurrent() {
-  motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
-}
-
-/**
- * Quadrature Encoder Interrupt Service Routine callbac function
- */
-void isr() {
-    newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); //bit shift value of encoder reading to be binary value between 0 and 3 
-    int value = encoderArray[oldValue][newValue]; //find encoder value count change by indexing quadrature array
-    if (value == X)   { //if the value is invalid increase error count
-      errorCount++;
-    }
-    else { //decrement count
-      count -= value;
-    }
-    oldValue = newValue; //replace old value
-    
-    //count = newValue;
-
-}
-
-
-/***********************
- * DRIVING FUNCTIONS
- *********************/
-
-void forward(int speed) {
-  analogWrite(INPUT1, 0);
-  analogWrite(INPUT2, speed);
-}
-
-void reverse(int speed) {
-  analogWrite(INPUT1, speed);
-  analogWrite(INPUT2, 0);
-}
-
-void brake() {
-  analogWrite(INPUT1, 255);
-  analogWrite(INPUT2, 255);
-}
-
-
-/**
-   Callback function upon receiving a request for data via I2C from master
-   This will request a set number of bytes as a message that will be formed when its time
-*/
-void requestEvent() {
-  //write once with an array of multiple bytes
-  data[0] = count;
-  data[1] = motorCurrent;
-  //Wire.write(data);
-  //Write encoder count and current values along i2C for a request
-  Wire.write(count);
-  Wire.write(motorCurrent);
-}
-
-/**
- * callback function for recieving messages and setting the appropriate status
- */
-void msgEvent(int numBytes) {
-  // I2CFlag = true;
-  while (Wire.available() > 0) { // loop through all but the last
-    int x = Wire.read(); // receive byte as a character
-    //    if (x>127){
-    //      x = 256-x;
-    //      x*=-1;
-    //    }
-    I2Cstatus = x;
-  }
-
+  int slowRPM = 25;
+  int fastRPM = 50;
   //switch statement given i2c input command from command line or controller
   switch (I2Cstatus) {
     default: //no message- status defaults to zero
@@ -190,24 +124,111 @@ void msgEvent(int numBytes) {
       brake();
       break;
     case 1: //lead screw up speed
-      forward(150);
+      pid.setpoint(slowRPM); //check all the signs 
+      forward(calcSpeedPID);
       break;
     case 2: //lead screw down speed
-      reverse(150);
+      pid.setpoint(-slowRPM);
+      reverse(calcSpeedPID);
       break;
     case 9:
-      reverse(255);
+      pid.setpoint(-slowRPM);
+      reverse(calcSpeedPID);
       break;
     case 8:
-      forward(255);
+      pid.setpoint(fastRPM);
+      forward(calcSpeedPID);
       break;
     case 12: //cable down speed
-      forward(255);
+      pid.setpoint(slowRPM);
+      forward(calcSpeedPID);
       break;
     case 13: //cable down speed
-      reverse(255);
+      pid.setpoint(-slowRPM);
+      reverse(calcSpeedPID);
       break;
 
+
+
+
+  }
+
+  /***********************************
+           HELPER FUNCTIONS
+   *******************************/
+
+  /**
+     Function to set the motorCurrent variable to the current sensor reading
+  */
+  void readCurrent() {
+    motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
+  }
+
+  /**
+     Quadrature Encoder Interrupt Service Routine callbac function
+  */
+  void isr() {
+    newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); //bit shift value of encoder reading to be binary value between 0 and 3
+    int value = encoderArray[oldValue][newValue]; //find encoder value count change by indexing quadrature array
+    if (value == X)   { //if the value is invalid increase error count
+      errorCount++;
+    }
+    else { //decrement count
+      count -= value;
+    }
+    oldValue = newValue; //replace old value
+
+  }
+
+
+  /***********************
+     DRIVING FUNCTIONS
+   *********************/
+
+  void forward(int speed) {
+    analogWrite(INPUT1, 0);
+    analogWrite(INPUT2, speed);
+  }
+
+  void reverse(int speed) {
+    analogWrite(INPUT1, speed);
+    analogWrite(INPUT2, 0);
+  }
+
+  void brake() {
+    analogWrite(INPUT1, 255);
+    analogWrite(INPUT2, 255);
+  }
+
+
+  /**
+     Callback function upon receiving a request for data via I2C from master
+     This will request a set number of bytes as a message that will be formed when its time
+  */
+  byte data[2];
+  void requestEvent() {
+    //split the int encoder count into multiple bytes
+    data[0] = (count >> 8) & 0xFF;
+    data[1] = count & 0xFF;
+
+    //Write encoder count and current values along i2C for a request
+    Wire.write(data, 2);
+    Wire.write(motorCurrent);
+  }
+
+  /**
+     callback function for recieving messages and setting the appropriate status
+  */
+  void msgEvent(int numBytes) {
+    // I2CFlag = true;
+    while (Wire.available() > 0) { // loop through all but the last
+      int x = Wire.read(); // receive byte as a character
+      //    if (x>127){
+      //      x = 256-x;
+      //      x*=-1;
+      //    }
+      I2Cstatus = x;
+    }
   }
 
 }

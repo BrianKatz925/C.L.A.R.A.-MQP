@@ -80,12 +80,11 @@ void setup()
 
 
 char buf[3]; //preset character array with 2 bytes of information
-
-
 void loop() {
-  //try to bs read off of the terminal to figure out what to send to the sami
+    //nothing really.... this is all event based 
 
 }
+
 
 //drives at the speed given, will work on sending an actual ramped speed later
 void drive(int speed) {
@@ -118,24 +117,30 @@ void sendMsg(int address, char message) {
 }
 
 
+//reading back data from the smart motor drivers 
 char count = 'a';
 char current = 0;
 int vRef = 3.3;
 int senseResistor = 0.5 ;
+byte enc1,enc2;
 void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
-  if (Wire.available() == 2) {
-    count = Wire.read(); //encoder count sent first
+  if (Wire.available() == 3) {
+    enc1= Wire.read();
+    enc2 = Wire.read ();
+    count = enc1;
+    count = (count<<8)| enc2; //put the two bytes back together
+    
     current = Wire.read(); //current sent second
 
 
     //print out received data
     Serial.print("Encoder: ");
     int readcount = count;
-//    if (readcount > 127) {
-//      readcount = 256 - readcount;
-//      readcount *= -1;
-//    }
+    if (readcount > 32768) { //gotta undo the negatives 
+      readcount = 32768 - readcount;
+      readcount *= -1;
+    }
     Serial.print(readcount);
     Serial.print('\t');
 
