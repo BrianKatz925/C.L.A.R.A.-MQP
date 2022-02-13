@@ -99,7 +99,10 @@ void drivecables(int speed1, int speed2, int speed3) {
   sendMsg(0x06,  speed3); //cable 3
 }
 void driveleadscrew(int speed) {
-  sendMsg(0x07, speed); //im so gonna have to change this later not even gonna cap
+  if (speed == 0){
+    sendMsg(0x07,0);
+  }else{
+  sendMsg(0x07, speed);} //im so gonna have to change this later not even gonna cap
 }
 
 void sendMsg(int address, char message) {
@@ -248,7 +251,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   }
   else if (commanddata == 4) { //A button - lead screw down
-    driveleadscrew(0); /// fix
+    driveleadscrew(2); /// fix
     Serial.println("lead screw down");
 
   }
@@ -270,6 +273,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("homing cables");
     drivecables(0, 0, 0);
     drive(0);
+    driveleadscrew(0);
     //this will be something based off of current sensors later i imagine
   }
   else if (commanddata == 11) { //dpad = 1 - all cables down

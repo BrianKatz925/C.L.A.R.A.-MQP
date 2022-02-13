@@ -69,7 +69,7 @@ int count = 0; //current encoder count - sent through I2C to mainboard
 
 void setup() {
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-  Wire.begin(0x01);
+  Wire.begin(0x07);
 
   // set up sensor pins
   pinMode(currentRead, INPUT);
@@ -166,10 +166,10 @@ void loop() {
       break;
     case 1: //lead screw up speed
       pidSpeed.setpoint(slowRPM); //check all the signs
-      forward(calcSpeedPID);
+      forward(100);
       break;
     case 2: //lead screw down speed
-      pidSpeed.setpoint(-slowRPM);
+      pidSpeed.setpoint(slowRPM);
       reverse(calcSpeedPID);
       break;
     case 9:
