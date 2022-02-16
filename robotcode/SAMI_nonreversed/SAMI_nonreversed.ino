@@ -65,11 +65,12 @@ int newValue; //integer between 0 and 3 representing quadrature encoder state
 int error = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
-
+byte address = 0x06;
+int fastSpeed = 255;
 
 void setup() {
   //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
-  Wire.begin(0x07);
+  Wire.begin(address);
 
   // set up sensor pins
   pinMode(currentRead, INPUT);
@@ -89,6 +90,10 @@ void setup() {
   pidSpeed.begin();
   pidSpeed.tune(1, 0, 0);
   pidSpeed.limit(0, 255);
+
+  if (address == 0x04 | address == 0x05 | address == 0x06 ){
+    fastSpeed = 150;
+  }
 }
 
 int lastcount = 0;
@@ -181,12 +186,12 @@ void loop() {
       forward(255);
       break;
     case 12: //cable down speed
-      pidSpeed.setpoint(slowRPM);
-      forward(calcSpeedPID);
+      pidSpeed.setpoint(fastSpeed);
+      forward(fastSpeed);
       break;
     case 13: //cable down speed
-      pidSpeed.setpoint(-slowRPM);
-      reverse(calcSpeedPID);
+      pidSpeed.setpoint(fastSpeed);
+      reverse(fastSpeed);
       break;
   }
 
@@ -203,23 +208,11 @@ void readCurrent() {
   motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
 }
 
-/**
-   Quadrature Encoder Interrupt Service Routine callbac function
-
-  void isr() {
-  //sei();
-  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); //bit shift value of encoder reading to be binary value between 0 and 3
-  int value = encoderArray[oldValue][newValue]; //find encoder value count change by indexing quadrature array
-  if (value == X)   { //if the value is invalid increase error count
-    errorCount++;
+void homeCables(float currentthreshold){
+  if (motorCurrent >= currentthreshold){
+    reverse(150);
   }
-  else { //decrement count
-    count -= value;
-  }
-  oldValue = newValue; //replace old value
-
-  }*/
-
+}
 
 /***********************
    DRIVING FUNCTIONS
