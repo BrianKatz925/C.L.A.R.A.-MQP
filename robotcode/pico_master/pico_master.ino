@@ -81,7 +81,7 @@ void setup()
 
 char buf[3]; //preset character array with 2 bytes of information
 void loop() {
-    //nothing really.... this is all event based 
+  //nothing really.... this is all event based
 
 }
 
@@ -99,10 +99,11 @@ void drivecables(int speed1, int speed2, int speed3) {
   sendMsg(0x06,  speed3); //cable 3
 }
 void driveleadscrew(int speed) {
-  if (speed == 0){
-    sendMsg(0x07,0);
-  }else{
-  sendMsg(0x07, speed);} //im so gonna have to change this later not even gonna cap
+  if (speed == 0) {
+    sendMsg(0x07, 0);
+  } else {
+    sendMsg(0x07, speed);
+  } //im so gonna have to change this later not even gonna cap
 }
 
 void sendMsg(int address, char message) {
@@ -120,28 +121,28 @@ void sendMsg(int address, char message) {
 }
 
 
-//reading back data from the smart motor drivers 
+//reading back data from the smart motor drivers
 int count = 0;
 char current = 0;
 int vRef = 3.3;
 int senseResistor = 0.5 ;
-byte enc1,enc2;
+byte enc1, enc2;
 void requestData(int address, int numBytes) {
   Serial.println("data is requested bitch");
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
   if (Wire.available() == 3) {
     Serial.println("three bytes recieved");
-    enc1= Wire.read();
+    enc1 = Wire.read();
     enc2 = Wire.read();
     count = enc1;
-    count = (count<<8)| enc2; //put the two bytes back together
+    count = (count << 8) | enc2; //put the two bytes back together
     current = Wire.read(); //current sent second
 
 
     //print out received data
     Serial.print("Encoder: ");
     int readcount = count;
-    if (readcount > 32768) { //gotta undo the negatives 
+    if (readcount > 32768) { //gotta undo the negatives
       readcount = 65535 - readcount;
       readcount *= -1;
     }
@@ -155,7 +156,7 @@ void requestData(int address, int numBytes) {
 
     //code to send the data here
     test.smdAddress = address;
-    test.currentData = readcurrent*100;
+    test.currentData = readcurrent * 100;
     test.encoderData = readcount;
     Serial.print("test sructs   ");
     Serial.print(test.currentData);
@@ -258,12 +259,12 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
     //requestData(0x01, 3);
-   // requestData(0x02, 2);
-   // requestData(0x03, 3);
+    // requestData(0x02, 2);
+    // requestData(0x03, 3);
     requestData(0x04, 3);
     requestData(0x05, 3);
-   requestData(0x06, 3);
-//    requestData(0x07, 3);
+    requestData(0x06, 3);
+    //    requestData(0x07, 3);
 
   }
 
@@ -278,7 +279,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 11) { //dpad = 1 - all cables down
     Serial.println("all cables down");
-    drivecables(12, 12, 12);
+    //drivecables(12, 12, 12);
   }
   else if (commanddata == 12) { //dpad = 2 - cable 1 down
     Serial.println("cable 1 down");
@@ -300,9 +301,21 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("cable 3 down");
     drivecables(0, 0, 12);
   }
-  else if (commanddata == 17) { //dpad = 7 - all cables up
+  else if (commanddata == 17) { //dpad = 7 - all cables up  
     Serial.println("all cables up");
-    drivecables(13, 13, 13);
+    //drivecables(13, 13, 13);
+  }
+  else if (commanddata == 18) { //reverse cable 1 
+    Serial.println("cable 1 up");
+    drivecables(13, 0, 0);
+  }
+  else if (commanddata == 19) { //reverse cable 2
+    Serial.println("cable 2 up");
+    drivecables(0, 13, 0);
+  }
+  else if (commanddata == 20) { //reverse cable 3
+    Serial.println("cable 3 up");
+    drivecables(0, 0, 13);
   }
 
 

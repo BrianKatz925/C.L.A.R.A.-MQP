@@ -129,8 +129,14 @@ String interpretData(String data) {
   if (data[5] == '1') { //x button -send data
     return "2";
   }
-  if (data[6] == '1') { //B button
-    return "3";
+  if (data[6] == '1' && dpadval == 2) { //B button
+    return "18";
+  }
+  if (data[6] == '1' && dpadval == 4) { //B button
+    return "19";
+  }
+  if (data[6] == '1' && dpadval == 6) { //B button
+    return "20";
   }
   if (data[7] == '1') { //A button - lead screw down
     return "4";

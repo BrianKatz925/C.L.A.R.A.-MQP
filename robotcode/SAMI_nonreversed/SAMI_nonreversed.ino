@@ -65,7 +65,7 @@ int newValue; //integer between 0 and 3 representing quadrature encoder state
 int error = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x01;
+byte address = 0x06;
 int fastSpeed = 255;
 
 void setup() {
@@ -179,11 +179,11 @@ void loop() {
       break;
     case 9:
       pidSpeed.setpoint(-slowRPM);
-      forward(255);
+      reverse(255);
       break;
     case 8:
       pidSpeed.setpoint(fastRPM);
-      reverse(255);
+      forward(255);
       break;
     case 12: //cable down speed
       pidSpeed.setpoint(fastSpeed);
