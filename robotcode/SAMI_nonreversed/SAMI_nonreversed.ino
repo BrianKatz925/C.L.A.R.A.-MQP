@@ -65,7 +65,7 @@ int newValue; //integer between 0 and 3 representing quadrature encoder state
 int error = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x06;
+byte address = 0x02;
 int fastSpeed = 255;
 
 void setup() {
@@ -88,18 +88,18 @@ void setup() {
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation of the MD9927 motor driver
 
   pidSpeed.begin();
-  pidSpeed.tune(1, 0, 0);
+  pidSpeed.tune(1, 0.1, 0.0005);
   pidSpeed.limit(0, 255);
 
-  if (address == 0x04 | address == 0x05 | address == 0x06 ){
+  if (address == 0x04 | address == 0x05 | address == 0x06 ) {
     fastSpeed = 150;
   }
 }
 
 int lastcount = 0;
-int motSpeed;
+float motSpeed;
 int countdiff = 0;
-int calcSpeedPID;
+int calcSpeedPID = 0;
 int Ngear = 150;
 void loop() {
 
@@ -107,8 +107,13 @@ void loop() {
     readCurrent();
     //calculate current RPM and compute PID with it
     countdiff = count - lastcount;
-    motSpeed = (countdiff / 12) * (1000 / 1) * (60 / 1) / Ngear;
-    calcSpeedPID = pidSpeed.compute(motSpeed);
+    lastcount = count;
+    int oldSpeed = motSpeed;
+    motSpeed = (countdiff / 12) * (1 / 20) * (1000 / 1) * (60 / 1) *  (1 / Ngear);
+    if (abs(motSpeed - oldSpeed) >= 5) { //throwing out the shitty readings
+      motSpeed = oldSpeed;
+    }
+    calcSpeedPID += max(min(pidSpeed.compute(motSpeed), 255), 0);
     lastTime = millis();
   }
 
@@ -118,7 +123,7 @@ void loop() {
     I2Cstatus = 0;
   }
   //increment encoders without ISR
-  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2); 
+  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
   switch (oldValue)
   {
     case 0:
@@ -160,8 +165,9 @@ void loop() {
   }
   oldValue = newValue;
 
-  int slowRPM = 25;
-  int fastRPM = 50;
+  float slowRPM = 25;
+  float fastRPM = 50;
+
   //switch statement given i2c input command from command line or controller
   switch (I2Cstatus) {
     default: //no message- status defaults to zero
@@ -178,13 +184,41 @@ void loop() {
       reverse(150);
       break;
     case 9:
-      pidSpeed.setpoint(-slowRPM);
-      reverse(255);
+      pidSpeed.setpoint(-fastRPM);
+      if (address == 0x01) {
+        forward(255);
+      } else {
+        reverse(255);
+      }
       break;
     case 8:
       pidSpeed.setpoint(fastRPM);
-      forward(255);
+      if (address == 0x01) {
+        reverse(255);
+      } else {
+        forward(255);
+      }
       break;
+ case 11:
+      pidSpeed.setpoint(-slowRPM);
+      if (address == 0x01) {
+        forward(calcSpeedPID);
+      } else {
+        reverse(calcSpeedPID);
+      }
+      break;
+    case 10:
+      pidSpeed.setpoint(slowRPM);
+      if (address == 0x01) {
+        reverse(calcSpeedPID);
+      } else {
+        forward(calcSpeedPID);
+      }
+      break;
+
+      
+
+
     case 12: //cable down speed
       pidSpeed.setpoint(fastSpeed);
       forward(150);
@@ -208,8 +242,8 @@ void readCurrent() {
   motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
 }
 
-void homeCables(float currentthreshold){
-  if (motorCurrent >= currentthreshold){
+void homeCables(float currentthreshold) {
+  if (motorCurrent >= currentthreshold) {
     reverse(150);
   }
 }
@@ -238,21 +272,21 @@ void brake() {
    Callback function upon receiving a request for data via I2C from master
    This will request a set number of bytes as a message that will be formed when its time
 */
-byte data[3];
+byte data[4];
 void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
+  data[3] = motSpeed;
   //Write encoder count and current values along i2C for a request
-  Wire.write(data, 3);
+  Wire.write(data, 4);
 }
 
 /**
    callback function for recieving messages and setting the appropriate status
 */
 void msgEvent(int numBytes) {
-  noInterrupts();
   // I2CFlag = true;
   while (Wire.available() > 0) { // loop through all but the last
     int x = Wire.read(); // receive byte as a character
@@ -262,5 +296,7 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
-  interrupts();
+  count = 0;
+  lastcount = 0;
+
 }

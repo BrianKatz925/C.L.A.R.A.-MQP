@@ -130,13 +130,14 @@ byte enc1, enc2;
 void requestData(int address, int numBytes) {
   Serial.println("data is requested bitch");
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
-  if (Wire.available() == 3) {
+  if (Wire.available() == 4) {
     Serial.println("three bytes recieved");
     enc1 = Wire.read();
     enc2 = Wire.read();
     count = enc1;
     count = (count << 8) | enc2; //put the two bytes back together
     current = Wire.read(); //current sent second
+    int motorrpm = Wire.read();
 
 
     //print out received data
@@ -158,9 +159,9 @@ void requestData(int address, int numBytes) {
     test.smdAddress = address;
     test.currentData = readcurrent * 100;
     test.encoderData = readcount;
-    Serial.print("test sructs   ");
-    Serial.print(test.currentData);
-    Serial.println(test.encoderData);
+    Serial.print("motor rpm ");
+    Serial.println(motorrpm);
+   // Serial.println(test.encoderData);
     //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
     esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
     if (result == ESP_OK) {
@@ -258,12 +259,12 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
-    //requestData(0x01, 3);
-    // requestData(0x02, 2);
-    // requestData(0x03, 3);
-    requestData(0x04, 3);
-    requestData(0x05, 3);
-    requestData(0x06, 3);
+    requestData(0x01, 4);
+   // requestData(0x02, 4);
+//    requestData(0x03, 3);
+//    requestData(0x04, 3);
+//    requestData(0x05, 3);
+//    requestData(0x06, 3);
     //    requestData(0x07, 3);
 
   }
@@ -321,14 +322,25 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
 
   //wheel driving
-  else if (commanddata == 8) { //right bumper - drive forward
+
+  
+  else if (commanddata == 8) { //right bumper - drive forward fast
     Serial.println("drive forward");
     drive(8);
   }
-  else if (commanddata == 9) { //left bumper - drive backward
+  else if (commanddata == 9) { //left bumper - drive backward fast 
     drive(9);
     Serial.println("drive backward");
   }
+    else if (commanddata == 21) { //right bumper - drive forward fast
+    Serial.println("drive forward");
+    drive(10);
+  }
+    else if (commanddata == 22) { //right bumper - drive forward fast
+    Serial.println("drive forward");
+    drive(11);
+  }
+
 
 
   //brake motors

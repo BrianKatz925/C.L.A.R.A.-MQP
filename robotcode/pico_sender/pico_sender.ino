@@ -138,6 +138,13 @@ String interpretData(String data) {
   if (data[6] == '1' && dpadval == 6) { //B button
     return "20";
   }
+  if(data[6] == '1' && data[8] == '1'){ //special drive mode
+    return "21";
+  }
+  if(data[6] == '1' && data[9] == '1'){ //special drive mode 
+    return "22";
+  }
+
   if (data[7] == '1') { //A button - lead screw down
     return "4";
   }
