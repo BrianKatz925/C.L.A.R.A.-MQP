@@ -119,29 +119,33 @@ String interpretData(String data) {
     dpadval *= 2;
     if (data[i] == '1') dpadval++;
   }
-
-
-
   //check buttons
-  if (data[4] == '1') { //y button - lead screw up
-    return "1";
-  }
   if (data[5] == '1') { //x button -send data
     return "2";
   }
-  if (data[6] == '1' && dpadval == 2) { //B button
+
+  if (data[8] == '1' && data[7] == '1') { //left bumper and down button
+    return "23"; //run the lead screw till current dunks on it
+  }
+  if (data[8] == '1' && data[4] == '1') { //left bumper and down button
+    return "24"; //run the lead screw till current dunks on it
+  }
+  if (data[4] == '1') { //y button - lead screw up
+    return "1";
+  }
+  if (data[6] == '1' && dpadval == 2) { //B button with dpad
     return "18";
   }
-  if (data[6] == '1' && dpadval == 4) { //B button
+  if (data[6] == '1' && dpadval == 4) { //B button w dpad
     return "19";
   }
-  if (data[6] == '1' && dpadval == 6) { //B button
+  if (data[6] == '1' && dpadval == 6) { //B button w dpad
     return "20";
   }
-  if(data[6] == '1' && data[8] == '1'){ //special drive mode
+  if (data[6] == '1' && data[8] == '1') { //special drive mode
     return "21";
   }
-  if(data[6] == '1' && data[9] == '1'){ //special drive mode 
+  if (data[6] == '1' && data[9] == '1') { //special drive mode
     return "22";
   }
 
@@ -221,7 +225,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 //callback function that will be executed when data is received
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&receiveData, incomingData, sizeof(receiveData)); //copy content of incomingdata variable into mydata variable
-  
+
   Serial.print("Bytes received: ");
   Serial.println(len);
   Serial.print("Smart Motor Driver Address: ");

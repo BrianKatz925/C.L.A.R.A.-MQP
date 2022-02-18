@@ -47,11 +47,10 @@ int slow = 100; //default slow speed
 int fast = 500; //default fast speed
 
 //Current Sensor variables
-float stall_current = 0.00; // 0.25; //current value when motor is stalled
-float motorCurrent = 0.00; //data variable representing motor current sent through I2C to mainboard
-bool motorstalled;
+const float stall_current = 35; //current value when motor is stalled
+int motorCurrent = 0; //data variable representing motor current sent through I2C to mainboard
+bool motorstalled = false;
 int lastTime = 0; //previous time current was checked
-bool motorstalleddown, motorstalledup;
 
 //Quadrature encoder constants
 const int X = 5; //invalid state definition
@@ -105,6 +104,7 @@ int Ngear = 150;
 void loop() {
 
   if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
+    readCurrent();
     //calculate current RPM and compute PID with it
     countdiff = count - lastcount;
     lastcount = count;
@@ -117,10 +117,11 @@ void loop() {
     lastTime = millis();
   }
 
-  //check the currentsensor
-  readCurrent();
-
-
+  if (motorCurrent >= stall_current) { //if the current reading is above the preset stall current value, break the motor
+    motorstalled == true;
+    brake();
+    I2Cstatus = 0;
+  }
   //increment encoders without ISR
   newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
   switch (oldValue)
@@ -182,26 +183,6 @@ void loop() {
       pidSpeed.setpoint(slowRPM);
       forward(150);
       break;
-    case 3:
-      if (motorstalleddown) {
-        brake();
-        //delay(200);
-        I2Cstatus = 0;
-
-      } else {
-        forward(130);
-      }
-      break;
-    case 4:
-      if (motorstalledup) {
-        brake();
-        //delay(200);
-        I2Cstatus = 0;
-
-      } else {
-        reverse(130);
-      }
-      break;
     case 9:
       pidSpeed.setpoint(-fastRPM);
       if (address == 0x01) {
@@ -218,7 +199,7 @@ void loop() {
         forward(255);
       }
       break;
-    case 11:
+ case 11:
       pidSpeed.setpoint(-slowRPM);
       if (address == 0x01) {
         forward(calcSpeedPID);
@@ -255,17 +236,7 @@ void loop() {
    Function to set the motorCurrent variable to the current sensor reading
 */
 void readCurrent() {
-  motorCurrent = analogRead(currentRead); //multiply by AD
- // motorstalled=true;
-  if (motorCurrent>430){
-    motorstalledup =true;
-  }
-  else if (motorCurrent > 375) { //if the current reading is above the preset stall current value, break the motor
-    motorstalleddown = true;
-  } else {
-    motorstalleddown = false;
-    motorstalledup = false;
-  }
+  motorCurrent = analogRead(currentRead) * 255 / 1023; //multiply by AD
 }
 
 void homeCables(float currentthreshold) {
@@ -304,7 +275,7 @@ void requestEvent() {
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
-  data[3] = motorstalled;
+  data[3] = motSpeed;
   //Write encoder count and current values along i2C for a request
   Wire.write(data, 4);
 }

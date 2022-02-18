@@ -257,8 +257,6 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("lead screw down");
 
   }
-
-  
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
    // requestData(0x01, 4);
@@ -323,7 +321,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
 
 
-  //wheel driving  
+  //wheel driving
+
+  
   else if (commanddata == 8) { //right bumper - drive forward fast
     Serial.println("drive forward");
     drive(8);
@@ -340,14 +340,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("drive forward");
     drive(11);
   }
-  else if (commanddata ==23){
-    Serial.println("close lead screw w/ current");
-    driveleadscrew(3);
-  }
-  else if (commanddata ==24){
-    Serial.println("open lead screw w/ current");
-    driveleadscrew(4);
-  }
+
+
 
   //brake motors
   else if (commanddata == 0) { //brake all motors/do nothing
