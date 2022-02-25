@@ -24,7 +24,6 @@
 
 #include <Wire.h>
 #include <math.h>
-#include <PIDController.h>
 
 /*******************************************
      PIN DEFINITIONS - Arduino Nano pins
@@ -36,7 +35,6 @@
 #define enc1 2 //32
 #define enc2 3 //1 
 
-PIDController pidSpeed;
 /******************************************
                  VARIABLES
  *****************************************/
@@ -50,22 +48,11 @@ int fast = 500; //default fast speed
 float stall_current = 0.00; // 0.25; //current value when motor is stalled
 float motorCurrent = 0.00; //data variable representing motor current sent through I2C to mainboard
 bool motorstalled;
-int lastTime = 0; //previous time current was checked
+long lastTime = 0; //previous time current was checked
 bool motorstalleddown, motorstalledup;
 
-//Quadrature encoder constants
-const int X = 5; //invalid state definition
-int encoderArray[4][4] = { //state matrix
-  {0, -1, 1, X},
-  {1, 0, X, -1},
-  { -1, X, 0, 1},
-  {X, 1, -1, 0}
-};
 
-int newValue; //integer between 0 and 3 representing quadrature encoder state
-int error = 0; //count of 'X's or invalid encoder states
-int oldValue = 0; //previous encoder reading
-int count = 0; //current encoder count - sent through I2C to mainboard
+volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
 byte address = 0x05;
 int fastSpeed = 255;
 
@@ -88,85 +75,51 @@ void setup() {
 
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation of the MD9927 motor driver
 
-  pidSpeed.begin();
-  pidSpeed.tune(1, 0.1, 0.0005);
-  pidSpeed.limit(0, 255);
 
   if (address == 0x04 | address == 0x05 | address == 0x06 ) {
     fastSpeed = 150;
   }
 }
 
+//i'm sorry lewin this is a P controller and i know it's disgusting 
+int kp = 4;
+int result = 0;
+int calcPID(int error){
+  result = abs(error*kp);
+  if (error<0){
+    result -= result;
+  }
+  else{
+    result+=result;
+  }
+  result = max(min((result), 255), 0);
+  return result;
+}
+
 int lastcount = 0;
-float motSpeed;
+int motSpeed=0;
 int countdiff = 0;
 int calcSpeedPID = 0;
-int Ngear = 150;
+int Ngear = 298;
+int currenterror =0;
+int targetSpeed = 0;
 void loop() {
-
   if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
+    
     //calculate current RPM and compute PID with it
     countdiff = count - lastcount;
     lastcount = count;
-    int oldSpeed = motSpeed;
-    motSpeed = (countdiff / 12) * (1 / 20) * (1000 / 1) * (60 / 1) *  (1 / Ngear);
-    if (abs(motSpeed - oldSpeed) >= 5) { //throwing out the shitty readings
-      motSpeed = oldSpeed;
-    }
-    calcSpeedPID += max(min(pidSpeed.compute(motSpeed), 255), 0);
+    motSpeed = abs(countdiff*0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
+    currenterror = targetSpeed-motSpeed;
+    calcSpeedPID = calcPID(currenterror);
     lastTime = millis();
   }
 
   //check the currentsensor
   readCurrent();
 
-
-  //increment encoders without ISR
-//  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
-//  switch (oldValue)
-//  {
-//    case 0:
-//      switch (newValue)
-//      {
-//        case 0: break;
-//        case 1: count--; break;
-//        case 2: count++; break;
-//        case 3: error++; break;
-//      }
-//      break;
-//    case 1:
-//      switch (newValue)
-//      {
-//        case 0: count++; break;
-//        case 1: break;
-//        case 2: error++; break;
-//        case 3: count--; break;
-//      }
-//      break;
-//    case 2:
-//      switch (newValue)
-//      {
-//        case 0: count--; break;
-//        case 1: error++; break;
-//        case 2: break;
-//        case 3: count++; break;
-//      }
-//      break;
-//    case 3:
-//      switch (newValue)
-//      {
-//        case 0: error++; break;
-//        case 1: count++; break;
-//        case 2: count--; break;
-//        case 3: break;
-//      }
-//      break;
-//  }
-//  oldValue = newValue;
-
-  float slowRPM = 25;
-  float fastRPM = 50;
-
+  int slowRPM = 35;
+  int fastRPM = 25;
   //switch statement given i2c input command from command line or controller
   switch (I2Cstatus) {
     default: //no message- status defaults to zero
@@ -175,11 +128,9 @@ void loop() {
       brake();
       break;
     case 1: //lead screw up speed
-      pidSpeed.setpoint(slowRPM); //check all the signs
       reverse(150);
       break;
     case 2: //lead screw down speed
-      pidSpeed.setpoint(slowRPM);
       forward(150);
       break;
     case 3:
@@ -203,7 +154,6 @@ void loop() {
       }
       break;
     case 9:
-      pidSpeed.setpoint(-fastRPM);
       if (address == 0x01) {
         forward(255);
       } else {
@@ -211,7 +161,6 @@ void loop() {
       }
       break;
     case 8:
-      pidSpeed.setpoint(fastRPM);
       if (address == 0x01) {
         reverse(255);
       } else {
@@ -219,7 +168,7 @@ void loop() {
       }
       break;
     case 11:
-      pidSpeed.setpoint(-slowRPM);
+      targetSpeed=slowRPM;
       if (address == 0x01) {
         forward(calcSpeedPID);
       } else {
@@ -227,7 +176,7 @@ void loop() {
       }
       break;
     case 10:
-      pidSpeed.setpoint(slowRPM);
+      targetSpeed=slowRPM;
       if (address == 0x01) {
         reverse(calcSpeedPID);
       } else {
@@ -235,17 +184,18 @@ void loop() {
       }
       break;
 
-    case 12: //cable down speed
-      pidSpeed.setpoint(fastSpeed);
-      forward(150);
+    case 12: //cable up speed
+      targetSpeed=slowRPM;
+      forward(calcSpeedPID);
       break;
     case 13: //cable down speed
-      pidSpeed.setpoint(fastSpeed);
-      reverse(150);
+      targetSpeed=slowRPM;
+      reverse(calcSpeedPID);
       break;
   }
 
 }
+
 
 //ISR for encoders 
 void isr1(){
@@ -326,7 +276,7 @@ void requestEvent() {
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
-  data[3] = motorstalled;
+  data[3] = motSpeed;
   //Write encoder count and current values along i2C for a request
   Wire.write(data, 4);
 }
@@ -344,7 +294,4 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
-  //count = 0;
-  //lastcount = 0;
-
 }
