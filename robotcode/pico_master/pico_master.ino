@@ -265,9 +265,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
    // requestData(0x02, 4);
 //    requestData(0x03, 3);
 //    requestData(0x04, 3);
-//    requestData(0x05, 3);
+    requestData(0x05, 4);
 //    requestData(0x06, 3);
-       requestData(0x07, 4);
+       //requestData(0x07, 4);
 
   }
 

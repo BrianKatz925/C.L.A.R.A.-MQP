@@ -66,7 +66,7 @@ int newValue; //integer between 0 and 3 representing quadrature encoder state
 int error = 0; //count of 'X's or invalid encoder states
 int oldValue = 0; //previous encoder reading
 int count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x07;
+byte address = 0x05;
 int fastSpeed = 255;
 
 void setup() {
@@ -79,8 +79,8 @@ void setup() {
   pinMode(enc2, INPUT);
 
   //attach interrupts on both encoders w/ isr callback function
-  //attachInterrupt(digitalPinToInterrupt(enc1), isr, CHANGE);
-  //attachInterrupt(digitalPinToInterrupt(enc2), isr, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(enc1), isr1, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
 
   //set up I2C event channels
   Wire.onRequest(requestEvent); //upon receiving a request from the master, call requestEvent
@@ -122,47 +122,47 @@ void loop() {
 
 
   //increment encoders without ISR
-  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
-  switch (oldValue)
-  {
-    case 0:
-      switch (newValue)
-      {
-        case 0: break;
-        case 1: count--; break;
-        case 2: count++; break;
-        case 3: error++; break;
-      }
-      break;
-    case 1:
-      switch (newValue)
-      {
-        case 0: count++; break;
-        case 1: break;
-        case 2: error++; break;
-        case 3: count--; break;
-      }
-      break;
-    case 2:
-      switch (newValue)
-      {
-        case 0: count--; break;
-        case 1: error++; break;
-        case 2: break;
-        case 3: count++; break;
-      }
-      break;
-    case 3:
-      switch (newValue)
-      {
-        case 0: error++; break;
-        case 1: count++; break;
-        case 2: count--; break;
-        case 3: break;
-      }
-      break;
-  }
-  oldValue = newValue;
+//  newValue = (digitalRead(enc1) << 1) | digitalRead(enc2);
+//  switch (oldValue)
+//  {
+//    case 0:
+//      switch (newValue)
+//      {
+//        case 0: break;
+//        case 1: count--; break;
+//        case 2: count++; break;
+//        case 3: error++; break;
+//      }
+//      break;
+//    case 1:
+//      switch (newValue)
+//      {
+//        case 0: count++; break;
+//        case 1: break;
+//        case 2: error++; break;
+//        case 3: count--; break;
+//      }
+//      break;
+//    case 2:
+//      switch (newValue)
+//      {
+//        case 0: count--; break;
+//        case 1: error++; break;
+//        case 2: break;
+//        case 3: count++; break;
+//      }
+//      break;
+//    case 3:
+//      switch (newValue)
+//      {
+//        case 0: error++; break;
+//        case 1: count++; break;
+//        case 2: count--; break;
+//        case 3: break;
+//      }
+//      break;
+//  }
+//  oldValue = newValue;
 
   float slowRPM = 25;
   float fastRPM = 50;
@@ -247,6 +247,28 @@ void loop() {
 
 }
 
+//ISR for encoders 
+void isr1(){
+  uint8_t encread1 = PIND >> 2 & 0x01;
+  uint8_t encread2 = PIND >> 3 & 0x01;  //get the two bit encoder read 
+  if(encread1 == encread2){
+    count++;
+  }
+  else{
+    count--;
+  }
+}
+void isr2(){
+  uint8_t encread1 = PIND >> 2 & 0x01;
+  uint8_t encread2 = PIND >> 3 & 0x01;//get the two bit encoder read 
+  if(encread1 != encread2){
+    count++;
+  }
+  else{
+    count--;
+  }
+}
+
 /***********************************
          HELPER FUNCTIONS
  *******************************/
@@ -322,7 +344,7 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
-  count = 0;
-  lastcount = 0;
+  //count = 0;
+  //lastcount = 0;
 
 }
