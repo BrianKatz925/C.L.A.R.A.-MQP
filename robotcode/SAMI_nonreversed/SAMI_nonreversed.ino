@@ -53,7 +53,7 @@ bool motorstalleddown, motorstalledup;
 
 
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x05;
+byte address = 0x07;
 int fastSpeed = 255;
 
 void setup() {
@@ -81,38 +81,41 @@ void setup() {
   }
 }
 
-//i'm sorry lewin this is a P controller and i know it's disgusting 
+//i'm sorry lewin this is a P controller and i know it's disgusting
 int kp = 4;
 int result = 0;
-int calcPID(int error){
-  result = abs(error*kp);
-  if (error<0){
+int calcPID(int error) {
+  result = abs(error * kp);
+  if (error < 0) {
     result -= result;
   }
-  else{
-    result+=result;
+  else {
+    result += result;
   }
   result = max(min((result), 255), 0);
   return result;
 }
 
 int lastcount = 0;
-int motSpeed=0;
+int motSpeed = 0;
 int countdiff = 0;
 int calcSpeedPID = 0;
 int Ngear = 298;
-int currenterror =0;
+int currenterror = 0;
 int targetSpeed = 0;
+float cablelength = 0; 
 void loop() {
   if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
-    
     //calculate current RPM and compute PID with it
     countdiff = count - lastcount;
     lastcount = count;
-    motSpeed = abs(countdiff*0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
-    currenterror = targetSpeed-motSpeed;
+    motSpeed = abs(countdiff * 0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
+    currenterror = targetSpeed - motSpeed;
     calcSpeedPID = calcPID(currenterror);
+    cablelength = calcCablelen(count); 
+    
     lastTime = millis();
+    
   }
 
   //check the currentsensor
@@ -155,41 +158,41 @@ void loop() {
       break;
     case 9:
       if (address == 0x01) {
-        forward(255);
+        reverse(255);
       } else {
         reverse(255);
       }
       break;
     case 8:
       if (address == 0x01) {
-        reverse(255);
+        forward(255);
       } else {
         forward(255);
       }
       break;
     case 11:
-      targetSpeed=slowRPM;
+      targetSpeed = slowRPM;
       if (address == 0x01) {
-        forward(calcSpeedPID);
+        reverse(calcSpeedPID);
       } else {
         reverse(calcSpeedPID);
       }
       break;
     case 10:
-      targetSpeed=slowRPM;
+      targetSpeed = slowRPM;
       if (address == 0x01) {
-        reverse(calcSpeedPID);
+        forward(calcSpeedPID);
       } else {
         forward(calcSpeedPID);
       }
       break;
 
     case 12: //cable up speed
-      targetSpeed=slowRPM;
+      targetSpeed = slowRPM;
       forward(calcSpeedPID);
       break;
     case 13: //cable down speed
-      targetSpeed=slowRPM;
+      targetSpeed = slowRPM;
       reverse(calcSpeedPID);
       break;
   }
@@ -197,24 +200,24 @@ void loop() {
 }
 
 
-//ISR for encoders 
-void isr1(){
+//ISR for encoders
+void isr1() {
   uint8_t encread1 = PIND >> 2 & 0x01;
-  uint8_t encread2 = PIND >> 3 & 0x01;  //get the two bit encoder read 
-  if(encread1 == encread2){
+  uint8_t encread2 = PIND >> 3 & 0x01;  //get the two bit encoder read
+  if (encread1 == encread2) {
     count++;
   }
-  else{
+  else {
     count--;
   }
 }
-void isr2(){
+void isr2() {
   uint8_t encread1 = PIND >> 2 & 0x01;
-  uint8_t encread2 = PIND >> 3 & 0x01;//get the two bit encoder read 
-  if(encread1 != encread2){
+  uint8_t encread2 = PIND >> 3 & 0x01;//get the two bit encoder read
+  if (encread1 != encread2) {
     count++;
   }
-  else{
+  else {
     count--;
   }
 }
@@ -228,9 +231,9 @@ void isr2(){
 */
 void readCurrent() {
   motorCurrent = analogRead(currentRead); //multiply by AD
- // motorstalled=true;
-  if (motorCurrent>430){
-    motorstalledup =true;
+  // motorstalled=true;
+  if (motorCurrent > 430) {
+    motorstalledup = true;
   }
   else if (motorCurrent > 375) { //if the current reading is above the preset stall current value, break the motor
     motorstalleddown = true;
@@ -270,15 +273,20 @@ void brake() {
    Callback function upon receiving a request for data via I2C from master
    This will request a set number of bytes as a message that will be formed when its time
 */
-byte data[4];
+byte data[5];
 void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
   data[3] = motSpeed;
+  if (address == 0x03 |address == 0x04| address == 0x05){
+    data[4] = (int)(cablelength*10); //doing this to not deal with floats over i2c
+    Wire.write(data, 5); 
+  }
   //Write encoder count and current values along i2C for a request
-  Wire.write(data, 4);
+  else{
+  Wire.write(data, 4);}
 }
 
 /**
@@ -294,4 +302,11 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
+}
+
+float drumdiameter = 0.25;  //inches
+float calcCablelen(int enccounts){
+  float rotations = enccounts / 12/ 298; 
+  float cablelen = rotations * M_PI * drumdiameter;
+  return cablelen; 
 }

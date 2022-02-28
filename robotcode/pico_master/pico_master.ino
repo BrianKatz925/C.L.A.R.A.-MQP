@@ -8,6 +8,7 @@
 #include <Wire.h> //include Wire.h libra
 #include <esp_now.h> //ESP-Wifi comms
 #include <WiFi.h>
+#include <Math.h>
 
 /*
     REPLACE WITH YOUR ESP RECEIVER'S MAC ADDRESS
@@ -88,7 +89,6 @@ void loop() {
 
 //drives at the speed given, will work on sending an actual ramped speed later
 void drive(int speed) {
-
   sendMsg(0x01,  speed);
   sendMsg(0x02,  speed);
   sendMsg(0x03,  speed);
@@ -127,6 +127,12 @@ char current = 0;
 int vRef = 3.3;
 int senseResistor = 0.5 ;
 byte enc1, enc2;
+int cablelenraw = 0;
+float cablelenadj = 0;
+float l1 =0;
+float l2 = 0;
+float l3 = 0;  
+
 void requestData(int address, int numBytes) {
   Serial.println("data is requested bitch");
   Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
@@ -161,7 +167,22 @@ void requestData(int address, int numBytes) {
     test.encoderData = readcount;
     Serial.print("motor rpm ");
     Serial.println(motorrpm);
-   // Serial.println(test.encoderData);
+
+
+    if (address == 0x03 | address == 0x04 | address == 0x05 ) {
+      int cablelenraw = Wire.read();
+      float cablelenadj = cablelenraw / 10;
+      if (address == 0x03) {
+         l1 = cablelenadj;
+      }else if (address = 0x04){
+        l2 = cablelenadj;
+      }
+      else if (address = 0x05){
+        l3 = cablelenadj;
+      }
+    }
+
+    // Serial.println(test.encoderData);
     //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
     esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
     if (result == ESP_OK) {
@@ -258,16 +279,17 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   }
 
-  
+
   else if (commanddata == 2) { //x button - send data back
     Serial.println("requesting Data");
-   // requestData(0x01, 4);
-   // requestData(0x02, 4);
-//    requestData(0x03, 3);
-//    requestData(0x04, 3);
-    requestData(0x05, 4);
-//    requestData(0x06, 3);
-       //requestData(0x07, 4);
+    requestData(0x01, 4);
+    requestData(0x02, 4);
+    requestData(0x03, 4);
+    requestData(0x04, 5);
+    requestData(0x05, 5);
+    requestData(0x06, 5);
+    requestData(0x07, 4);
+    invCableKin(l1,l2,l3); //do the inv kinematics i guess 
 
   }
 
@@ -304,11 +326,11 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("cable 3 down");
     drivecables(0, 0, 12);
   }
-  else if (commanddata == 17) { //dpad = 7 - all cables up  
+  else if (commanddata == 17) { //dpad = 7 - all cables up
     Serial.println("all cables up");
     //drivecables(13, 13, 13);
   }
-  else if (commanddata == 18) { //reverse cable 1 
+  else if (commanddata == 18) { //reverse cable 1
     Serial.println("cable 1 up");
     drivecables(13, 0, 0);
   }
@@ -323,28 +345,28 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
 
 
-  //wheel driving  
+  //wheel driving
   else if (commanddata == 8) { //right bumper - drive forward fast
     Serial.println("drive forward");
     drive(8);
   }
-  else if (commanddata == 9) { //left bumper - drive backward fast 
+  else if (commanddata == 9) { //left bumper - drive backward fast
     drive(9);
     Serial.println("drive backward");
   }
-    else if (commanddata == 21) { //right bumper - drive forward fast
+  else if (commanddata == 21) { //right bumper - drive forward fast
     Serial.println("drive forward");
     drive(10);
   }
-    else if (commanddata == 22) { //right bumper - drive forward fast
+  else if (commanddata == 22) { //right bumper - drive forward fast
     Serial.println("drive forward");
     drive(11);
   }
-  else if (commanddata ==23){
+  else if (commanddata == 23) {
     Serial.println("close lead screw w/ current");
     driveleadscrew(3);
   }
-  else if (commanddata ==24){
+  else if (commanddata == 24) {
     Serial.println("open lead screw w/ current");
     driveleadscrew(4);
   }
@@ -359,4 +381,25 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     drivecables(0, 0, 0);
   }
 
+}
+float s, theta, phi; 
+void invCableKin (float l1, float l2, float l3){
+  float r = 7 ; //length of module in inches
+  float L0 = 1 ;//shortest length of module in inches 
+  // calc S, theta, and phi 
+
+  s = (3*L0 + l1+ l2 +l3)/ 3;
+  theta = 2* sqrt((3*(l1*l1)- l1*l2 - l1*l3 - l2*l3)/(3*r));
+  phi = atan((sqrt(3)*(l3-l2))/(l2+l3-2*l1));
+  
+  Serial.print("S is: ");
+  Serial.print(s); 
+  Serial.print('\t');
+  Serial.print("theta is: ");
+  Serial.print(theta); 
+  Serial.print('\t');
+  Serial.print("phi is: ");
+  Serial.println(phi); 
+
+  
 }
