@@ -53,7 +53,7 @@ bool motorstalleddown, motorstalledup;
 
 
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x07;
+byte address = 0x05;
 int fastSpeed = 255;
 
 void setup() {
@@ -103,7 +103,7 @@ int calcSpeedPID = 0;
 int Ngear = 298;
 int currenterror = 0;
 int targetSpeed = 0;
-float cablelength = 0; 
+int cablelength = 0;
 void loop() {
   if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
     //calculate current RPM and compute PID with it
@@ -112,10 +112,10 @@ void loop() {
     motSpeed = abs(countdiff * 0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
     currenterror = targetSpeed - motSpeed;
     calcSpeedPID = calcPID(currenterror);
-    cablelength = calcCablelen(count); 
-    
+    //cablelength = calcCablelen(count)*10;
+
     lastTime = millis();
-    
+
   }
 
   //check the currentsensor
@@ -273,20 +273,15 @@ void brake() {
    Callback function upon receiving a request for data via I2C from master
    This will request a set number of bytes as a message that will be formed when its time
 */
-byte data[5];
+byte data[4];
 void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
   data[3] = motSpeed;
-  if (address == 0x03 |address == 0x04| address == 0x05){
-    data[4] = (int)(cablelength*10); //doing this to not deal with floats over i2c
-    Wire.write(data, 5); 
-  }
-  //Write encoder count and current values along i2C for a request
-  else{
-  Wire.write(data, 4);}
+    Wire.write(data, 4);
+  
 }
 
 /**
@@ -302,11 +297,4 @@ void msgEvent(int numBytes) {
     //    }
     I2Cstatus = x;
   }
-}
-
-float drumdiameter = 0.25;  //inches
-float calcCablelen(int enccounts){
-  float rotations = enccounts / 12/ 298; 
-  float cablelen = rotations * M_PI * drumdiameter;
-  return cablelen; 
 }

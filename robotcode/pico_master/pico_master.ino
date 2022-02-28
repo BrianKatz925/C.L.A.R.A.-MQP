@@ -37,8 +37,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   // Serial.print(macStr);
-  Serial.print(" send status:\t");
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+ // Serial.print(" send status:\t");
+  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
 }
 
 
@@ -115,7 +115,7 @@ void sendMsg(int address, char message) {
     Serial.println(error);
   }
   else {
-    Serial.println("Message sent");
+   // Serial.println("Message sent");
 
   }
 }
@@ -129,15 +129,17 @@ int senseResistor = 0.5 ;
 byte enc1, enc2;
 int cablelenraw = 0;
 float cablelenadj = 0;
-float l1 =0;
+float l1 = 0;
 float l2 = 0;
-float l3 = 0;  
+float l3 = 0;
+int c1, c2, c3;
 
 void requestData(int address, int numBytes) {
-  Serial.println("data is requested bitch");
-  Wire.requestFrom(address, numBytes, true); //create a request from an individual motor driver board for 2 bytes of information
-  if (Wire.available() == 4) {
-    Serial.println("three bytes recieved");
+  Wire.requestFrom(address, numBytes, true);//create a request from an individual motor driver board for 2 bytes of information
+  if (Wire.available() == numBytes) {
+    Serial.print("data recieved from: ");
+    Serial.println(address);
+
     enc1 = Wire.read();
     enc2 = Wire.read();
     count = enc1;
@@ -145,9 +147,8 @@ void requestData(int address, int numBytes) {
     current = Wire.read(); //current sent second
     int motorrpm = Wire.read();
 
-
     //print out received data
-    Serial.print("Encoder: ");
+    Serial.print("Encoder Count: ");
     int readcount = count;
     if (readcount > 32768) { //gotta undo the negatives
       readcount = 65535 - readcount;
@@ -159,27 +160,29 @@ void requestData(int address, int numBytes) {
     float readcurrent = current / 510.0; //(255*senseResistor) ; //get the ADC reading
 
     Serial.print("Current: ");
-    Serial.println(readcurrent);
+    Serial.print(readcurrent);
+    Serial.print('\t');
 
     //code to send the data here
     test.smdAddress = address;
     test.currentData = readcurrent * 100;
     test.encoderData = readcount;
-    Serial.print("motor rpm ");
+    Serial.print("motor rpm:  ");
     Serial.println(motorrpm);
 
 
-    if (address == 0x03 | address == 0x04 | address == 0x05 ) {
-      int cablelenraw = Wire.read();
-      float cablelenadj = cablelenraw / 10;
-      if (address == 0x03) {
-         l1 = cablelenadj;
-      }else if (address = 0x04){
-        l2 = cablelenadj;
-      }
-      else if (address = 0x05){
-        l3 = cablelenadj;
-      }
+
+    if (address == 0x04) {
+      c1 = readcount;
+      l1 = calcCablelen(c1);
+    } else if (address == 0x05) {
+      c2 = readcount;
+      l2 = calcCablelen(c2);
+    }
+    else if (address == 0x06) {
+      c3 = readcount;
+      l3 = calcCablelen(c3);
+
     }
 
     // Serial.println(test.encoderData);
@@ -260,11 +263,11 @@ data_struct_rec myData;
 
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
-  Serial.print("Bytes received: ");
-  Serial.println(len);
-  Serial.print("Data Received: ");
-  Serial.println(myData.wifiData);
-  Serial.println();
+  //  Serial.print("Bytes received: ");
+  //  Serial.println(len);
+  //  Serial.print("Data Received: ");
+  //  Serial.println(myData.wifiData);
+  //  Serial.println();
 
   int commanddata = myData.wifiData.toInt();
   //button pad
@@ -285,11 +288,11 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     requestData(0x01, 4);
     requestData(0x02, 4);
     requestData(0x03, 4);
-    requestData(0x04, 5);
-    requestData(0x05, 5);
-    requestData(0x06, 5);
+    requestData(0x04, 4);
+    requestData(0x05, 4);
+    requestData(0x06, 4);
     requestData(0x07, 4);
-    invCableKin(l1,l2,l3); //do the inv kinematics i guess 
+    invCableKin(l1, l2, l3); //do the inv kinematics i guess
 
   }
 
@@ -382,24 +385,43 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   }
 
 }
-float s, theta, phi; 
-void invCableKin (float l1, float l2, float l3){
+float s, theta, phi;
+void invCableKin (float l1, float l2, float l3) {
   float r = 7 ; //length of module in inches
-  float L0 = 1 ;//shortest length of module in inches 
-  // calc S, theta, and phi 
+  float L0 = 1 ;//shortest length of module in inches
+  // calc S, theta, and phi
+  Serial.print("L1, L2, L3, respectively: ");
+  Serial.print(l1);
+  Serial.print('\t');
+  Serial.print(l2);
+  Serial.print('\t');
+  Serial.println(l3);
 
-  s = (3*L0 + l1+ l2 +l3)/ 3;
-  theta = 2* sqrt((3*(l1*l1)- l1*l2 - l1*l3 - l2*l3)/(3*r));
-  phi = atan((sqrt(3)*(l3-l2))/(l2+l3-2*l1));
-  
+
+  s = (3 * L0 + l1 + l2 + l3) / 3;
   Serial.print("S is: ");
-  Serial.print(s); 
+  Serial.print(s);
   Serial.print('\t');
+  theta = 2 * sqrt((3 * (l1 * l1) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
   Serial.print("theta is: ");
-  Serial.print(theta); 
+  Serial.print(theta);
   Serial.print('\t');
-  Serial.print("phi is: ");
-  Serial.println(phi); 
+  phi = atan((sqrt(3) * (l3 - l2)) / (l2 + l3 - 2 * l1));
 
-  
+  Serial.print("phi is: ");
+  Serial.println(phi);
+
+
+}
+
+float drumdiameter = 0.25; //inches i guessed
+float origlength = 5.0;
+float calcCablelen(int enccounts) {
+  //Serial.println(enccounts);
+  int16_t rotations1 = abs(enccounts)/12;
+  float rotations = rotations1/298.00;
+  //Serial.println(rotations);
+  float deltacablelen = rotations * M_PI * drumdiameter;
+  float cablelen = origlength - deltacablelen;
+  return cablelen;
 }
