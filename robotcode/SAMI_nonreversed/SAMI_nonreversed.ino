@@ -1,5 +1,5 @@
 /**
-   To be uploaded on motor driver module boards
+   To be uploaded on motor driver module boards - Handle motor motion and control internally
 */
 
 // NANO -> ATMEGA328-AU Board Pin Mapping
@@ -25,6 +25,14 @@
 #include <Wire.h>
 #include <math.h>
 
+
+/**********************************************************************************************************************
+
+                                                    VARIABLES + DEFINITIONS
+
+
+ **********************************************************************************************************************/
+
 /*******************************************
      PIN DEFINITIONS - Arduino Nano pins
  *****************************************/
@@ -38,26 +46,51 @@
 /******************************************
                  VARIABLES
  *****************************************/
-char I2Cstatus = '0'; //I2C command sent from Mainboard
-
 //Motor speed definitions
 int slow = 100; //default slow speed
 int fast = 500; //default fast speed
+int fastSpeed = 255; //cable motor speeds - this gets changed throughout the program
+int slowRPM = 35;
+int fastRPM = 25;
 
 //Current Sensor variables
 float stall_current = 0.00; // 0.25; //current value when motor is stalled
 float motorCurrent = 0.00; //data variable representing motor current sent through I2C to mainboard
-bool motorstalled;
+//bool motorstalled;
 long lastTime = 0; //previous time current was checked
-bool motorstalleddown, motorstalledup;
+bool motorstalleddown, motorstalledup; //motor stalled variables
 
-
+//Encoder variables
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
-byte address = 0x05;
-int fastSpeed = 255;
+
+//I2C Variables
+byte address = 0x05; //the address of the board being flashed
+char I2Cstatus = '0'; //I2C command sent from Mainboard
+byte data[4]; //the data variable to be sent along I2C
+
+//PID variables
+int kp = 4; //proportional constant
+int result = 0; //PID result placeholder variable
+int lastcount = 0; //placeholder for previous count of encoder ticks
+int motSpeed = 0; //motor speed, RPM
+int countdiff = 0; //difference in encoder count from lastcount to current count
+int calcSpeedPID = 0; //PID calculation result
+const int Ngear = 298; //motor gear ratio
+int currenterror = 0; //current motor speed error for PID
+int targetSpeed = 0; //target speed in RPM
+int cablelength = 0; //cable length in m
+
+
+
+/**********************************************************************************************************************
+
+                                                         SETUP + LOOP
+
+
+ **********************************************************************************************************************/
 
 void setup() {
-  //set up I2C address as 0x01 for the current board - in the future this will be sequential for all boards so the master can address them individually
+  //set up I2C for the given address
   Wire.begin(address);
 
   // set up sensor pins
@@ -65,7 +98,7 @@ void setup() {
   pinMode(enc1, INPUT);
   pinMode(enc2, INPUT);
 
-  //attach interrupts on both encoders w/ isr callback function
+  //attach interrupts on both encoders w/ isr callback functions for each of them - speeds up ISRs
   attachInterrupt(digitalPinToInterrupt(enc1), isr1, CHANGE);
   attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
 
@@ -75,54 +108,32 @@ void setup() {
 
   digitalWrite(NSLEEP, HIGH); //  nSleep should be kept high for normal operation of the MD9927 motor driver
 
-
+  //if the current address is one of the cable motors (4,5,6) - reduce maximum speed to 150 for more control
   if (address == 0x04 | address == 0x05 | address == 0x06 ) {
     fastSpeed = 150;
   }
 }
 
-//i'm sorry lewin this is a P controller and i know it's disgusting
-int kp = 4;
-int result = 0;
-int calcPID(int error) {
-  result = abs(error * kp);
-  if (error < 0) {
-    result -= result;
-  }
-  else {
-    result += result;
-  }
-  result = max(min((result), 255), 0);
-  return result;
-}
 
-int lastcount = 0;
-int motSpeed = 0;
-int countdiff = 0;
-int calcSpeedPID = 0;
-int Ngear = 298;
-int currenterror = 0;
-int targetSpeed = 0;
-int cablelength = 0;
 void loop() {
-  if ((millis() - lastTime) >= 20) { //if 20 ms passed since the last reading, read the current
+  if ((millis() - lastTime) >= 20) { //calculate PID every 20ms
+    
     //calculate current RPM and compute PID with it
-    countdiff = count - lastcount;
+    countdiff = count - lastcount; //difference in encoder count 
     lastcount = count;
+
+    //calculate motor speed in RPM
     motSpeed = abs(countdiff * 0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
-    currenterror = targetSpeed - motSpeed;
-    calcSpeedPID = calcPID(currenterror);
+    currenterror = targetSpeed - motSpeed; //calculate current error from our target speed
+    calcSpeedPID = calcPID(currenterror); //calculate PID
     //cablelength = calcCablelen(count)*10;
 
-    lastTime = millis();
-
+    lastTime = millis(); //update timer
   }
 
-  //check the currentsensor
+  //check the current sensor
   readCurrent();
 
-  int slowRPM = 35;
-  int fastRPM = 25;
   //switch statement given i2c input command from command line or controller
   switch (I2Cstatus) {
     default: //no message- status defaults to zero
@@ -136,7 +147,7 @@ void loop() {
     case 2: //lead screw down speed
       forward(150);
       break;
-    case 3:
+    case 3: //if motor is stalled, brake
       if (motorstalleddown) {
         brake();
         //delay(200);
@@ -146,7 +157,7 @@ void loop() {
         forward(130);
       }
       break;
-    case 4:
+    case 4: //if motor is stalled, brake
       if (motorstalledup) {
         brake();
         //delay(200);
@@ -156,14 +167,14 @@ void loop() {
         reverse(130);
       }
       break;
-    case 9:
+    case 9: //cable motor
       if (address == 0x01) {
         reverse(255);
       } else {
         reverse(255);
       }
       break;
-    case 8:
+    case 8: //cable motor
       if (address == 0x01) {
         forward(255);
       } else {
@@ -199,8 +210,18 @@ void loop() {
 
 }
 
+/**********************************************************************************************************************
 
-//ISR for encoders
+                                                        INTERRUPT SERVICE ROUTINES
+
+
+ **********************************************************************************************************************/
+
+//ISRs split up for each hall-effect latch sensor to decrease processing time within the ISR and allow I2C to work every time without interruption
+
+/**
+ * ISR for encoder 1 - reads registers instead of digital read for increased speed and increments/decrements a count variable
+ */
 void isr1() {
   uint8_t encread1 = PIND >> 2 & 0x01;
   uint8_t encread2 = PIND >> 3 & 0x01;  //get the two bit encoder read
@@ -211,6 +232,10 @@ void isr1() {
     count--;
   }
 }
+
+/**
+ * ISR for encoder 2 - reads registers instead of digital read for increased speed and increments/decrements a count variable
+ */
 void isr2() {
   uint8_t encread1 = PIND >> 2 & 0x01;
   uint8_t encread2 = PIND >> 3 & 0x01;//get the two bit encoder read
@@ -222,12 +247,14 @@ void isr2() {
   }
 }
 
-/***********************************
-         HELPER FUNCTIONS
- *******************************/
+/**********************************************************************************************************************
+
+                                                    CURRENT SENSOR FUNCTIONS
+
+ **********************************************************************************************************************/
 
 /**
-   Function to set the motorCurrent variable to the current sensor reading
+   Function to set the motorCurrent variable to the current sensor reading and check if it is stalled
 */
 void readCurrent() {
   motorCurrent = analogRead(currentRead); //multiply by AD
@@ -235,7 +262,7 @@ void readCurrent() {
   if (motorCurrent > 430) {
     motorstalledup = true;
   }
-  else if (motorCurrent > 375) { //if the current reading is above the preset stall current value, break the motor
+  else if (motorCurrent > 375) { //if the current reading is above the preset stall current value, brake the motor
     motorstalleddown = true;
   } else {
     motorstalleddown = false;
@@ -243,49 +270,90 @@ void readCurrent() {
   }
 }
 
+/**
+ * Function to home the cables using the current threshold
+ * Once homed, the motors reverse to limit current
+ * @param currentthreshold - the float current threshold in A
+ */
 void homeCables(float currentthreshold) {
   if (motorCurrent >= currentthreshold) {
     reverse(150);
   }
 }
 
-/***********************
-   DRIVING FUNCTIONS
- *********************/
+/**********************************************************************************************************************
 
+                                                   DRIVING FUNCTIONS
+
+ **********************************************************************************************************************/
+
+/**
+ * This function drives the motors forward
+ * @param speed - the integer speed of the motor
+ */
 void forward(int speed) {
   analogWrite(INPUT1, 0);
   analogWrite(INPUT2, speed);
 }
 
+/**
+ * This function drives the motors reverse
+ * @param speed - the integer speed of the motor
+ */
 void reverse(int speed) {
   analogWrite(INPUT1, speed);
   analogWrite(INPUT2, 0);
 }
 
+/**
+ * This function stops the motors
+ */
 void brake() {
   analogWrite(INPUT1, 255);
   analogWrite(INPUT2, 255);
 }
 
 
+
+/**
+ * This function calculates PID for the motor speed
+ * @param error - the given error
+ * @return result - an integer clamped value for the speed of the motor
+ */
+int calcPID(int error) {
+  result = abs(error * kp);
+  if (error < 0) {
+    result -= result;
+  }
+  else {
+    result += result;
+  }
+  result = max(min((result), 255), 0);
+  return result;
+}
+
+/**********************************************************************************************************************
+
+                                                    I2C Functions
+
+
+ **********************************************************************************************************************/
+
 /**
    Callback function upon receiving a request for data via I2C from master
-   This will request a set number of bytes as a message that will be formed when its time
+   This will request a set number of bytes as a message that will be formed for interpretation by the mainboard
 */
-byte data[4];
 void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
   data[3] = motSpeed;
-    Wire.write(data, 4);
-  
+  Wire.write(data, 4);
 }
 
 /**
-   callback function for recieving messages and setting the appropriate status
+   callback function for recieving messages and setting the appropriate I2C status
 */
 void msgEvent(int numBytes) {
   // I2CFlag = true;
