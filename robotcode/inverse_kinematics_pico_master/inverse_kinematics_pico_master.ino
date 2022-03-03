@@ -62,14 +62,14 @@ float l2 = 0;
 float l3 = 0;
 int c1, c2, c3;
 
-const float drumdiameter = 0.25; //Diameter of the winch drums for the cable motors - inches i guessed
-const float origlength = 5.0; //original length of the Yoshimura module
+const float drumdiameter = 0.275; //Diameter of the winch drums for the cable motors - inches i guessed
+const float origlength = 3.35; //original length of the Yoshimura module
 
-const float r = 7 ; //length of module in inches
-const float L0 = 1 ;//shortest length of module in inches
+const float r = 5 ; //length of module in inches
+const float L0 = 1;//shortest length of module in inches
 
 float s, theta, phi; //arc length, bending angle, bending directions - from soft robotics lab paper
-const float d = 0.55; //distance from the center of mounting plate to cable attachment point
+const float d = 1.6; //distance from the center of mounting plate to cable attachment point - inches
 const int n = 1; //number of yoshimura module sections - for our purposes we only use one robot
 
 
@@ -405,7 +405,7 @@ void fwCableKin (float l1, float l2, float l3) {
   Serial.print("S is: ");
   Serial.print(s);
   Serial.print('\t');
-  theta = 2 * sqrt((pow(l1,2) + pow(l2,2) + pow(l3,2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
+  theta = 2 * sqrt((pow(l1,2) + pow(l1,2) + pow(l1,2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
   float thetadeg = theta * (180 / M_PI);
   Serial.print("theta degrees is: ");
   Serial.print(thetadeg);
