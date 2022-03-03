@@ -35,8 +35,8 @@ typedef struct data_struct { //data struct to send to the receiver/external ESP 
 } data_struct;
 
 typedef struct data_struct_rec { //data struct to receive wifi commands from the external ESP  - must match data struct sent from external ESP
-  int k;
   int s;
+  int theta;
   int phi;
 } data_struct_rec;
 
@@ -302,11 +302,12 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
 
-  int k = myData.k;
   int s = myData.s;
+  int theta = myData.theta;
   int phi = myData.phi;
 
-  invCableKin(k, s, phi); //calculate inverse kinematics
+  invCableKin(s, theta, phi); //calculate inverse kinematics
+  fwCableKin(l1,l2,l3);
   
 //  else if (commanddata == 2) { //X button - send data back from all motors
 //    Serial.println("requesting Data");
@@ -404,14 +405,17 @@ void fwCableKin (float l1, float l2, float l3) {
   Serial.print("S is: ");
   Serial.print(s);
   Serial.print('\t');
-  theta = 2 * sqrt((3 * (l1 * l1) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
-  Serial.print("theta is: ");
-  Serial.print(theta);
+  theta = 2 * sqrt((pow(l1,2) + pow(l2,2) + pow(l3,2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
+  float thetadeg = theta * (180 / M_PI);
+  Serial.print("theta degrees is: ");
+  Serial.print(thetadeg);
   Serial.print('\t');
   phi = atan((sqrt(3) * (l3 - l2)) / (l2 + l3 - 2 * l1));
 
-  Serial.print("phi is: ");
-  Serial.println(phi);
+  float phideg = phi * (180/M_PI);
+
+  Serial.print("phi degrees is: ");
+  Serial.println(phideg);
 }
 
 /**
@@ -420,20 +424,23 @@ void fwCableKin (float l1, float l2, float l3) {
  * @param s - the segment length of the robot in inches
  * @param phi - the rotation around the z axis, phi
  */
-void invCableKin (int k, int s, int phi) {
+void invCableKin (int s, int theta, int phi) {
   
   //print out inputs to ensure they are being received correctly
-  Serial.print("k, s, phi, respectively: ");
-  Serial.print(k);
-  Serial.print('\t');
+  Serial.print("s, theta, phi, respectively: ");
   Serial.print(s);
+  Serial.print('\t');
+  Serial.print(theta);
   Serial.print('\t');
   Serial.println(phi);
 
+  float thetarad = theta * (M_PI/180);
+  float phirad = phi * (M_PI/180);
+
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1 = 2 * n * sin((k * s) / (2 * n)) * ((1/k) - d * sin(phi));
-  l2 = 2 * n * sin((k * s) / (2 * n)) * ((1/k) - d * sin(M_PI/3 + phi));
-  l3 = 2 * n * sin((k * s) / (2 * n)) * ((1/k) - d * sin(M_PI/6 + phi));
+  l1 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(phirad));
+  l2 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/3 + phirad));
+  l3 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/6 + phirad));
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");

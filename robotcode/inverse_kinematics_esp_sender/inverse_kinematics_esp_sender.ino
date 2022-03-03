@@ -18,8 +18,8 @@ uint8_t broadcastAddress1[] = {0x24, 0xA1, 0x60, 0x75, 0xB8, 0xE0}; //replace wi
 
 
 typedef struct data_struct_rec { //data struct to send wifi commands to the mainboard  - must match data struct mainboard is expecting
-  int k;
   int s;
+  int theta;
   int phi;
 } data_struct_rec;
 
@@ -38,8 +38,8 @@ String deviceBData = ""; //variable for inputting commands into the serial monit
 int currInput = 1; //variable to keep track if input is being input as K, S, or Phi
 
 //inverse kinematics parameters
-int k = 0;
 int s = 0;
+int theta = 0;
 int phi = 0;
 
 
@@ -94,13 +94,13 @@ void loop() {
 
       //sequentially store integer values and increment counter
       if (currInput == 1) {
-        Serial.println("You said K = " + deviceBData);
-        k = deviceBData.toInt();
+        Serial.println("You said S = " + deviceBData);
+        s = deviceBData.toInt();
         currInput++;
       }
       else if (currInput == 2) {
-        Serial.println("You said S = " + deviceBData);
-        s = deviceBData.toInt();
+        Serial.println("You said Theta = " + deviceBData);
+        theta = deviceBData.toInt();
         currInput++;
       }
       else if (currInput == 3) {
@@ -110,8 +110,8 @@ void loop() {
       }
       else { //send the input data, and reset the flag for more input
         //sends the actual data
-        test.k = k; //convert data to an integer
-        test.s = s;
+        test.s = s; //convert data to an integer
+        test.theta = theta;
         test.phi = phi;
 
         //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
