@@ -80,6 +80,9 @@ int currenterror = 0; //current motor speed error for PID
 int targetSpeed = 0; //target speed in RPM
 int cablelength = 0; //cable length in m
 
+byte count1,count2; //i2c encoder count
+int inputCount = 0; //i2c encoder count
+
 
 
 /**********************************************************************************************************************
@@ -134,79 +137,8 @@ void loop() {
   //check the current sensor
   readCurrent();
 
-  //switch statement given i2c input command from command line or controller
-  switch (I2Cstatus) {
-    default: //no message- status defaults to zero
-      break;
-    case 0: //motor stop
-      brake();
-      break;
-    case 1: //lead screw up speed
-      reverse(150);
-      break;
-    case 2: //lead screw down speed
-      forward(150);
-      break;
-    case 3: //if motor is stalled, brake
-      if (motorstalleddown) {
-        brake();
-        //delay(200);
-        I2Cstatus = 0;
-
-      } else {
-        forward(130);
-      }
-      break;
-    case 4: //if motor is stalled, brake
-      if (motorstalledup) {
-        brake();
-        //delay(200);
-        I2Cstatus = 0;
-
-      } else {
-        reverse(130);
-      }
-      break;
-    case 9: //cable motor
-      if (address == 0x01) {
-        reverse(255);
-      } else {
-        reverse(255);
-      }
-      break;
-    case 8: //cable motor
-      if (address == 0x01) {
-        forward(255);
-      } else {
-        forward(255);
-      }
-      break;
-    case 11:
-      targetSpeed = slowRPM;
-      if (address == 0x01) {
-        reverse(calcSpeedPID);
-      } else {
-        reverse(calcSpeedPID);
-      }
-      break;
-    case 10:
-      targetSpeed = slowRPM;
-      if (address == 0x01) {
-        forward(calcSpeedPID);
-      } else {
-        forward(calcSpeedPID);
-      }
-      break;
-
-    case 12: //cable up speed
-      targetSpeed = slowRPM;
-      forward(calcSpeedPID);
-      break;
-    case 13: //cable down speed
-      targetSpeed = slowRPM;
-      reverse(calcSpeedPID);
-      break;
-  }
+  
+  
 
 }
 
@@ -358,11 +290,10 @@ void requestEvent() {
 void msgEvent(int numBytes) {
   // I2CFlag = true;
   while (Wire.available() > 0) { // loop through all but the last
-    int x = Wire.read(); // receive byte as a character
-    //    if (x>127){
-    //      x = 256-x;
-    //      x*=-1;
-    //    }
-    I2Cstatus = x;
+    count1 = Wire.read();
+    count2 = Wire.read();
+    inputcount = count1;
+    inputcount = (count << 8) | enc2; //put two bytes back together for encoder count
+    
   }
 }

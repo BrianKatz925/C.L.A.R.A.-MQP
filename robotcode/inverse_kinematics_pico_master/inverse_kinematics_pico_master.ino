@@ -72,6 +72,12 @@ float s, theta, phi; //arc length, bending angle, bending directions - from soft
 const float d = 0.9; //distance from the center of mounting plate to cable attachment point - inches
 const int n = 1; //number of yoshimura module sections - for our purposes we only use one robot
 
+int encL1, encL2, encL3 = 0;
+float l1Setpoint, l2Setpoint, l3Setpoint = 0.0;
+
+byte data[2]; //I2c data array
+
+
 
 
 /**********************************************************************************************************************
@@ -266,6 +272,28 @@ void sendMsg(int address, char message) {
   }
 }
 
+/**
+   Sends a message to the provided smart motor driver address via I2C
+   @param address - the hexadecimal address of the motor driver board you want to send a message to
+   @param message - the character message you want to write to
+*/
+void sendIntegerMsg(int address, int message) {
+  Wire.beginTransmission(address); //open up I2C bus
+  data[0] = (message >> 8) & 0xFF;
+  data[1] = message & 0xFF;
+  Wire.write(data, 2); //write a message
+  
+  int error = Wire.endTransmission();
+  if (error != 0) { //if we receive an error, print it out
+    Serial.println("Error sending command: ");
+    Serial.println(error);
+  }
+  else {
+    // Serial.println("Message sent");
+
+  }
+}
+
 
 /**********************************************************************************************************************
 
@@ -307,7 +335,18 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   int phi = myData.phi;
 
   invCableKin(s, theta, phi); //calculate inverse kinematics
-  fwCableKin(l1,l2,l3);
+  fwCableKin(l1Setpoint,l2Setpoint,l3Setpoint); //calculate forward kinematics using setpoints
+
+  //calculate encoder counts required to reach desired position
+  encL1 = calcEncCounts(l1Setpoint, l1);
+  encL2 = calcEncCounts(l2Setpoint, l2);
+  encL3 = calcEncCounts(l3Setpoint, l3);
+
+  //send messages to sami boards to control the cables 
+  sendIntegerMsg(0x04, encL1);
+  sendIntegerMsg(0x05, encL2);
+  sendIntegerMsg(0x06, encL3);
+
   
 //  else if (commanddata == 2) { //X button - send data back from all motors
 //    Serial.println("requesting Data");
@@ -387,6 +426,19 @@ float calcCablelen(int enccounts) {
 }
 
 /**
+   Calculates the encoder counts required to get to a cable length
+   @param cableLen - the desired length of cable
+   @return float enccounts - number of encoder counts
+*/
+float calcEncCounts(float cableLen, float currCableLen) {
+  float deltacablelen = cableLen - currCableLen; //calculate difference in cable lenghs from current to setpoint
+  float shaftRotations = deltacablelen / (M_PI * drumdiameter); //calculate number of output shaft rotations required to get there
+  float encRotations = shaftRotations * motorGearRatio; //calculate number of encoder rotations to get there
+  int16_t enccounts = encRotations * encTicksPerRev; // calculate number of encoder counts
+  return enccounts;
+}
+
+/**
    Calculates the inverse kinematics (bending angle - theta, arc length - S, bending direction - phi) of the cables given the cable lengths
    @param l1 - float length of cable 1
    @param l2 - float length of cable 2
@@ -438,9 +490,9 @@ void invCableKin (int s, int theta, int phi) {
   float phirad = phi * (M_PI/180);
 
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(phirad));
-  l2 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/3 + phirad));
-  l3 = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/6 + phirad));
+  l1Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(phirad));
+  l2Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/3 + phirad));
+  l3Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/6 + phirad));
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");
