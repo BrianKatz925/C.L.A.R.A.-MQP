@@ -66,7 +66,7 @@ volatile int16_t count = 0; //current encoder count - sent through I2C to mainbo
 //I2C Variables
 byte address = 0x05; //the address of the board being flashed
 char I2Cstatus = '0'; //I2C command sent from Mainboard
-byte data[4]; //the data variable to be sent along I2C
+byte data[5]; //the data variable to be sent along I2C
 
 //PID variables
 int kp = 4; //proportional constant
@@ -281,7 +281,8 @@ void requestEvent() {
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
   data[3] = motSpeed;
-  Wire.write(data, 4);
+  data[4] = inputcount;
+  Wire.write(data, 5);
 }
 
 /**

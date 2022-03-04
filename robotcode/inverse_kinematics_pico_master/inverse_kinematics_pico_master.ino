@@ -76,6 +76,8 @@ int encL1, encL2, encL3 = 0;
 float l1Setpoint, l2Setpoint, l3Setpoint = 0.0;
 
 byte data[2]; //I2c data array
+byte inputcount1, inputcount2;
+int inputcount = 0;
 
 
 
@@ -202,6 +204,13 @@ void requestData(int address, int numBytes) {
     current = Wire.read(); //current sent second
     int motorrpm = Wire.read();
 
+    inputcount1 = Wire.read();
+    inputcount2 = Wire.read();
+    inputcount = inputcount1;
+    inputcount = (inputcount << 8) | inputcount2;
+    
+    
+
     //print out received data
     Serial.print("Encoder Count: ");
     int readcount = count;
@@ -224,6 +233,17 @@ void requestData(int address, int numBytes) {
     test.encoderData = readcount;
     Serial.print("motor rpm:  ");
     Serial.println(motorrpm);
+
+
+    //print out received data
+    Serial.print("You sent this to the SAMI: ");
+    int readinputcount = inputcount;
+    if (readinputcount > 32768) { //prevent overflow of integer type from prolonged use of encoder
+      readinputcount = 65535 - readcount;
+      readinputcount *= -1;
+    }
+    Serial.print(readinputcount);
+    Serial.print('\t');
 
     // if the address is one of the cable motors (4,5,6), calculate their cable lengths with encoder data
     if (address == 0x04) {
@@ -353,9 +373,9 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 //    requestData(0x01, 4);
 //    requestData(0x02, 4);
 //    requestData(0x03, 4);
-//    requestData(0x04, 4);
-//    requestData(0x05, 4);
-//    requestData(0x06, 4);
+    requestData(0x04, 5);
+    requestData(0x05, 5);
+    requestData(0x06, 5);
 //    requestData(0x07, 4);
 //    fwCableKin(l1, l2, l3); //do the inv kinematics i guess
 //    
