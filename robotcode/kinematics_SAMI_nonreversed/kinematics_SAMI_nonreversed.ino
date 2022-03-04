@@ -64,9 +64,9 @@ bool motorstalleddown, motorstalledup; //motor stalled variables
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
 
 //I2C Variables
-byte address = 0x05; //the address of the board being flashed
+byte address = 0x06; //the address of the board being flashed
 char I2Cstatus = '0'; //I2C command sent from Mainboard
-byte data[5]; //the data variable to be sent along I2C
+byte data[6]; //the data variable to be sent along I2C
 
 //PID variables
 int kp = 4; //proportional constant
@@ -81,7 +81,7 @@ int targetSpeed = 0; //target speed in RPM
 int cablelength = 0; //cable length in m
 
 byte count1,count2; //i2c encoder count
-int inputCount = 0; //i2c encoder count
+int inputcount = 0; //i2c encoder count
 
 
 
@@ -281,8 +281,10 @@ void requestEvent() {
   data[1] = count & 0xFF;
   data[2] = motorCurrent;
   data[3] = motSpeed;
-  data[4] = inputcount;
-  Wire.write(data, 5);
+  data[4] = (inputcount >> 8) & 0xFF;
+  data[5] = inputcount & 0xFF;
+  
+  Wire.write(data, 6);
 }
 
 /**
@@ -290,11 +292,10 @@ void requestEvent() {
 */
 void msgEvent(int numBytes) {
   // I2CFlag = true;
-  while (Wire.available() > 0) { // loop through all but the last
+  if(Wire.available() == numBytes) { // loop through all but the last
     count1 = Wire.read();
     count2 = Wire.read();
     inputcount = count1;
-    inputcount = (count << 8) | enc2; //put two bytes back together for encoder count
-    
+    inputcount = (inputcount << 8) | count2; //put two bytes back together for encoder count
   }
 }

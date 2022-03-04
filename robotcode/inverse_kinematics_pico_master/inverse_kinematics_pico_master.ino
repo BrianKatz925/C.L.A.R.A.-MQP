@@ -355,12 +355,26 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   int phi = myData.phi;
 
   invCableKin(s, theta, phi); //calculate inverse kinematics
-  fwCableKin(l1Setpoint,l2Setpoint,l3Setpoint); //calculate forward kinematics using setpoints
+  //fwCableKin(l1Setpoint,l2Setpoint,l3Setpoint); //calculate forward kinematics using setpoints
 
   //calculate encoder counts required to reach desired position
   encL1 = calcEncCounts(l1Setpoint, l1);
   encL2 = calcEncCounts(l2Setpoint, l2);
   encL3 = calcEncCounts(l3Setpoint, l3);
+
+  Serial.print("L3 Setpoint: ");
+  Serial.print(l3Setpoint);
+  Serial.print(" L3: ");
+  Serial.println(l3);
+  
+  
+  Serial.print("ENC L1: ");
+  Serial.print(encL1);
+  Serial.print(" ENC L2: ");
+  Serial.print(encL2);
+  Serial.print(" ENC L3: ");
+  Serial.println(encL3);
+  
 
   //send messages to sami boards to control the cables 
   sendIntegerMsg(0x04, encL1);
