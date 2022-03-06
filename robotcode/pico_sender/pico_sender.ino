@@ -214,6 +214,11 @@ String interpretData(String data) {
     return "22";
   }
 
+  if (data[6]=='1'){
+    return "25";
+  }
+  
+
   if (data[7] == '1') { //A button - lead screw down
     return "4";
   }

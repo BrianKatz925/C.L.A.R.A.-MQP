@@ -418,7 +418,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("open lead screw w/ current");
     driveleadscrew(4);
   }
-
+  else if (commanddata == 25){
+    drivecables(0,0,14);
+    Serial.println("pid position test"); 
+  }
   //brake motors
   else if (commanddata == 0) { //brake all motors/do nothing
     drive(0);

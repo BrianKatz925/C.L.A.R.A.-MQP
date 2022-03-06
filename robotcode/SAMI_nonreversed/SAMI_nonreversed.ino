@@ -64,7 +64,7 @@ bool motorstalleddown, motorstalledup; //motor stalled variables
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
 
 //I2C Variables
-byte address = 0x05; //the address of the board being flashed
+byte address = 0x06; //the address of the board being flashed
 char I2Cstatus = '0'; //I2C command sent from Mainboard
 byte data[4]; //the data variable to be sent along I2C
 
@@ -117,9 +117,9 @@ void setup() {
 
 void loop() {
   if ((millis() - lastTime) >= 20) { //calculate PID every 20ms
-    
+
     //calculate current RPM and compute PID with it
-    countdiff = count - lastcount; //difference in encoder count 
+    countdiff = count - lastcount; //difference in encoder count
     lastcount = count;
 
     //calculate motor speed in RPM
@@ -154,7 +154,7 @@ void loop() {
         I2Cstatus = 0;
 
       } else {
-        forward(130);
+        forward(150);
       }
       break;
     case 4: //if motor is stalled, brake
@@ -164,22 +164,14 @@ void loop() {
         I2Cstatus = 0;
 
       } else {
-        reverse(130);
+        reverse(150);
       }
       break;
     case 9: //cable motor
-      if (address == 0x01) {
-        reverse(255);
-      } else {
-        reverse(255);
-      }
+      reverse(200);
       break;
     case 8: //cable motor
-      if (address == 0x01) {
-        forward(255);
-      } else {
-        forward(255);
-      }
+      forward(200);
       break;
     case 11:
       targetSpeed = slowRPM;
@@ -206,6 +198,34 @@ void loop() {
       targetSpeed = slowRPM;
       reverse(calcSpeedPID);
       break;
+    case 14: //attempt piD position
+      long pidtarget = 10000;
+      if (pidposition(pidtarget)) {
+
+        brake;
+        I2Cstatus = 0;
+      }
+      break;
+  }
+}
+bool pidposition(long pidtarget) {
+  float ppos = 0.1;
+  float ipos = 0.0;
+  float dpos = 0.0;
+
+  long error = pidtarget - count;
+  uint16_t adjeffort = ppos * error; //just p for now, I and D are for losers (and better tuned systems)
+  adjeffort = abs(max(min(100, adjeffort), 0));
+  if (error >= 0) {
+    reverse(adjeffort);
+  }
+  else {
+    forward(adjeffort);
+  }
+  if (abs(error) < 100) {
+    return true;
+  } else {
+    return false;
   }
 
 }
@@ -220,8 +240,8 @@ void loop() {
 //ISRs split up for each hall-effect latch sensor to decrease processing time within the ISR and allow I2C to work every time without interruption
 
 /**
- * ISR for encoder 1 - reads registers instead of digital read for increased speed and increments/decrements a count variable
- */
+   ISR for encoder 1 - reads registers instead of digital read for increased speed and increments/decrements a count variable
+*/
 void isr1() {
   uint8_t encread1 = PIND >> 2 & 0x01;
   uint8_t encread2 = PIND >> 3 & 0x01;  //get the two bit encoder read
@@ -234,8 +254,8 @@ void isr1() {
 }
 
 /**
- * ISR for encoder 2 - reads registers instead of digital read for increased speed and increments/decrements a count variable
- */
+   ISR for encoder 2 - reads registers instead of digital read for increased speed and increments/decrements a count variable
+*/
 void isr2() {
   uint8_t encread1 = PIND >> 2 & 0x01;
   uint8_t encread2 = PIND >> 3 & 0x01;//get the two bit encoder read
@@ -257,12 +277,12 @@ void isr2() {
    Function to set the motorCurrent variable to the current sensor reading and check if it is stalled
 */
 void readCurrent() {
-  motorCurrent = analogRead(currentRead); //multiply by AD
+  motorCurrent = analogRead(currentRead);
   // motorstalled=true;
-  if (motorCurrent > 430) {
+  if (motorCurrent > 400) {
     motorstalledup = true;
   }
-  else if (motorCurrent > 375) { //if the current reading is above the preset stall current value, brake the motor
+  else if (motorCurrent > 390) { //if the current reading is above the preset stall current value, brake the motor
     motorstalleddown = true;
   } else {
     motorstalleddown = false;
@@ -271,10 +291,10 @@ void readCurrent() {
 }
 
 /**
- * Function to home the cables using the current threshold
- * Once homed, the motors reverse to limit current
- * @param currentthreshold - the float current threshold in A
- */
+   Function to home the cables using the current threshold
+   Once homed, the motors reverse to limit current
+   @param currentthreshold - the float current threshold in A
+*/
 void homeCables(float currentthreshold) {
   if (motorCurrent >= currentthreshold) {
     reverse(150);
@@ -288,26 +308,26 @@ void homeCables(float currentthreshold) {
  **********************************************************************************************************************/
 
 /**
- * This function drives the motors forward
- * @param speed - the integer speed of the motor
- */
+   This function drives the motors forward
+   @param speed - the integer speed of the motor
+*/
 void forward(int speed) {
   analogWrite(INPUT1, 0);
   analogWrite(INPUT2, speed);
 }
 
 /**
- * This function drives the motors reverse
- * @param speed - the integer speed of the motor
- */
+   This function drives the motors reverse
+   @param speed - the integer speed of the motor
+*/
 void reverse(int speed) {
   analogWrite(INPUT1, speed);
   analogWrite(INPUT2, 0);
 }
 
 /**
- * This function stops the motors
- */
+   This function stops the motors
+*/
 void brake() {
   analogWrite(INPUT1, 255);
   analogWrite(INPUT2, 255);
@@ -316,10 +336,10 @@ void brake() {
 
 
 /**
- * This function calculates PID for the motor speed
- * @param error - the given error
- * @return result - an integer clamped value for the speed of the motor
- */
+   This function calculates PID for the motor speed
+   @param error - the given error
+   @return result - an integer clamped value for the speed of the motor
+*/
 int calcPID(int error) {
   result = abs(error * kp);
   if (error < 0) {
@@ -328,7 +348,7 @@ int calcPID(int error) {
   else {
     result += result;
   }
-  result = max(min((result), 255), 0);
+  result = max(min((result), 200), 0);
   return result;
 }
 
