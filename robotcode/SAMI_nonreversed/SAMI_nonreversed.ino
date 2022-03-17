@@ -64,7 +64,7 @@ bool motorstalleddown, motorstalledup; //motor stalled variables
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
 
 //I2C Variables
-byte address = 0x06; //the address of the board being flashed
+byte address = 0x07; //the address of the board being flashed
 char I2Cstatus = '0'; //I2C command sent from Mainboard
 byte data[4]; //the data variable to be sent along I2C
 
@@ -142,10 +142,10 @@ void loop() {
       brake();
       break;
     case 1: //lead screw up speed
-      reverse(150);
+      reverse(250);
       break;
     case 2: //lead screw down speed
-      forward(150);
+      forward(250);
       break;
     case 3: //if motor is stalled, brake
       if (motorstalleddown) {
