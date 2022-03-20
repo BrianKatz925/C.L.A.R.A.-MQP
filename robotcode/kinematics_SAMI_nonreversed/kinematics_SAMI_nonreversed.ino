@@ -214,12 +214,14 @@ void brake() {
 //PID position
 bool pidposition(long pidtarget) {
   float ppos = 0.3;
-  float ipos = 0.0;
+  float ipos = 0.03;
   float dpos = 0.0;
 
   long error = pidtarget - count;
-  uint16_t adjeffort = ppos * error; //just p for now, I and D are for losers (and better tuned systems)
-  adjeffort = abs(max(min(100, adjeffort), 0));
+  long sumError = sumError + error; 
+  if (sumError >= 1000) sumError = 1000; 
+  uint16_t adjeffort = ppos * error + sumError*ipos ;//just p for now, I and D are for losers (and better tuned systems)
+  adjeffort = abs(max(min(180, adjeffort), 0));
   if (error <= 0) {
     reverse(adjeffort);
   }
