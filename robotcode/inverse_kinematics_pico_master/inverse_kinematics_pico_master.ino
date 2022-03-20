@@ -70,7 +70,7 @@ const float L0 = 1;//shortest length of module in inches
 
 float s, theta, phi; //arc length, bending angle, bending directions - from soft robotics lab paper
 const float d = 0.9; //distance from the center of mounting plate to cable attachment point - inches
-const int n = 1; //number of yoshimura module sections - for our purposes we only use one robot
+const float n = 1.0; //number of yoshimura module sections - for our purposes we only use one robot
 
 int encL1, encL2, encL3 = 0;
 float l1Setpoint, l2Setpoint, l3Setpoint = 0.0;
@@ -127,9 +127,13 @@ void setup()
     return;
   }
 }
-
+long lastTime= 0; 
 void loop() {
   //nothing really.... this is all event based
+  if ((millis() - lastTime )>= 10000){
+    requestData(0x05,6);
+    lastTime = millis(); 
+  }
 }
 
 
@@ -190,7 +194,7 @@ void findDevices() {
 */
 void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true);//create a request from an individual motor driver board for given number of bytes
-
+  Serial.println("data is requested"); 
   // if we receive the expected number of bytes
   if (Wire.available() == numBytes) {
     Serial.print("data recieved from: ");
@@ -208,8 +212,8 @@ void requestData(int address, int numBytes) {
     inputcount2 = Wire.read();
     inputcount = inputcount1;
     inputcount = (inputcount << 8) | inputcount2;
-    
-    
+
+
 
     //print out received data
     Serial.print("Encoder Count: ");
@@ -259,17 +263,6 @@ void requestData(int address, int numBytes) {
 
     }
 
-    // Serial.println(test.encoderData);
-
-    //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
-    esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
-    if (result == ESP_OK) {
-      //Serial.println("Sent with success");
-    }
-    else {
-      //Serial.println("Error sending the data");
-    }
-
   }
 }
 
@@ -302,7 +295,7 @@ void sendIntegerMsg(int address, int message) {
   data[0] = (message >> 8) & 0xFF;
   data[1] = message & 0xFF;
   Wire.write(data, 2); //write a message
-  
+
   int error = Wire.endTransmission();
   if (error != 0) { //if we receive an error, print it out
     Serial.println("Error sending command: ");
@@ -362,40 +355,24 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   encL2 = calcEncCounts(l2Setpoint, l2);
   encL3 = calcEncCounts(l3Setpoint, l3);
 
-  Serial.print("L3 Setpoint: ");
-  Serial.print(l3Setpoint);
-  Serial.print(" L3: ");
-  Serial.println(l3);
-  
-  
   Serial.print("ENC L1: ");
   Serial.print(encL1);
   Serial.print(" ENC L2: ");
   Serial.print(encL2);
   Serial.print(" ENC L3: ");
   Serial.println(encL3);
-  
 
-  //send messages to sami boards to control the cables 
-  sendIntegerMsg(0x04, encL1);
+  //send messages to sami boards to control the cables
+  //sendIntegerMsg(0x04, encL1);
   sendIntegerMsg(0x05, encL2);
-  sendIntegerMsg(0x06, encL3);
+  Serial.println("message sent");
+ // sendIntegerMsg(0x06, encL3);
 
-  
-//  else if (commanddata == 2) { //X button - send data back from all motors
-//    Serial.println("requesting Data");
-//    requestData(0x01, 4);
-//    requestData(0x02, 4);
-//    requestData(0x03, 4);
-    requestData(0x04, 5);
-    requestData(0x05, 5);
-    requestData(0x06, 5);
-//    requestData(0x07, 4);
-//    fwCableKin(l1, l2, l3); //do the inv kinematics i guess
-//    
-//  }
-//
-//
+  //requestData(0x04, 5);
+  Serial.println("requesting data");
+  requestData(0x05, 6);
+ // requestData(0x06, 5);
+
 
 
 }
@@ -491,27 +468,27 @@ void fwCableKin (float l1, float l2, float l3) {
   Serial.print("S is: ");
   Serial.print(s);
   Serial.print('\t');
-  theta = 2 * sqrt((pow(l1,2) + pow(l2,2) + pow(l3,2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
+  theta = 2 * sqrt((pow(l1, 2) + pow(l2, 2) + pow(l3, 2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
   float thetadeg = theta * (180 / M_PI);
   Serial.print("theta degrees is: ");
   Serial.print(thetadeg);
   Serial.print('\t');
   phi = atan2((sqrt(3) * (l3 - l2)) , (l2 + l3 - 2 * l1));
 
-  float phideg = phi * (180/M_PI);
+  float phideg = phi * (180 / M_PI);
 
   Serial.print("phi degrees is: ");
   Serial.println(phideg);
 }
 
 /**
- * Calculates the required cable lengths of the robot to achieve the desired curvature, k , segment length, s, rotation around z axis, phi
- * @param k - the curvature of the robot in inches
- * @param s - the segment length of the robot in inches
- * @param phi - the rotation around the z axis, phi
- */
-void invCableKin (int s, int theta, int phi) {
-  
+   Calculates the required cable lengths of the robot to achieve the desired curvature, k , segment length, s, rotation around z axis, phi
+   @param k - the curvature of the robot in inches
+   @param s - the segment length of the robot in inches
+   @param phi - the rotation around the z axis, phi
+*/
+void invCableKin (float s, float theta, float phi) {
+
   //print out inputs to ensure they are being received correctly
   Serial.print("s, theta, phi, respectively: ");
   Serial.print(s);
@@ -520,19 +497,24 @@ void invCableKin (int s, int theta, int phi) {
   Serial.print('\t');
   Serial.println(phi);
 
-  float thetarad = theta * (M_PI/180);
-  float phirad = phi * (M_PI/180);
-
+  float thetarad = theta * (M_PI / 180);
+  float phirad = phi * (M_PI / 180);
+  float c1 = 2.0 * n * sin((thetarad) / (2.0 * n));
+  float c2 = (1.0 / (thetarad / s)) - d;
+  Serial.print("c1 is ");
+  Serial.println(c1);
+  Serial.print("c2 is ");
+  Serial.println(c1);
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(phirad));
-  l2Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/3 + phirad));
-  l3Setpoint = 2 * n * sin((thetarad) / (2 * n)) * ((1/(thetarad/s)) - d * sin(M_PI/6 + phirad));
+  l1Setpoint = c1 * c2 * sin(phirad);
+  l2Setpoint = c1 * c2 * sin(M_PI / 3.0 + phirad);
+  l3Setpoint = c1 * c2 * sin(M_PI / 6.0 + phirad);
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");
-  Serial.print(l1);
+  Serial.print(l1Setpoint);
   Serial.print('\t');
-  Serial.print(l2);
+  Serial.print(l2Setpoint);
   Serial.print('\t');
-  Serial.println(l3);
+  Serial.println(l3Setpoint);
 }

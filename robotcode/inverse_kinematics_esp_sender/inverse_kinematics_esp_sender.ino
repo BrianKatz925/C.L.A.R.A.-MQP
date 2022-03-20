@@ -81,7 +81,14 @@ void setup() {
     return;
   }
 }
-
+bool invalidinput = false;
+int supper = 6.0; //inches
+int slower = 3.6; //inches
+int thetaupper = 90.0; //degrees
+int thetalower = 0.00; //degrees
+int phiupper = 360.0 ; //degrees
+int philower = 0.0 ; //degrees
+ 
 void loop() {
   if (Serial.available() > 0) {
     if (Serial.peek() != '\n') //if we press enter in the serial monitor and sent data
@@ -109,7 +116,22 @@ void loop() {
         currInput++;
       }
       else { //send the input data, and reset the flag for more input
+        invalidinput = false;
         //sends the actual data
+        if (!(s<=supper && s>= slower)){
+          Serial.println(" S is invalid. valid parameters are between 3.6 and 6.0 ");
+          invalidinput = true;
+        }
+        if (!(theta<=thetaupper && theta>= thetalower)){
+          Serial.println(" theta is invalid. valid parameters are between 0 and 90 ");
+          invalidinput = true;
+        }
+        if (!(phi<=phiupper && phi>= philower)){
+          Serial.println(" phi is invalid. valid parameters are between 0 and 360 ");
+          invalidinput = true;
+        }
+
+        if (!invalidinput){
         test.s = s; //convert data to an integer
         test.theta = theta;
         test.phi = phi;
@@ -121,6 +143,9 @@ void loop() {
         }
         else {
           //Serial.println("Error sending the data");
+        }}
+        else{
+          Serial.println("invalid inputs. no message sent");
         }
         currInput = 1;
       }
