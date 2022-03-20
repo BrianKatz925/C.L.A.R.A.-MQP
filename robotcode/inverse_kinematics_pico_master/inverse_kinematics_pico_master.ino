@@ -127,12 +127,14 @@ void setup()
     return;
   }
 }
-long lastTime= 0; 
+long lastTime = 0;
 void loop() {
   //nothing really.... this is all event based
-  if ((millis() - lastTime )>= 10000){
-    requestData(0x05,6);
-    lastTime = millis(); 
+  if ((millis() - lastTime ) >= 5000) {
+    requestData(0x04, 6);
+    requestData(0x05, 6);
+    requestData(0x06, 6);
+    lastTime = millis();
   }
 }
 
@@ -194,7 +196,7 @@ void findDevices() {
 */
 void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true);//create a request from an individual motor driver board for given number of bytes
-  Serial.println("data is requested"); 
+  Serial.println("data is requested");
   // if we receive the expected number of bytes
   if (Wire.available() == numBytes) {
     Serial.print("data recieved from: ");
@@ -363,15 +365,15 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.println(encL3);
 
   //send messages to sami boards to control the cables
-  //sendIntegerMsg(0x04, encL1);
+  sendIntegerMsg(0x04, encL1);
   sendIntegerMsg(0x05, encL2);
-  Serial.println("message sent");
- // sendIntegerMsg(0x06, encL3);
+  sendIntegerMsg(0x06, encL3);
+  Serial.println("messages sent");
 
   //requestData(0x04, 5);
   Serial.println("requesting data");
-  requestData(0x05, 6);
- // requestData(0x06, 5);
+  //requestData(0x05, 6);
+  // requestData(0x06, 5);
 
 
 
