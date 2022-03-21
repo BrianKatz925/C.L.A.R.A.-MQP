@@ -444,7 +444,7 @@ float calcCablelen(int enccounts) {
    @return float enccounts - number of encoder counts
 */
 float calcEncCounts(float cableLen, float currCableLen) {
-  float deltacablelen = cableLen - currCableLen; //calculate difference in cable lenghs from current to setpoint
+  float deltacablelen = cableLen; //calculate difference in cable lenghs from current to setpoint
   float shaftRotations = deltacablelen / (M_PI * drumdiameter); //calculate number of output shaft rotations required to get there
   float encRotations = shaftRotations * motorGearRatio; //calculate number of encoder rotations to get there
   int16_t enccounts = encRotations * encTicksPerRev; // calculate number of encoder counts

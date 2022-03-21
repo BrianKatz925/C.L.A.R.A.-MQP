@@ -64,7 +64,7 @@ bool motorstalleddown, motorstalledup; //motor stalled variables
 volatile int16_t count = 0; //current encoder count - sent through I2C to mainboard
 
 //I2C Variables
-byte address = 0x04; //the address of the board being flashed
+byte address = 0x05; //the address of the board being flashed
 char I2Cstatus = '0'; //I2C command sent from Mainboard
 byte data[6]; //the data variable to be sent along I2C
 
@@ -117,7 +117,7 @@ void setup() {
   }
 }
 
-long pidtarget = 0; 
+long pidtarget = 0;
 void loop() {
   if ((millis() - lastTime) >= 10) { //calculate PID every 20ms
     if (pidposition(pidtarget)) {
@@ -218,19 +218,29 @@ bool pidposition(long pidtarget) {
   float dpos = 0.0;
 
   long error = pidtarget - count;
-  long sumError = sumError + error; 
-  if (sumError >= 1000) sumError = 1000; 
-  uint16_t adjeffort = ppos * error + sumError*ipos ;//just p for now, I and D are for losers (and better tuned systems)
-  adjeffort = abs(max(min(180, adjeffort), 0));
-  if (error <= 0) {
-    reverse(adjeffort);
-  }
-  else {
-    forward(adjeffort);
-  }
+  long sumError = sumError + error;
+  if (sumError >= 1000) sumError = 1000;
+  uint16_t adjeffort = ppos * error + sumError * ipos ; //just p for now, I and D are for losers (and better tuned systems)
+  adjeffort = abs(max(min(140, adjeffort), 0));
   if (abs(error) < 50) {
+    brake();
     return true;
   } else {
+    if (error <= 0) {
+      if (address == 0x05) {
+        reverse(adjeffort);
+      } else {
+        forward(adjeffort);
+      }
+    }
+    else {
+      if (address == 0x05) {
+        forward(adjeffort);
+      } else {
+        reverse(adjeffort);
+      }
+    }
+
     return false;
   }
 
@@ -270,5 +280,5 @@ void msgEvent(int numBytes) {
     inputcount = count1;
     inputcount = (inputcount << 8) | count2; //put two bytes back together for encoder count
   }
-  pidtarget = inputcount; 
+  pidtarget = inputcount;
 }
