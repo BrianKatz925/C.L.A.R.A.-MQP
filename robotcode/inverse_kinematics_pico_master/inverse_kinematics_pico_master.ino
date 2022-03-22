@@ -69,7 +69,7 @@ const float r = 2.04 ; //radius of module
 const float L0 = 1;//shortest length of module in inches
 
 float s, theta, phi; //arc length, bending angle, bending directions - from soft robotics lab paper
-const float d = 0.9; //distance from the center of mounting plate to cable attachment point - inches
+const float d = 1.0; //distance from the center of mounting plate to cable attachment point - inches
 const float n = 1.0; //number of yoshimura module sections - for our purposes we only use one robot
 
 int encL1, encL2, encL3 = 0;
@@ -444,7 +444,7 @@ float calcCablelen(int enccounts) {
    @return float enccounts - number of encoder counts
 */
 float calcEncCounts(float cableLen, float currCableLen) {
-  float deltacablelen = cableLen; //calculate difference in cable lenghs from current to setpoint
+  float deltacablelen = 6.0 - cableLen; //calculate difference in cable lenghs from current to setpoint
   float shaftRotations = deltacablelen / (M_PI * drumdiameter); //calculate number of output shaft rotations required to get there
   float encRotations = shaftRotations * motorGearRatio; //calculate number of encoder rotations to get there
   int16_t enccounts = encRotations * encTicksPerRev; // calculate number of encoder counts
@@ -502,15 +502,12 @@ void invCableKin (float s, float theta, float phi) {
   float thetarad = theta * (M_PI / 180);
   float phirad = phi * (M_PI / 180);
   float c1 = 2.0 * n * sin((thetarad) / (2.0 * n));
-  float c2 = (1.0 / (thetarad / s)) - d;
   Serial.print("c1 is ");
   Serial.println(c1);
-  Serial.print("c2 is ");
-  Serial.println(c1);
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1Setpoint = c1 * c2 * sin(phirad);
-  l2Setpoint = c1 * c2 * sin(M_PI / 3.0 + phirad);
-  l3Setpoint = c1 * c2 * sin(M_PI / 6.0 + phirad);
+  l1Setpoint = c1 * ((1.0 / (thetarad / s)) - d*sin(phirad));
+  l2Setpoint = c1 * ((1.0 / (thetarad / s)) + d*sin(M_PI/3 + phirad));
+  l3Setpoint = c1 * ((1.0 / (thetarad / s)) - d*sin(M_PI/6 + phirad));
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");
