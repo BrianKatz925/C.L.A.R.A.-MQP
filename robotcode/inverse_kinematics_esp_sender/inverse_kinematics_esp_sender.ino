@@ -82,8 +82,8 @@ void setup() {
   }
 }
 bool invalidinput = false;
-int supper = 6.0; //inches
-int slower = 3.6; //inches
+int supper = 4.0; //inches
+int slower = 0; //inches
 int thetaupper = 90.0; //degrees
 int thetalower = 0.00; //degrees
 int phiupper = 360.0 ; //degrees

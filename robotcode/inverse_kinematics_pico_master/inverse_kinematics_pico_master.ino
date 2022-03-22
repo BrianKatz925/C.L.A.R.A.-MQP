@@ -351,31 +351,36 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   invCableKin(s, theta, phi); //calculate inverse kinematics
   //fwCableKin(l1Setpoint,l2Setpoint,l3Setpoint); //calculate forward kinematics using setpoints
+  if (s == 0.0 && theta == 0.0 && phi == 0.0) {
+    Serial.println("back to home!");
+    sendIntegerMsg(0x04, 1);
+    sendIntegerMsg(0x05, 1);
+    sendIntegerMsg(0x06, 1);
+  } else {
+    //calculate encoder counts required to reach desired position
+    encL1 = calcEncCounts(l1Setpoint);
+    encL2 = calcEncCounts(l2Setpoint);
+    encL3 = calcEncCounts(l3Setpoint);
 
-  //calculate encoder counts required to reach desired position
-  encL1 = calcEncCounts(l1Setpoint, l1);
-  encL2 = calcEncCounts(l2Setpoint, l2);
-  encL3 = calcEncCounts(l3Setpoint, l3);
+    Serial.print("ENC L1: ");
+    Serial.print(encL1);
+    Serial.print(" ENC L2: ");
+    Serial.print(encL2);
+    Serial.print(" ENC L3: ");
+    Serial.println(encL3);
 
-  Serial.print("ENC L1: ");
-  Serial.print(encL1);
-  Serial.print(" ENC L2: ");
-  Serial.print(encL2);
-  Serial.print(" ENC L3: ");
-  Serial.println(encL3);
+    //send messages to sami boards to control the cables
+    sendIntegerMsg(0x04, encL1);
+    sendIntegerMsg(0x05, encL2);
+    sendIntegerMsg(0x06, encL3);
+    Serial.println("messages sent");
 
-  //send messages to sami boards to control the cables
-  sendIntegerMsg(0x04, encL1);
-  sendIntegerMsg(0x05, encL2);
-  sendIntegerMsg(0x06, encL3);
-  Serial.println("messages sent");
+    //requestData(0x04, 5);
+    Serial.println("requesting data");
+    //requestData(0x05, 6);
+    // requestData(0x06, 5);
 
-  //requestData(0x04, 5);
-  Serial.println("requesting data");
-  //requestData(0x05, 6);
-  // requestData(0x06, 5);
-
-
+  }
 
 }
 
@@ -443,8 +448,8 @@ float calcCablelen(int enccounts) {
    @param cableLen - the desired length of cable
    @return float enccounts - number of encoder counts
 */
-float calcEncCounts(float cableLen, float currCableLen) {
-  float deltacablelen = 6.0 - cableLen; //calculate difference in cable lenghs from current to setpoint
+float calcEncCounts(float cableLen) {
+  float deltacablelen = 4.0 - cableLen; //calculate difference in cable lenghs from current to setpoint
   float shaftRotations = deltacablelen / (M_PI * drumdiameter); //calculate number of output shaft rotations required to get there
   float encRotations = shaftRotations * motorGearRatio; //calculate number of encoder rotations to get there
   int16_t enccounts = encRotations * encTicksPerRev; // calculate number of encoder counts
@@ -505,9 +510,9 @@ void invCableKin (float s, float theta, float phi) {
   Serial.print("c1 is ");
   Serial.println(c1);
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1Setpoint = c1 * ((1.0 / (thetarad / s)) - d*sin(phirad));
-  l2Setpoint = c1 * ((1.0 / (thetarad / s)) + d*sin(M_PI/3 + phirad));
-  l3Setpoint = c1 * ((1.0 / (thetarad / s)) - d*sin(M_PI/6 + phirad));
+  l1Setpoint = c1 * ((1.0 / (thetarad / s)) - d * sin(phirad));
+  l2Setpoint = c1 * ((1.0 / (thetarad / s)) + d * sin(M_PI / 3 + phirad));
+  l3Setpoint = c1 * ((1.0 / (thetarad / s)) - d * sin(M_PI / 6 + phirad));
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");
