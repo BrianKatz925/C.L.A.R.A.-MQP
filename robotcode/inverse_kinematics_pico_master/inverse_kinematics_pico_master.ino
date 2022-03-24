@@ -135,6 +135,7 @@ void loop() {
     requestData(0x05, 6);
     requestData(0x06, 6);
     lastTime = millis();
+    fwCableKin(l1,l2,l3);
   }
 }
 
@@ -507,12 +508,13 @@ void invCableKin (float s, float theta, float phi) {
   float thetarad = theta * (M_PI / 180);
   float phirad = phi * (M_PI / 180);
   float c1 = 2.0 * n * sin((thetarad) / (2.0 * n));
+  float kappa = thetarad/s;
   Serial.print("c1 is ");
   Serial.println(c1);
   //Calc L1, L2, L3 using forward kinematics equations from SRL paper
-  l1Setpoint = c1 * ((1.0 / (thetarad / s)) - d * sin(phirad));
-  l2Setpoint = c1 * ((1.0 / (thetarad / s)) + d * sin(M_PI / 3 + phirad));
-  l3Setpoint = c1 * ((1.0 / (thetarad / s)) - d * sin(M_PI / 6 + phirad));
+  l1Setpoint = c1 * ((1.0 / kappa) - (d * sin(phirad)));
+  l2Setpoint = c1 * ((1.0 / kappa) + (d * sin((M_PI / 3) + phirad)));
+  l3Setpoint = c1 * ((1.0 / kappa) - (d * sin((M_PI / 6) + phirad)));
 
   //print out outputs to ensure they are reasonable
   Serial.print("L1, L2, L3, respectively: ");

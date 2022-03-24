@@ -216,7 +216,9 @@ bool pidposition(long pidtarget) {
   float ppos = 0.3;
   float ipos = 0.03;
   float dpos = 0.0;
-
+//  if (address == 0x05){
+//    pidtarget = -1* pidtarget;
+//  }
   long error = pidtarget - count;
   long sumError = sumError + error;
   if (sumError >= 1000) sumError = 1000;
