@@ -141,7 +141,7 @@ void loop() {
     int set = (sin(posSetpoint) * 1000);
     Serial.print(set);
     sendIntegerMsg(0x07, set);
-    delay(80);
+    delay(100);
     Serial.print('\t');
     Serial.print("Position : ");
     requestData(0x07, 6);
