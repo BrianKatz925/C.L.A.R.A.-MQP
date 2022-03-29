@@ -35,7 +35,9 @@ typedef struct data_struct { //data struct to send to the receiver/external ESP 
 } data_struct;
 
 typedef struct data_struct_rec { //data struct to receive wifi commands from the external ESP  - must match data struct sent from external ESP
-  String wifiData;
+  int s;
+  int theta;
+  int phi;
 } data_struct_rec;
 
 data_struct test; //create instance of sending struct to be populated with data
@@ -60,13 +62,23 @@ float l2 = 0;
 float l3 = 0;
 int c1, c2, c3;
 
-const float drumdiameter = 0.25; //Diameter of the winch drums for the cable motors - inches i guessed
-const float origlength = 5.0; //original length of the Yoshimura module
+const float drumdiameter = 0.275; //Diameter of the winch drums for the cable motors - inches i guessed
+const float origlength = 3.35; //original length of the Yoshimura module
 
-const float r = 7 ; //length of module in inches
-const float L0 = 1 ;//shortest length of module in inches
+const float r = 2.04 ; //radius of module
+const float L0 = 1;//shortest length of module in inches
 
 float s, theta, phi; //arc length, bending angle, bending directions - from soft robotics lab paper
+const float d = 1.0; //distance from the center of mounting plate to cable attachment point - inches
+const float n = 1.0; //number of yoshimura module sections - for our purposes we only use one robot
+
+int encL1, encL2, encL3 = 0;
+float l1Setpoint, l2Setpoint, l3Setpoint = 0.0;
+
+byte data[2]; //I2c data array
+byte inputcount1, inputcount2;
+int inputcount = 0;
+
 
 
 
@@ -84,40 +96,64 @@ void setup()
   while (!Serial); // Waiting for Serial Monitor to initialize
   Serial.println("\nI2C Scanner");
 
-  //Set device as a Wi-Fi Station
-  WiFi.mode(WIFI_STA);
-
-  //Init ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
+  //  //Set device as a Wi-Fi Station
+  //  WiFi.mode(WIFI_STA);
+  //
+  //  //Init ESP-NOW
+  //  if (esp_now_init() != ESP_OK) {
+  //    Serial.println("Error initializing ESP-NOW");
+  //    return;
+  //  }
 
   // Once ESPNow is successfully Init, we will register for recv CB to
   // get recv packer info
-  esp_now_register_recv_cb(OnDataRecv);
+  //sp_now_register_recv_cb(OnDataRecv);
 
   //run once on startup to verify SAMIs connected
   findDevices();
 
   //register callback function to be called when a message is sent
-  esp_now_register_send_cb(OnDataSent);
+  // esp_now_register_send_cb(OnDataSent);
 
   // register peer
-  esp_now_peer_info_t peerInfo;
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-
-  // register first peer
-  memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
-  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-    Serial.println("Failed to add peer");
-    return;
-  }
+  //  esp_now_peer_info_t peerInfo;
+  //  peerInfo.channel = 0;
+  //  peerInfo.encrypt = false;
+  //
+  //  // register first peer
+  //  memcpy(peerInfo.peer_addr, broadcastAddress1, 6);
+  //  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+  //    Serial.println("Failed to add peer");
+  //    return;
+  //  }
 }
-
+long lastTime = 0;
 void loop() {
-  //nothing really.... this is all event based
+  //  //timing based setting setpoint and then requesting data back to plot
+  sendIntegerMsg(0x07, 0);
+  delay(2000);
+  for (float posSetpoint = 0.00; posSetpoint < (2 * M_PI); posSetpoint += 0.2) {
+    Serial.print("Time: ");
+    Serial.print(millis());
+    Serial.print('\t');
+    Serial.print("Setpoint:");
+    Serial.print('\t');
+    int set = (sin(posSetpoint) * 1000);
+    Serial.print(set);
+    sendIntegerMsg(0x07, set);
+    delay(80);
+    Serial.print('\t');
+    Serial.print("Position : ");
+    requestData(0x07, 6);
+    Serial.println(c1);
+    delay(500);
+  }
+  //  sendIntegerMsg(0x07, 1000);
+  //  delay(5000);
+  //  requestData(0x07, 6);
+  //  Serial.println(c1);
+  //  sendIntegerMsg(0x07, 0);
+  delay(10000);
 }
 
 
@@ -178,11 +214,11 @@ void findDevices() {
 */
 void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true);//create a request from an individual motor driver board for given number of bytes
-
+  //Serial.println("data is requested");
   // if we receive the expected number of bytes
   if (Wire.available() == numBytes) {
-    Serial.print("data recieved from: ");
-    Serial.println(address);
+    //Serial.print("data recieved from: ");
+    //Serial.println(address);
 
     // read data in one by one and store them into separate variables
     enc1 = Wire.read();
@@ -192,52 +228,51 @@ void requestData(int address, int numBytes) {
     current = Wire.read(); //current sent second
     int motorrpm = Wire.read();
 
+    inputcount1 = Wire.read();
+    inputcount2 = Wire.read();
+    inputcount = inputcount1;
+    inputcount = (inputcount << 8) | inputcount2;
+
+
+
     //print out received data
-    Serial.print("Encoder Count: ");
+    //Serial.print("Encoder Count: ");
     int readcount = count;
     if (readcount > 32768) { //prevent overflow of integer type from prolonged use of encoder
       readcount = 65535 - readcount;
       readcount *= -1;
     }
-    Serial.print(readcount);
-    Serial.print('\t');
+    //    Serial.print(readcount);
+    //    Serial.print('\t');
 
     float readcurrent = current / 510.0; //(255 * senseResistor) ; //get the ADC reading
 
-    Serial.print("Current: ");
-    Serial.print(readcurrent);
-    Serial.print('\t');
+    //    Serial.print("Current: ");
+    //    Serial.print(readcurrent);
+    //    Serial.print('\t');
 
     //set values into the send struct to send to the external ESP
     test.smdAddress = address;
     test.currentData = readcurrent * 100; //floats had issues sending over ESP-NOW, multiply by 100 and send as an int
     test.encoderData = readcount;
-    Serial.print("motor rpm:  ");
-    Serial.println(motorrpm);
+    //    Serial.print("motor rpm:  ");
+    //    Serial.println(motorrpm);
+
+
+    //print out received data
+    //    Serial.print("You sent this to the SAMI: ");
+    int readinputcount = inputcount;
+    if (readinputcount > 32768) { //prevent overflow of integer type from prolonged use of encoder
+      readinputcount = 65535 - readcount;
+      readinputcount *= -1;
+    }
+    //    Serial.print(readinputcount);
+    //    Serial.print('\t');
 
     // if the address is one of the cable motors (4,5,6), calculate their cable lengths with encoder data
-    if (address == 0x04) {
+    if (address == 0x07) {
       c1 = readcount; //encoder count variable for cable 1
       l1 = calcCablelen(c1);
-    } else if (address == 0x05) {
-      c2 = readcount; //encoder count variable for cable 2
-      l2 = calcCablelen(c2);
-    }
-    else if (address == 0x06) {
-      c3 = readcount; //encoder count variable for cable 3
-      l3 = calcCablelen(c3);
-
-    }
-
-    // Serial.println(test.encoderData);
-
-    //send the message - first argument is mac address, if you pass 0 then it sends the same message to all registered peers
-    esp_err_t result = esp_now_send(0, (uint8_t *) &test, sizeof(data_struct));
-    if (result == ESP_OK) {
-      //Serial.println("Sent with success");
-    }
-    else {
-      //Serial.println("Error sending the data");
     }
 
   }
@@ -251,6 +286,28 @@ void requestData(int address, int numBytes) {
 void sendMsg(int address, char message) {
   Wire.beginTransmission(address); //open up I2C bus
   Wire.write(message); //write a message
+  int error = Wire.endTransmission();
+  if (error != 0) { //if we receive an error, print it out
+    Serial.println("Error sending command: ");
+    Serial.println(error);
+  }
+  else {
+    // Serial.println("Message sent");
+
+  }
+}
+
+/**
+   Sends a message to the provided smart motor driver address via I2C
+   @param address - the hexadecimal address of the motor driver board you want to send a message to
+   @param message - the character message you want to write to
+*/
+void sendIntegerMsg(int address, int message) {
+  Wire.beginTransmission(address); //open up I2C bus
+  data[0] = (message >> 8) & 0xFF;
+  data[1] = message & 0xFF;
+  Wire.write(data, 2); //write a message
+
   int error = Wire.endTransmission();
   if (error != 0) { //if we receive an error, print it out
     Serial.println("Error sending command: ");
@@ -298,138 +355,41 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   memcpy(&myData, incomingData, sizeof(myData)); //copy content of incomingdata variable into mydata variable
 
-  //  Serial.print("Bytes received: ");
-  //  Serial.println(len);
-  //  Serial.print("Data Received: ");
-  //  Serial.println(myData.wifiData);
-  //  Serial.println();
+  int s = myData.s;
+  int theta = myData.theta;
+  int phi = myData.phi;
 
-  // convert data into an integer to figure out what command was sent from the controller
-  int commanddata = myData.wifiData.toInt();
+  invCableKin(s, theta, phi); //calculate inverse kinematics
+  //fwCableKin(l1Setpoint,l2Setpoint,l3Setpoint); //calculate forward kinematics using setpoints
+  if (s == 0.0 && theta == 0.0 && phi == 0.0) {
+    Serial.println("back to home!");
+    sendIntegerMsg(0x04, 1);
+    sendIntegerMsg(0x05, 1);
+    sendIntegerMsg(0x06, 1);
+  } else {
+    //calculate encoder counts required to reach desired position
+    encL1 = calcEncCounts(l1Setpoint);
+    encL2 = calcEncCounts(l2Setpoint);
+    encL3 = calcEncCounts(l3Setpoint);
 
-  /*********************
-     Controller Responses
-   *********************/
+    Serial.print("ENC L1: ");
+    Serial.print(encL1);
+    Serial.print(" ENC L2: ");
+    Serial.print(encL2);
+    Serial.print(" ENC L3: ");
+    Serial.println(encL3);
 
-  /**
-     button pad - drive the lead screw and request data
-  */
+    //send messages to sami boards to control the cables
+    sendIntegerMsg(0x04, encL1);
+    sendIntegerMsg(0x05, encL2);
+    sendIntegerMsg(0x06, encL3);
+    Serial.println("messages sent");
 
-  if (commanddata == 1) { //Y button - lead screw up
-    driveleadscrew(1); /// fix
-    Serial.println("lead screw up");
-  }
-  else if (commanddata == 4) { //A button - lead screw down
-    driveleadscrew(2); /// fix
-    Serial.println("lead screw down");
+    //requestData(0x04, 5);
+    Serial.println("requesting data");
+    //requestData(0x05, 6);
+    // requestData(0x06, 5);
 
-  }
-  else if (commanddata == 2) { //X button - send data back from all motors
-    Serial.println("requesting Data");
-    requestData(0x01, 4);
-    requestData(0x02, 4);
-    requestData(0x03, 4);
-    requestData(0x04, 4);
-    requestData(0x05, 4);
-    requestData(0x06, 4);
-    requestData(0x07, 4);
-    invCableKin(l1, l2, l3); //do the inv kinematics i guess
-  }
-
-
-  /**
-     D-Pad - control the cable motors
-  */
-
-  else if (commanddata == 10) { //dpad = 0 - home
-    Serial.println("homing cables");
-    drivecables(0, 0, 0);
-    drive(0);
-    driveleadscrew(0);
-    //this will be something based off of current sensors later i imagine
-  }
-  else if (commanddata == 11) { //dpad = 1 - all cables down
-    Serial.println("all cables down");
-    //drivecables(12, 12, 12);
-  }
-  else if (commanddata == 12) { //dpad = 2 - cable 1 down
-    Serial.println("cable 1 down");
-    drivecables(12, 0, 0);
-  }
-  else if (commanddata == 13) { //dpad = 3 - cable 1 and 2 down
-    Serial.println("cable 1 and 2 down");
-    drivecables(12, 12, 0);
-  }
-  else if (commanddata == 14) { //dpad = 4 - cable 2 down
-    Serial.println("cable 2 down ");
-    drivecables(0, 12, 0);
-  }
-  else if (commanddata == 15) { //dpad = 5 - cable 2 and 3 down
-    Serial.println("cables 2 and 3 down");
-    drivecables(0, 12, 12);
-  }
-  else if (commanddata == 16) { //dpad = 6 - cable 3 down
-    Serial.println("cable 3 down");
-    drivecables(0, 0, 12);
-  }
-  else if (commanddata == 17) { //dpad = 7 - all cables up
-    Serial.println("all cables up");
-    //drivecables(13, 13, 13);
-  }
-  else if (commanddata == 18) { //reverse cable 1
-    Serial.println("cable 1 up");
-    drivecables(13, 0, 0);
-  }
-  else if (commanddata == 19) { //reverse cable 2
-    Serial.println("cable 2 up");
-    drivecables(0, 13, 0);
-  }
-  else if (commanddata == 20) { //reverse cable 3
-    Serial.println("cable 3 up");
-    drivecables(0, 0, 13);
-  }
-
-
-  /**
-     wheel driving - drive wheels and lead screw based on current sensing
-  */
-
-  else if (commanddata == 8) { //right bumper - drive forward fast
-    Serial.println("drive forward");
-    drive(8);
-  }
-  else if (commanddata == 9) { //left bumper - drive backward fast
-    drive(9);
-    Serial.println("drive backward");
-  }
-  else if (commanddata == 21) { //right bumper - drive forward fast
-    Serial.println("drive forward");
-    drive(10);
-  }
-  else if (commanddata == 22) { //right bumper - drive forward fast
-    Serial.println("drive forward");
-    drive(11);
-  }
-  else if (commanddata == 23) {
-    Serial.println("close lead screw w/ current");
-    driveleadscrew(3);
-  }
-  else if (commanddata == 24) {
-    Serial.println("open lead screw w/ current");
-    driveleadscrew(4);
-  }
-//  else if (commanddata == 25){
-//    drivecables(0,0,14);
-//    Serial.println("pid position test"); 
-//  }
-  //brake motors
-  else if (commanddata == 0) { //brake all motors/do nothing
-    drive(0);
-    drivecables(0, 0, 0);
-  }
-  else if (commanddata == 256) { //brake all motors
-    drive(0);
-    drivecables(0, 0, 0);
   }
 
 }
@@ -494,12 +454,25 @@ float calcCablelen(int enccounts) {
 }
 
 /**
+   Calculates the encoder counts required to get to a cable length
+   @param cableLen - the desired length of cable
+   @return float enccounts - number of encoder counts
+*/
+float calcEncCounts(float cableLen) {
+  float deltacablelen = 4.0 - cableLen; //calculate difference in cable lenghs from current to setpoint
+  float shaftRotations = deltacablelen / (M_PI * drumdiameter); //calculate number of output shaft rotations required to get there
+  float encRotations = shaftRotations * motorGearRatio; //calculate number of encoder rotations to get there
+  int16_t enccounts = encRotations * encTicksPerRev; // calculate number of encoder counts
+  return enccounts;
+}
+
+/**
    Calculates the inverse kinematics (bending angle - theta, arc length - S, bending direction - phi) of the cables given the cable lengths
    @param l1 - float length of cable 1
    @param l2 - float length of cable 2
    @param l3 - float length of cable 3
 */
-void invCableKin (float l1, float l2, float l3) {
+void fwCableKin (float l1, float l2, float l3) {
   // calc S, theta, and phi
   Serial.print("L1, L2, L3, respectively: ");
   Serial.print(l1);
@@ -508,17 +481,55 @@ void invCableKin (float l1, float l2, float l3) {
   Serial.print('\t');
   Serial.println(l3);
 
-
   s = (3 * L0 + l1 + l2 + l3) / 3;
   Serial.print("S is: ");
   Serial.print(s);
   Serial.print('\t');
-  theta = 2 * sqrt((3 * (l1 * l1) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
-  Serial.print("theta is: ");
+  theta = 2 * sqrt((pow(l1, 2) + pow(l2, 2) + pow(l3, 2) - l1 * l2 - l1 * l3 - l2 * l3) / (3 * r));
+  float thetadeg = theta * (180 / M_PI);
+  Serial.print("theta degrees is: ");
+  Serial.print(thetadeg);
+  Serial.print('\t');
+  phi = atan2((sqrt(3) * (l3 - l2)) , (l2 + l3 - 2 * l1));
+
+  float phideg = phi * (180 / M_PI);
+
+  Serial.print("phi degrees is: ");
+  Serial.println(phideg);
+}
+
+/**
+   Calculates the required cable lengths of the robot to achieve the desired curvature, k , segment length, s, rotation around z axis, phi
+   @param k - the curvature of the robot in inches
+   @param s - the segment length of the robot in inches
+   @param phi - the rotation around the z axis, phi
+*/
+void invCableKin (float s, float theta, float phi) {
+
+  //print out inputs to ensure they are being received correctly
+  Serial.print("s, theta, phi, respectively: ");
+  Serial.print(s);
+  Serial.print('\t');
   Serial.print(theta);
   Serial.print('\t');
-  phi = atan((sqrt(3) * (l3 - l2)) / (l2 + l3 - 2 * l1));
-
-  Serial.print("phi is: ");
   Serial.println(phi);
+
+  float thetarad = theta * (M_PI / 180);
+  float phirad = phi * (M_PI / 180);
+  float c1 = 2.0 * n * sin((thetarad) / (2.0 * n));
+  float kappa = thetarad / s;
+  Serial.print("c1 is ");
+  Serial.println(c1);
+  //Calc L1, L2, L3 using forward kinematics equations from SRL paper
+  l1Setpoint = c1 * ((1.0 / kappa) - (d * sin(phirad)));
+  l2Setpoint = c1 * ((1.0 / kappa) + (d * sin((M_PI / 3) + phirad)));
+  l3Setpoint = c1 * ((1.0 / kappa) - (d * sin((M_PI / 6) + phirad)));
+
+  //print out outputs to ensure they are reasonable
+  Serial.print("L1, L2, L3, respectively: ");
+  Serial.print(l1Setpoint);
+  Serial.print('\t');
+  Serial.print(l2Setpoint);
+  Serial.print('\t');
+  Serial.println(l3Setpoint);
 }

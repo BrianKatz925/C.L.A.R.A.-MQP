@@ -99,8 +99,8 @@ void setup() {
   pinMode(enc2, INPUT);
 
   //attach interrupts on both encoders w/ isr callback functions for each of them - speeds up ISRs
-  attachInterrupt(digitalPinToInterrupt(enc1), isr1, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(enc1), isr1, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
 
   //set up I2C event channels
   Wire.onRequest(requestEvent); //upon receiving a request from the master, call requestEvent
