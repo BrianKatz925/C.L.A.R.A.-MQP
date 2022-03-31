@@ -215,12 +215,14 @@ void brake() {
 long lastpidtarget = 0;
 long sumError = 0;
 bool pidposition(long pidtarget) {
-  float ppos = 0.2;
-  float ipos = 0.05;
-  float dpos = 0.0;
+  float ppos = 0.2; //coefficients for unloaded motor 
+  float ipos = 0.05; //coefficients for unloaded motor
+  float dpos = 0.0; //coefficients for unloaded motor
+
+  
   //  if (address == 0x05){
   //    pidtarget = -1* pidtarget;
-  //  }
+  //  }    
   if (pidtarget != lastpidtarget) sumError = 0;
   lastpidtarget = pidtarget;
   long error = pidtarget - count;
