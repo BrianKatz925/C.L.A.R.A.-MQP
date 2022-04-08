@@ -235,19 +235,19 @@ String interpretData(String data) {
     return "11";
   }
   if (dpadval == 2) { //cable 1 down
-    return "12";
+    return "24";
   }
   if (dpadval == 3) { //cable 1 +2 down
     return "13";
   }
   if (dpadval == 4) { //cable 2 down
-    return "14";
+    return "25";
   }
   if (dpadval == 5) { //cable 2 + 3 down
     return "15";
   }
   if (dpadval == 6) { //cable 3 down
-    return "16";
+    return "26";
   } if (dpadval == 7) { //dpad 7 - all up
     return "17";
   }

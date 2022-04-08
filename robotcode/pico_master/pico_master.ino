@@ -352,7 +352,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("all cables down");
     //drivecables(12, 12, 12);
   }
-  else if (commanddata == 12) { //dpad = 2 - cable 1 down
+  else if (commanddata == 24) { //dpad = 2 - cable 1 down
     Serial.println("cable 1 down");
     drivecables(12, 0, 0);
   }
@@ -360,7 +360,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("cable 1 and 2 down");
     drivecables(12, 12, 0);
   }
-  else if (commanddata == 14) { //dpad = 4 - cable 2 down
+  else if (commanddata == 25) { //dpad = 4 - cable 2 down
     Serial.println("cable 2 down ");
     drivecables(0, 12, 0);
   }
@@ -368,7 +368,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     Serial.println("cables 2 and 3 down");
     drivecables(0, 12, 12);
   }
-  else if (commanddata == 16) { //dpad = 6 - cable 3 down
+  else if (commanddata == 26) { //dpad = 6 - cable 3 down
     Serial.println("cable 3 down");
     drivecables(0, 0, 12);
   }
