@@ -128,24 +128,28 @@ void setup()
   //  }
 }
 long lastTime = 0;
+uint16_t current7 = 0; 
 void loop() {
   //  //timing based setting setpoint and then requesting data back to plot
   sendIntegerMsg(0x07, 0);
-  delay(2000);
-  for (float posSetpoint = 0.00; posSetpoint < (2 * M_PI); posSetpoint += 0.2) {
+  delay(6000);
+  for (uint16_t posSetpoint = 0; posSetpoint <2000; posSetpoint += 100) {
     Serial.print("Time: ");
     Serial.print(millis());
     Serial.print('\t');
     Serial.print("Setpoint:");
     Serial.print('\t');
-    int set = (sin(posSetpoint) * 1000);
-    Serial.print(set);
-    sendIntegerMsg(0x07, set);
-    delay(100);
+    int set = (posSetpoint);
+    Serial.print(-set);
+    sendIntegerMsg(0x07, -set);
+    delay(500);
     Serial.print('\t');
     Serial.print("Position : ");
     requestData(0x07, 6);
-    Serial.println(c1);
+    Serial.print(c1);
+    Serial.print('\t');
+    Serial.print("Current: ");
+    Serial.println(current7);
     delay(500);
   }
   //  sendIntegerMsg(0x07, 1000);
@@ -212,6 +216,9 @@ void findDevices() {
    @param address - the hexadecimal I2C address of the motor driver you are requesting data from
    @param numBytes - the number of bytes you are requesting from the motor driver board over I2C
 */
+int current1 = 0; 
+int current2 = 0;
+
 void requestData(int address, int numBytes) {
   Wire.requestFrom(address, numBytes, true);//create a request from an individual motor driver board for given number of bytes
   //Serial.println("data is requested");
@@ -225,8 +232,11 @@ void requestData(int address, int numBytes) {
     enc2 = Wire.read();
     count = enc1;
     count = (count << 8) | enc2; //put the two bytes back together to get encoder count
-    current = Wire.read(); //current sent second
-    int motorrpm = Wire.read();
+    current1 = Wire.read(); //current sent second
+    current2 = Wire.read();
+
+    current = current1;
+    current = (current << 8) | current2 ;
 
     inputcount1 = Wire.read();
     inputcount2 = Wire.read();
@@ -273,6 +283,7 @@ void requestData(int address, int numBytes) {
     if (address == 0x07) {
       c1 = readcount; //encoder count variable for cable 1
       l1 = calcCablelen(c1);
+      current7 = current;
     }
 
   }

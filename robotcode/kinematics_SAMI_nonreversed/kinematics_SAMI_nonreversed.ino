@@ -54,8 +54,8 @@ int slowRPM = 35;
 int fastRPM = 25;
 
 //Current Sensor variables
-float stall_current = 0.00; // 0.25; //current value when motor is stalled
-float motorCurrent = 0.00; //data variable representing motor current sent through I2C to mainboard
+float stall_current = 0.00;// 0.25; //current value when motor is stalled
+uint16_t motorCurrent = 0; //data variable representing motor current sent through I2C to mainboard
 //bool motorstalled;
 long lastTime = 0; //previous time current was checked
 bool motorstalleddown, motorstalledup; //motor stalled variables
@@ -119,7 +119,9 @@ void setup() {
 
 long pidtarget = 0;
 void loop() {
+  motorCurrent = analogRead(currentRead);
   if ((millis() - lastTime) >= 10) { //calculate PID every 20ms
+    
     if (pidposition(pidtarget)) {
       brake;
     }
@@ -215,14 +217,14 @@ void brake() {
 long lastpidtarget = 0;
 long sumError = 0;
 bool pidposition(long pidtarget) {
-  float ppos = 0.2; //coefficients for unloaded motor 
+  float ppos = 0.2; //coefficients for unloaded motor
   float ipos = 0.05; //coefficients for unloaded motor
   float dpos = 0.0; //coefficients for unloaded motor
 
-  
+
   //  if (address == 0x05){
   //    pidtarget = -1* pidtarget;
-  //  }    
+  //  }
   if (pidtarget != lastpidtarget) sumError = 0;
   lastpidtarget = pidtarget;
   long error = pidtarget - count;
@@ -269,8 +271,8 @@ void requestEvent() {
   //split the int encoder count into multiple bytes
   data[0] = (count >> 8) & 0xFF;
   data[1] = count & 0xFF;
-  data[2] = motorCurrent;
-  data[3] = motSpeed;
+  data[2] = (motorCurrent >> 8) & 0xFF;
+  data[3] = motorCurrent & 0xFF;
   data[4] = (inputcount >> 8) & 0xFF;
   data[5] = inputcount & 0xFF;
 
