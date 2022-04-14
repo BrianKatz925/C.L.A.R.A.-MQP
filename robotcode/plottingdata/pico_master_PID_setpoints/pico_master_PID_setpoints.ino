@@ -128,30 +128,49 @@ void setup()
   //  }
 }
 long lastTime = 0;
-uint16_t current7 = 0; 
+uint16_t current7 = 0;
 void loop() {
-  //  //timing based setting setpoint and then requesting data back to plot
+  //try just sending to setpoint and then asking again
   sendIntegerMsg(0x07, 0);
   delay(6000);
-  for (uint16_t posSetpoint = 0; posSetpoint <2000; posSetpoint += 100) {
+  sendIntegerMsg(0x07, -4000);
+  for (int i = 0; i < 200; i++) {
+    requestData(0x07, 6);
     Serial.print("Time: ");
     Serial.print(millis());
     Serial.print('\t');
-    Serial.print("Setpoint:");
-    Serial.print('\t');
-    int set = (posSetpoint);
-    Serial.print(-set);
-    sendIntegerMsg(0x07, -set);
-    delay(500);
     Serial.print('\t');
     Serial.print("Position : ");
-    requestData(0x07, 6);
     Serial.print(c1);
     Serial.print('\t');
     Serial.print("Current: ");
     Serial.println(current7);
-    delay(500);
+    delay(10);
   }
+
+
+  //  //  //timing based setting setpoint and then requesting data back to plot
+  //  sendIntegerMsg(0x07, 0);
+  //  delay(6000);
+  //  for (uint16_t posSetpoint = 0; posSetpoint <2000; posSetpoint += 100) {
+  //    Serial.print("Time: ");
+  //    Serial.print(millis());
+  //    Serial.print('\t');
+  //    Serial.print("Setpoint:");
+  //    Serial.print('\t');
+  //    int set = (posSetpoint);
+  //    Serial.print(-set);
+  //    sendIntegerMsg(0x07, -set);
+  //    delay(500);
+  //    Serial.print('\t');
+  //    Serial.print("Position : ");
+  //    requestData(0x07, 6);
+  //    Serial.print(c1);
+  //    Serial.print('\t');
+  //    Serial.print("Current: ");
+  //    Serial.println(current7);
+  //    delay(500);
+  //  }
   //  sendIntegerMsg(0x07, 1000);
   //  delay(5000);
   //  requestData(0x07, 6);
@@ -216,7 +235,7 @@ void findDevices() {
    @param address - the hexadecimal I2C address of the motor driver you are requesting data from
    @param numBytes - the number of bytes you are requesting from the motor driver board over I2C
 */
-int current1 = 0; 
+int current1 = 0;
 int current2 = 0;
 
 void requestData(int address, int numBytes) {
