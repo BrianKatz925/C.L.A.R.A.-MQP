@@ -78,7 +78,7 @@ float l1Setpoint, l2Setpoint, l3Setpoint = 0.0;
 byte data[2]; //I2c data array
 byte inputcount1, inputcount2;
 int inputcount = 0;
-
+int motspeed = 0; 
 
 
 
@@ -132,8 +132,8 @@ uint16_t current7 = 0;
 void loop() {
   //try just sending to setpoint and then asking again
   sendIntegerMsg(0x07, 0);
-  delay(6000);
-  sendIntegerMsg(0x07, -4000);
+  delay(5000);
+  sendIntegerMsg(0x07, 4000);
   for (int i = 0; i < 200; i++) {
     requestData(0x07, 6);
     Serial.print("Time: ");
@@ -143,8 +143,8 @@ void loop() {
     Serial.print("Position : ");
     Serial.print(c1);
     Serial.print('\t');
-    Serial.print("Current: ");
-    Serial.println(current7);
+    Serial.print("speed: ");
+    Serial.println(motspeed);
     delay(10);
   }
 
@@ -252,15 +252,16 @@ void requestData(int address, int numBytes) {
     count = enc1;
     count = (count << 8) | enc2; //put the two bytes back together to get encoder count
     current1 = Wire.read(); //current sent second
-    current2 = Wire.read();
+  // current2 = Wire.read();
+   // int speedrpm = Wire.read();
 
     current = current1;
     current = (current << 8) | current2 ;
-
-    inputcount1 = Wire.read();
-    inputcount2 = Wire.read();
-    inputcount = inputcount1;
-    inputcount = (inputcount << 8) | inputcount2;
+//
+//    inputcount1 = Wire.read();
+//    inputcount2 = Wire.read();
+//    inputcount = inputcount1;
+//    inputcount = (inputcount << 8) | inputcount2;
 
 
 
@@ -303,6 +304,7 @@ void requestData(int address, int numBytes) {
       c1 = readcount; //encoder count variable for cable 1
       l1 = calcCablelen(c1);
       current7 = current;
+     // motspeed = speedrpm;
     }
 
   }

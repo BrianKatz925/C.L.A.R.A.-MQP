@@ -49,8 +49,8 @@
 //Motor speed definitions
 int slow = 100; //default slow speed
 int fast = 500; //default fast speed
-int fastSpeed = 255; //cabl75e motor speeds - this gets changed throughout the program
-int slowRPM = 75;
+int fastSpeed = 255; //cable motor speeds - this gets changed throughout the program
+int slowRPM = 35;
 int fastRPM = 25;
 
 //Current Sensor variables
@@ -69,7 +69,7 @@ char I2Cstatus = '0'; //I2C command sent from Mainboard
 byte data[4]; //the data variable to be sent along I2C
 
 //PID variables
-float kp = 0.2; //proportional constant
+int kp = 4; //proportional constant
 int result = 0; //PID result placeholder variable
 int lastcount = 0; //placeholder for previous count of encoder ticks
 int motSpeed = 0; //motor speed, RPM
@@ -100,7 +100,7 @@ void setup() {
 
   //attach interrupts on both encoders w/ isr callback functions for each of them - speeds up ISRs
   attachInterrupt(digitalPinToInterrupt(enc1), isr1, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(enc2), isr2, CHANGE);
 
   //set up I2C event channels
   Wire.onRequest(requestEvent); //upon receiving a request from the master, call requestEvent
@@ -116,14 +116,14 @@ void setup() {
 
 
 void loop() {
-  if ((millis() - lastTime) >= 10) { //calculate PID every 20ms
+  if ((millis() - lastTime) >= 20) { //calculate PID every 20ms
 
     //calculate current RPM and compute PID with it
     countdiff = count - lastcount; //difference in encoder count
     lastcount = count;
 
     //calculate motor speed in RPM
-    motSpeed = abs(countdiff * 1.67); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
+    motSpeed = abs(countdiff * 0.84); //((1000*60)/(12*20*Ngear))) i dont know why it hates actual math.u.. ;
     currenterror = targetSpeed - motSpeed; //calculate current error from our target speed
     calcSpeedPID = calcPID(currenterror); //calculate PID
     //cablelength = calcCablelen(count)*10;

@@ -119,8 +119,9 @@ void setup() {
 
 long pidtarget = 0;
 void loop() {
-  if ((millis() - lastTime) >= 5) { //calculate PID every 20ms
-     motorCurrent = analogRead(currentRead);
+  motorCurrent = analogRead(currentRead);
+  if ((millis() - lastTime) >= 10) { //calculate PID every 20ms
+    
     if (pidposition(pidtarget)) {
       brake;
     }
