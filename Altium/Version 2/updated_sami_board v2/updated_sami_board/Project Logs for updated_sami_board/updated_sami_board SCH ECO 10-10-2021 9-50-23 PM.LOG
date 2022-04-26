@@ -1,0 +1,5 @@
+Add Pin To Net: Pin=U3-3 Old Net=NetU3_3 New Net=GND
+Add Pin To Net: Pin=U3-4 Old Net=NetU3_4 New Net=VCC
+Add Pin To Net: Pin=U3-5 Old Net=NetU3_5 New Net=GND
+Add Pin To Net: Pin=U3-18 Old Net=NetU3_18 New Net=VCC
+Add Pin To Net: Pin=U3-20 Old Net=NetU3_20 New Net=VCC

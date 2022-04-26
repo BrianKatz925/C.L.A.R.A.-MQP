@@ -1,0 +1,12 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [CLARA Mainboard.PrjPcb]
+   Generated File[CLARA_Mainboard.TXT]
+   Generated File[CLARA_Mainboard.LDP]
+   Generated File[CLARA_Mainboard.DRR]
+
+
+Files Generated   : 3
+Documents Printed : 0
+
+Finished Output Generation At 10:35:08 AM On 11/21/2021

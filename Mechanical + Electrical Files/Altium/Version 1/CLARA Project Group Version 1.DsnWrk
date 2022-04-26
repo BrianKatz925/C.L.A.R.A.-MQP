@@ -1,0 +1,10 @@
+[ProjectGroup]
+Version=1.0
+[Project1]
+ProjectPath=6PinContactPad\6PinContactPad.LibPkg
+[Project2]
+ProjectPath=CLARA Mainboard\CLARA Mainboard.PrjPcb
+[Project3]
+ProjectPath=updated_sami_board\updated_sami_board\updated_sami_board.PrjPcb
+[Project4]
+ProjectPath=CLARA Mainboard\TinyPico Integrated Library.LibPkg

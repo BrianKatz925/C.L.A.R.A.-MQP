@@ -1,0 +1,19 @@
+Added Pin To Net: NetName=VM1 Pin=J1-1
+Added Net: Name=VM1
+Added Pin To Net: NetName=VM2 Pin=J2-1
+Added Net: Name=VM2
+Added Pin To Net: NetName=VM3 Pin=J3-1
+Added Net: Name=VM3
+Added Pin To Net: NetName=VM4 Pin=J4-1
+Added Net: Name=VM4
+Added Pin To Net: NetName=VM5 Pin=J5-1
+Added Net: Name=VM5
+Added Pin To Net: NetName=VM6 Pin=J6-1
+Added Net: Name=VM6
+Added Pin To Net: NetName=VM7 Pin=J7-1
+Added Net: Name=VM7
+Added Pin To Net: NetName=VM8 Pin=J8-1
+Added Net: Name=VM8
+Added Pin To Net: NetName=VM9 Pin=J9-1
+Added Net: Name=VM9
+Added Room: Name=Microcontroller Schematic

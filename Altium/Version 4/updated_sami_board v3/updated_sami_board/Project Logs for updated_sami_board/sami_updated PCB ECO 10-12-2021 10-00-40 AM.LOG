@@ -1,0 +1,13 @@
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=R1-1
+Removed Pin From Net: NetName=M+ Pin=R1-2
+Change Component Footprint: Designator=R1 Old Footprint=RESC2013X50X40ML20T20 New Footprint=RES_SMF5_TYCO_TYC
+Change Component Comment : Designator=R1 Old Comment=RL1220S-R10-F - 100mOhm New Comment=SMW5R27JT - 0.27 Ohm - 5W
+Change Managed Component Library Link : Designator=R1 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=F575FDB0-EF8C-4BE8-A291-53FB39F6017D New ItemGUID= Old RevisionGUID=03C2F35C-9828-4F2D-8AA9-4983EE36E936 New RevisionGUID=
+Change component parameters: Designator = "R1" ("R1"); Footprint = "RESC2013X50X40ML20T20"; UniqueID = "\IODKKIAE" ("\IODKKIAE")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SMW5R27JT"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "TE Connectivity"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=M+ Pin=R1-1
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=R1-2

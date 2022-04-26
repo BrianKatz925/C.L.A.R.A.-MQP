@@ -1,0 +1,10 @@
+Added Component: Designator=ContactPad(6PinContactPad)
+Added Pin To Net: NetName=MISO Pin=ContactPad-1
+Added Pin To Net: NetName=SCK Pin=ContactPad-2
+Added Pin To Net: NetName=RESET Pin=ContactPad-3
+Added Pin To Net: NetName=VCC Pin=ContactPad-4
+Added Pin To Net: NetName=MOSI Pin=ContactPad-5
+Added Pin To Net: NetName=GND Pin=ContactPad-6
+Change Class Name : Old Net Name=updated_sami_board New Net Name=updated_sami_board_v2
+Added Member To Class: ClassName=updated_sami_board_v2 Member=Component ContactPad 6 Pin Contact Pad
+Added Member To Class: ClassName=updated_sami_board_v2 Member=Component Y1 CSTNE16M0V53C000R0 - 16 MHz Crystal

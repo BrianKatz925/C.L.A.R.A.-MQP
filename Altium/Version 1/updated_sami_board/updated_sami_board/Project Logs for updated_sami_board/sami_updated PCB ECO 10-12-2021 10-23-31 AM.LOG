@@ -1,0 +1,7 @@
+Change Component Footprint: Designator=R1 Old Footprint=RESC2013X50X40ML20T20 New Footprint=RESC2013X50X40NL20T20
+Change Component Comment : Designator=R1 Old Comment=RL1220S-R10-F - 100mOhm New Comment=RL1220S-R27-F - 0.27 Ohm - 1/3W
+Change Managed Component Library Link : Designator=R1 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=F575FDB0-EF8C-4BE8-A291-53FB39F6017D New ItemGUID=43F3253D-A8A3-444B-8E80-6D1455085F06 Old RevisionGUID=03C2F35C-9828-4F2D-8AA9-4983EE36E936 New RevisionGUID=8D9F36CC-416A-4A6B-8483-8A5C3FCFE862
+Change component parameters: Designator = "R1" ("R1"); Footprint = "RESC2013X50X40ML20T20"; UniqueID = "\AVXPHUUW" ("\AVXPHUUW")
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Susumu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Part Number"; Value = "RL1220S-R27-F"; VariantName = "[No Variations]"
+Added Member To Class: ClassName=updated_sami_board Member=Component J2 S5B-ZR-SM4A-TF (LF) (SN)

@@ -1,0 +1,6 @@
+Change Component Footprint: Designator=R1 Old Footprint=RES_ADJ_0805_YAGEO New Footprint=RESC2013X50X40ML20T20
+Change Component Comment : Designator=R1 Old Comment=100mR New Comment=RL1220S-R10-F - 100mOhm
+Change Managed Component Library Link : Designator=R1 Old VaultGUID= New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID= New ItemGUID=F575FDB0-EF8C-4BE8-A291-53FB39F6017D Old RevisionGUID= New RevisionGUID=03C2F35C-9828-4F2D-8AA9-4983EE36E936
+Change component parameters: Designator = "R1" ("R1"); Footprint = "RES_ADJ_0805_YAGEO"; UniqueID = "\EBXUPTKG" ("\EBXUPTKG")
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Susumu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Part Number"; Value = "RL1220S-R10-F"; VariantName = "[No Variations]"

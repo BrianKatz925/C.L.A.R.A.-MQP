@@ -1,0 +1,117 @@
+Added Component: Designator=*(TinyPICO Board)
+Added Component: Designator=J1(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J2(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J3(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J4(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J5(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J6(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J7(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J8(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J9(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=VM Pin=*-3V3
+Added Pin To Net: NetName=VCC Pin=*-5V
+Added Pin To Net: NetName=SDA Pin=*-21
+Added Pin To Net: NetName=SCL Pin=*-22
+Added Pin To Net: NetName=GND Pin=*-G
+Added Pin To Net: NetName=GND Pin=*-G
+Added Pin To Net: NetName=VM Pin=J1-1
+Added Pin To Net: NetName=VCC Pin=J1-2
+Added Pin To Net: NetName=GND Pin=J1-3
+Added Pin To Net: NetName=SDA Pin=J1-4
+Added Pin To Net: NetName=SCL Pin=J1-5
+Added Pin To Net: NetName=VM Pin=J2-1
+Added Pin To Net: NetName=VCC Pin=J2-2
+Added Pin To Net: NetName=GND Pin=J2-3
+Added Pin To Net: NetName=SDA Pin=J2-4
+Added Pin To Net: NetName=SCL Pin=J2-5
+Added Pin To Net: NetName=VM Pin=J3-1
+Added Pin To Net: NetName=VCC Pin=J3-2
+Added Pin To Net: NetName=GND Pin=J3-3
+Added Pin To Net: NetName=SDA Pin=J3-4
+Added Pin To Net: NetName=SCL Pin=J3-5
+Added Pin To Net: NetName=VM Pin=J4-1
+Added Pin To Net: NetName=VCC Pin=J4-2
+Added Pin To Net: NetName=GND Pin=J4-3
+Added Pin To Net: NetName=SDA Pin=J4-4
+Added Pin To Net: NetName=SCL Pin=J4-5
+Added Pin To Net: NetName=VM Pin=J5-1
+Added Pin To Net: NetName=VCC Pin=J5-2
+Added Pin To Net: NetName=GND Pin=J5-3
+Added Pin To Net: NetName=SDA Pin=J5-4
+Added Pin To Net: NetName=SCL Pin=J5-5
+Added Pin To Net: NetName=VM Pin=J6-1
+Added Pin To Net: NetName=VCC Pin=J6-2
+Added Pin To Net: NetName=GND Pin=J6-3
+Added Pin To Net: NetName=SDA Pin=J6-4
+Added Pin To Net: NetName=SCL Pin=J6-5
+Added Pin To Net: NetName=VM Pin=J7-1
+Added Pin To Net: NetName=VCC Pin=J7-2
+Added Pin To Net: NetName=GND Pin=J7-3
+Added Pin To Net: NetName=SDA Pin=J7-4
+Added Pin To Net: NetName=SCL Pin=J7-5
+Added Pin To Net: NetName=VM Pin=J8-1
+Added Pin To Net: NetName=VCC Pin=J8-2
+Added Pin To Net: NetName=GND Pin=J8-3
+Added Pin To Net: NetName=SDA Pin=J8-4
+Added Pin To Net: NetName=SCL Pin=J8-5
+Added Pin To Net: NetName=VM Pin=J9-1
+Added Pin To Net: NetName=VCC Pin=J9-2
+Added Pin To Net: NetName=GND Pin=J9-3
+Added Pin To Net: NetName=SDA Pin=J9-4
+Added Pin To Net: NetName=SCL Pin=J9-5
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component * TinyPICO
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J1 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J2 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J3 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J4 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J5 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J6 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J7 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J8 SM05B-GHS-TB(LF)(SN)
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J9 SM05B-GHS-TB(LF)(SN)
+Added Room: Name=Microcontroller Schematic

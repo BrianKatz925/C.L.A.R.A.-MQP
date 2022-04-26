@@ -1,0 +1,17 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: sami_updated.PcbDoc   10/15/2021  11:31:36 AM
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : sami_updated-RoundHoles.TXT
+ASCII SlotHoles File : sami_updated-SlotHoles.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      0.3mm (12mil)                                             Round             47        PTH        126.18mm (4.97inch)
+T2      1.02mm (40mil)                                            Slot              2         PTH        16.81mm (0.66inch)
+T3      0.762mm (30mil)                                           Round             3         NPTH       7.21mm (0.28inch)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              52
+
+Total Processing Time (hh:mm:ss) : 00:00:00

@@ -1,0 +1,29 @@
+Removed Pin From Net: NetName=GND Pin=C1-1
+Removed Pin From Net: NetName=GND Pin=C2-1
+Removed Pin From Net: NetName=VBAT Pin=C3-1
+Removed Pin From Net: NetName=GND Pin=C3-2
+Removed Pin From Net: NetName=BS_FEEDBACK Pin=C4-1
+Removed Pin From Net: NetName=GND Pin=C4-2
+Removed Pin From Net: NetName=GND Pin=D1-3
+Removed Pin From Net: NetName=BS_FEEDBACK Pin=L1-2
+Removed Pin From Net: NetName=VBAT Pin=R3-2
+Removed Pin From Net: NetName=BS_FEEDBACK Pin=U1-3
+Removed Pin From Net: NetName=BS_FEEDBACK Pin=U1-4
+Removed Pin From Net: NetName=GND Pin=U1-6
+Removed Pin From Net: NetName=VBAT Pin=U1-7
+Removed Member From Class: ClassName=Microcontroller Schematic Member=C1
+Removed Member From Class: ClassName=Microcontroller Schematic Member=C2
+Removed Member From Class: ClassName=Microcontroller Schematic Member=C3
+Removed Member From Class: ClassName=Microcontroller Schematic Member=C4
+Removed Member From Class: ClassName=Microcontroller Schematic Member=D1
+Removed Member From Class: ClassName=Microcontroller Schematic Member=L1
+Removed Member From Class: ClassName=Microcontroller Schematic Member=R3
+Removed Member From Class: ClassName=Microcontroller Schematic Member=U1
+Change Component Comment : Designator=R1 Old Comment=RMCF0402JT4K70 - 4.7 kOhm New Comment=RMCF0402JT4K70 - 4.7 kOhm - 1/16W
+Change Component Comment : Designator=R2 Old Comment=RMCF0402JT4K70 - 4.7 kOhm New Comment=RMCF0402JT4K70 - 4.7 kOhm - 1/16W
+Added Component: Designator=*(PCBComponent_1)
+Added Pin To Net: NetName=GND Pin=*-GND
+Added Pin To Net: NetName=VBAT Pin=*-VIN
+Added Pin To Net: NetName=BS_FEEDBACK Pin=*-VOUT
+Change Net Name : Old Net Name=BS_FEEDBACK New Net Name=VCC
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component * Pololu D24V10F3 3.3V Buck Regulator

@@ -1,0 +1,4 @@
+Added Component: Designator=*(PCBComponent_1)
+Added Pin To Net: NetName=M+ Pin=*-m+
+Added Pin To Net: NetName=M- Pin=*-m-
+Added Member To Class: ClassName=updated_sami_board_v2 Member=Component * Poluou motor

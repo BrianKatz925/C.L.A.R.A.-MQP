@@ -1,0 +1,7 @@
+Added Net: Name=GND
+Added Net: Name=SCL
+Added Net: Name=SDA
+Added Net: Name=VCC
+Added Net: Name=VM
+Added Class: Name=Microcontroller Schematic
+Added Room: Name=Microcontroller Schematic

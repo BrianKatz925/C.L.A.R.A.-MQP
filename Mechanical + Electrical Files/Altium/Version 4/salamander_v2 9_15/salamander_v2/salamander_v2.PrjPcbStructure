@@ -1,0 +1,6 @@
+Record=TopLevelDocument|FileName=CABLE_MOTOR_DRIVERS.SchDoc|SheetNumber=3
+Record=NoMainPathDocument|SourceDocument=CABLE_MOTOR_DRIVERS.SchDoc|FileName=DRIVE_MOTORS.SchDoc|SheetNumber=5
+Record=NoMainPathDocument|SourceDocument=CABLE_MOTOR_DRIVERS.SchDoc|FileName=ESP32_MICROCONTROLLER.SchDoc|SheetNumber=1
+Record=NoMainPathDocument|SourceDocument=CABLE_MOTOR_DRIVERS.SchDoc|FileName=ESP32_MOTORS.SchDoc|SheetNumber=6
+Record=NoMainPathDocument|SourceDocument=CABLE_MOTOR_DRIVERS.SchDoc|FileName=MICROCONTROLLER.SchDoc|SheetNumber=2
+Record=NoMainPathDocument|SourceDocument=CABLE_MOTOR_DRIVERS.SchDoc|FileName=MOTOR_CUR_SENS.SchDoc|SheetNumber=4

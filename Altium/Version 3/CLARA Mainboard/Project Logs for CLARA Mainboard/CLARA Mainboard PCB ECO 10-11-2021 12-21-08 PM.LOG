@@ -1,0 +1,78 @@
+Removed Pin From Net: NetName=VBAT Pin=J11-1
+Removed Pin From Net: NetName=VCC Pin=J11-2
+Removed Pin From Net: NetName=GND Pin=J11-3
+Removed Pin From Net: NetName=SDA Pin=J11-4
+Removed Pin From Net: NetName=SCL Pin=J11-5
+Removed Member From Class: ClassName=Microcontroller Schematic Member=J11
+Change Component Footprint: Designator=J1 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J2 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J3 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J4 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J5 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J6 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J7 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J8 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Footprint: Designator=J9 Old Footprint=CONN_SM05B-GHS-TB(LF)(SN)_JST New Footprint=CONN_S5B-ZR-SM4A-TF_JST
+Change Component Comment : Designator=J1 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J2 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J3 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J4 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J5 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J6 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J7 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J8 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change Component Comment : Designator=J9 Old Comment=SM05B-GHS-TB(LF)(SN) New Comment=S5B-ZR-SM4A-TF (LF) (SN)
+Change component parameters: Designator = "J1" ("J1"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\ZUFRPUKL" ("\ZUFRPUKL")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J2" ("J2"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\VKRADIJM" ("\VKRADIJM")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J3" ("J3"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\NLLJFNPA" ("\NLLJFNPA")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J4" ("J4"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\JOCIFKCR" ("\JOCIFKCR")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J5" ("J5"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\BCNGJLRA" ("\BCNGJLRA")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J6" ("J6"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\DPUPCHLN" ("\DPUPCHLN")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J7" ("J7"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\VKVZYAKT" ("\VKVZYAKT")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J8" ("J8"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\MCLKXBLX" ("\MCLKXBLX")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Change component parameters: Designator = "J9" ("J9"); Footprint = "CONN_SM05B-GHS-TB(LF)(SN)_JST"; UniqueID = "\FUGWPSMC" ("\FUGWPSMC")
+Change component parameters (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"

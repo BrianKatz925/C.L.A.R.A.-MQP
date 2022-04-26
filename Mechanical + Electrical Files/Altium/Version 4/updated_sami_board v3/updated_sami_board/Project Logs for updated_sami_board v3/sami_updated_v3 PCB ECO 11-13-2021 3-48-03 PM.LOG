@@ -1,0 +1,52 @@
+Removed Pin From Net: NetName=VCC Pin=C4-2
+Removed Pin From Net: NetName=VM Pin=C8-2
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=R1-1
+Removed Pin From Net: NetName=M+ Pin=R1-2
+Removed Pin From Net: NetName=INPUT1 Pin=U1-1
+Removed Pin From Net: NetName=INPUT2 Pin=U1-2
+Removed Pin From Net: NetName=INPUT3 Pin=U1-3
+Removed Pin From Net: NetName=INPUT4 Pin=U1-4
+Removed Pin From Net: NetName=M- Pin=U1-5
+Removed Pin From Net: NetName=GND Pin=U1-6
+Removed Pin From Net: NetName=VM Pin=U1-7
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=U1-8
+Removed Pin From Net: NetName=GND Pin=U1-9
+Removed Pin From Net: NetName=CURRENT_IN Pin=U2-1
+Removed Pin From Net: NetName=M+ Pin=U2-2
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=U2-3
+Removed Pin From Net: NetName=GND Pin=U2-4
+Removed Pin From Net: NetName=VCC Pin=U2-8
+Removed Member From Class: ClassName=updated_sami_board_v3 Member=U1
+Removed Member From Class: ClassName=updated_sami_board_v3 Member=U2
+Change Component Comment : Designator=R1 Old Comment=RL1220S-R27-F - 0.27 Ohm - 1/3W New Comment=RL1220S-R50-F
+Change Managed Component Library Link : Designator=R1 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=43F3253D-A8A3-444B-8E80-6D1455085F06 New ItemGUID=AB356CD3-C1A1-455D-BC0F-D9B05CB30E93 Old RevisionGUID=8D9F36CC-416A-4A6B-8483-8A5C3FCFE862 New RevisionGUID=BB9D97D5-DA78-471E-95E2-E844CC0BAC93
+Change component parameters: Designator = "R1" ("R1"); Footprint = "RESC2013X50X40NL20T20"; UniqueID = "\JDGEHJDW" ("\JDGEHJDW")
+Change component parameters (AddParameter): Name = "Manufacturer"; Value = "Susumu"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Part Number"; Value = "RL1220S-R50-F"; VariantName = "[No Variations]"
+Added Component: Designator=MD9927(MD9927)
+Added Component: Designator=R3(RESC3225X70X50NL20T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Panasonic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "ERJ-P14J132U"; VariantName = "[No Variations]"
+Added Component: Designator=ZXCT1010E5TA(ZXCT1010E5TA)
+Added Pin To Net: NetName=VM Pin=C4-2
+Added Pin To Net: NetName=VCC Pin=C8-2
+Added Pin To Net: NetName=GND Pin=MD9927-GND
+Added Pin To Net: NetName=GND Pin=MD9927-GND
+Added Pin To Net: NetName=INPUT1 Pin=MD9927-IN1
+Added Pin To Net: NetName=INPUT2 Pin=MD9927-IN2
+Added Pin To Net: NetName=INPUT3 Pin=MD9927-nSLEEP
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=MD9927-OUT1
+Added Pin To Net: NetName=M- Pin=MD9927-OUT2
+Added Pin To Net: NetName=VCC Pin=MD9927-VCC
+Added Pin To Net: NetName=VM Pin=MD9927-VM
+Added Pin To Net: NetName=M+ Pin=R1-1
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=R1-2
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=CURRENT_IN Pin=R3-2
+Added Pin To Net: NetName=GND Pin=ZXCT1010E5TA-GND
+Added Pin To Net: NetName=CURRENT_IN Pin=ZXCT1010E5TA-IOUT
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=ZXCT1010E5TA-VSENSE+
+Added Pin To Net: NetName=M+ Pin=ZXCT1010E5TA-VSENSE-
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component MD9927
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component R3 ERJ-P14J132U
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ZXCT1010E5TA

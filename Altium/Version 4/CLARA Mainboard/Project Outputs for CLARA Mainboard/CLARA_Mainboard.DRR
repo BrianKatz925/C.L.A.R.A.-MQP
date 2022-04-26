@@ -1,0 +1,19 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: CLARA_Mainboard.PcbDoc   1/1/2022  2:20:53 PM
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : CLARA_Mainboard.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      0.711mm (28mil)                                           Round             20        PTH        144.20mm (5.68inch)
+T2      0.844mm (33mil)                                           Round             18        PTH        55.49mm (2.18inch)
+T3      0.844mm (33mil)                                           Round             2         PTH        14.85mm (0.58inch)
+T4      1.1mm (43mil)                                             Round             5         PTH        10.16mm (0.40inch)
+T5      2.2mm (87mil)                                             Round             2         PTH        8.00mm (0.31inch)
+T6      3mm (118mil)                                              Round             3         NPTH       67.49mm (2.66inch)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              50
+
+Total Processing Time (hh:mm:ss) : 00:00:00

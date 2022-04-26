@@ -1,0 +1,17 @@
+Removed Pin From Net: NetName=SCK Pin=ContactPad-2
+Removed Pin From Net: NetName=RESET Pin=ContactPad-3
+Removed Pin From Net: NetName=VCC Pin=ContactPad-4
+Removed Pin From Net: NetName=MOSI Pin=ContactPad-5
+Change Component Comment : Designator=R2 Old Comment=ERJ-1GNF1002C - 10kOhm New Comment=ERJ-1GNF1002C - 10kOhm 1/20 W
+Change Component Comment : Designator=C7 Old Comment=GRM21BR61E106KA73L - 10 uF New Comment=GRM21BR61E106KA73L - 10 uF -25V
+Change Component Comment : Designator=C1 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF -16V
+Change Component Comment : Designator=C2 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Change Component Comment : Designator=C3 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Change Component Comment : Designator=C4 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Change Component Comment : Designator=C5 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Change Component Comment : Designator=C6 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Change Component Comment : Designator=C8 Old Comment=GRM155R71C104KA88D - 0.1 uF New Comment=GRM155R71C104KA88D - 0.1 uF - 16V
+Added Pin To Net: NetName=VCC Pin=ContactPad-2
+Added Pin To Net: NetName=SCK Pin=ContactPad-3
+Added Pin To Net: NetName=MOSI Pin=ContactPad-4
+Added Pin To Net: NetName=RESET Pin=ContactPad-5

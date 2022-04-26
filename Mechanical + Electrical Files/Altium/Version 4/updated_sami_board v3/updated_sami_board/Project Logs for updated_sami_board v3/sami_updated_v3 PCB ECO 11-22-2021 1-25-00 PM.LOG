@@ -1,0 +1,2 @@
+Removed Pin From Net: NetName=CURRENT_IN Pin=U3-19
+Added Pin To Net: NetName=CURRENT_IN Pin=U3-26

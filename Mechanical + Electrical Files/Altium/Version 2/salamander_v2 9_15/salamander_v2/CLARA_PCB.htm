@@ -1,0 +1,355 @@
+<HTML>
+    <HEAD>
+        <style type="text/css">
+            BODY {
+                font:normal 68% verdana,arial,helvetica;
+                color:#E5E5E5;
+                text-decoration: none;
+            }
+            a:link {
+                color:#99CDFF;
+                text-decoration: none;
+            }
+            a:visited {
+                color:#99CDFF;
+                text-decoration: none;
+            }
+            a:hover {
+                color:#DDEAF6;
+                text-decoration: none;
+            }
+            a:active {
+                color:#DDEAF6;
+                text-decoration: none;
+            }
+            TD {
+                FONT-SIZE: 68%;
+            }
+            P {
+                line-height:1.5em;
+                margin-top:0.5em; margin-bottom:1.0em;
+            }
+            H1 {
+                MARGIN: 0px 0px 5px; FONT: 165% verdana,arial,helvetica
+            }
+            H2 {
+                MARGIN-TOP: 1em; MARGIN-BOTTOM: 0.5em; FONT: bold 125% verdana,arial,helvetica
+            }
+            H3 {
+                MARGIN-BOTTOM: 0.5em; FONT: bold 115% verdana,arial,helvetica
+            }
+            H4 {
+                MARGIN-BOTTOM: 0.5em; FONT: bold 100% verdana,arial,helvetica
+            }
+            H5 {
+                MARGIN-BOTTOM: 0.5em; FONT: bold 100% verdana,arial,helvetica
+            }
+            H6 {
+                MARGIN-BOTTOM: 0.5em; FONT: bold 100% verdana,arial,helvetica
+            }
+            .Error {
+                color:#E77878;
+            }
+            .Warning {
+                color:#C88F27;
+            }
+            .Success {
+                background:#367736;
+            }
+            .TableRow {
+            
+            }
+            .NoError {
+            
+            }
+            .Hint {
+                color:#868686;
+            }
+            .Successfull {
+                background:#367736;
+                color:#90E778;
+            }
+            body::-webkit-scrollbar {
+                width: 51px;
+                background-color: transparent;
+            }
+            body::-webkit-scrollbar-thumb {
+                background-color: #C8C8C8;
+                border-radius: 102px;
+            }
+            body::-webkit-scrollbar-track {
+                box-shadow: none;
+                background-color: transparent;
+            }
+            body::-webkit-scrollbar-button {
+                background-color: transparent;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            body::-webkit-scrollbar-button:vertical:increment {
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDQ5QzkxRkRDRDdGMTFFN0FENTdGNUMxOUIzREMxNTciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDQ5QzkxRkVDRDdGMTFFN0FENTdGNUMxOUIzREMxNTciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowNDlDOTFGQkNEN0YxMUU3QUQ1N0Y1QzE5QjNEQzE1NyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowNDlDOTFGQ0NEN0YxMUU3QUQ1N0Y1QzE5QjNEQzE1NyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkOY+v0AAABMSURBVHjaYsnPz58vKCiYwIAE3r9/v4Tp6dOn2T9+/LgCE/z58+cNoFgm079//749fPgwDEh/hbJDgfQXFqiq60BVGUAmC0w3QIABABOZM/XEpWMQAAAAAElFTkSuQmCC');
+            }
+            body::-webkit-scrollbar-button:vertical:decrement {
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTM4IDc5LjE1OTgyNCwgMjAxNi8wOS8xNC0wMTowOTowMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MDQ5QzkxRjlDRDdGMTFFN0FENTdGNUMxOUIzREMxNTciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDQ5QzkxRkFDRDdGMTFFN0FENTdGNUMxOUIzREMxNTciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowNDlDOTFGN0NEN0YxMUU3QUQ1N0Y1QzE5QjNEQzE1NyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowNDlDOTFGOENEN0YxMUU3QUQ1N0Y1QzE5QjNEQzE1NyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Prcb6MUAAABZSURBVHjaYgwKCmIAAUFBwQQg9ef9+/dLQHwWEMHBwaEjLS09Fcj8/+3bt7M/f/68zgQEPPLy8quBNBcQcwPZq0BsZldX17k8PDxODFDAwsIixsrKKg0QYACYPxQLMZT2cwAAAABJRU5ErkJggg==');
+            }
+        </style>
+    </HEAD>
+    <body text="#E5E5E5" bgColor="#404040">
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="100%"><b>Errors and Warnings - 7 Errors 0 Warnings 0 Hints</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://6858454208">Error : Pad U8-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://6858462944">Error : Pad U7-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://8399421536">Error : Pad U6-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7498816160">Error : Pad U5-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7498824896">Error : Pad U4-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7830002176">Error : Pad U3-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7830702336">Error : Pad U2-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+        </table>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="100%"><b>Report Contents</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Routing Widths">Routing Widths</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Routing Via Styles">Routing Via Styles</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Electrical Clearances">Electrical Clearances</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Fanout Styles">Fanout Styles</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Layer Directions">Layer Directions</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Drill Pairs">Drill Pairs</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Net Topologies">Net Topologies</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Net Layers">Net Layers</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#SMD Neckdown Rules">SMD Neckdown Rules</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#Unroutable pads">Unroutable pads</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#SMD Neckdown Width Warnings">SMD Neckdown Width Warnings</a></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 1"><a href="#SMD Entry Warnings">SMD Entry Warnings</a></td>
+          </tr>
+        </table>
+        <p/>
+        <p/>
+        <a name="Routing Widths"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>Routing Widths</b></td>
+            <td width="20%"><b>Affected Nets</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://7372221376"> Rule - Width</a><span style="color:#E5E5E5"> Width Constraint (Min=5mil) (Max=10mil) (Preferred=10mil) (All)</span></td>
+        <td style="padding-bottom: 5">126</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Routing Via Styles"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>Routing Via Styles</b></td>
+            <td width="20%"><b>Affected Nets</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6153653632"> Rule - RoutingVias</a><span style="color:#E5E5E5"> Routing Via (MinHoleWidth=28mil) (MaxHoleWidth=28mil) (PreferredHoleWidth=28mil) (MinWidth=50mil) (MaxWidth=50mil) (PreferedWidth=50mil) (All)</span></td>
+        <td style="padding-bottom: 5">126</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Electrical Clearances"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="100%"><b>Clearance Rules</b></td>
+          </tr>
+          <tr valign="top" class="NoError">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span></td>
+          </tr>
+          <tr valign="top" class="NoError">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504829568"> Rule - Clearance</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span></td>
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Fanout Styles"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>Fanout Styles</b></td>
+            <td width="20%"><b>Affected Components</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504835840"> Rule - Fanout_Small</a><span style="color:#E5E5E5"> Fanout Control Rule ( ((CompPinCount < 5)) )</span></td>
+        <td style="padding-bottom: 5">93</td> 
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504843904"> Rule - Fanout_Default</a><span style="color:#E5E5E5"> Fanout Control Rule ( (All) )</span></td>
+        <td style="padding-bottom: 5">15</td> 
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504834048"> Rule - Fanout_LCC</a><span style="color:#E5E5E5"> Fanout Control Rule ( (IsLCC) )</span></td>
+        <td style="padding-bottom: 5">1</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Layer Directions"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="50%"><b>Routing Directions<br>Layer Name</b></td>
+            <td width="50%"><b><br>Direction</b></td>
+          </tr>
+          <tr valign="top" class="NoError">
+        <td style="padding-left: 2; padding-bottom: 5">Top Layer</td>
+        <td style="padding-bottom: 5">Automatic</td> 
+          </tr>
+          <tr valign="top" class="NoError">
+        <td style="padding-left: 2; padding-bottom: 5">Bottom Layer</td>
+        <td style="padding-bottom: 5">Automatic</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Drill Pairs"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="100%"><b>Drill Layer Pairs</b></td>
+          </tr>
+          <tr valign="top" class="NoError">
+        <td style="padding-left: 2; padding-bottom: 5">Top Layer - Bottom Layer</td>
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Net Topologies"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>Net Topologies</b></td>
+            <td width="20%"><b>Affected Nets</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504838976"> Rule - RoutingTopology</a><span style="color:#E5E5E5"> Routing Topology Rule(Topology=Shortest) (All)</span></td>
+        <td style="padding-bottom: 5">126</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Net Layers"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>Net Layers</b></td>
+            <td width="20%"><b>Affected Nets</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6504830912"> Rule - RoutingLayers</a><span style="color:#E5E5E5"> Routing Layers(All)</span></td>
+        <td style="padding-bottom: 5">126</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="SMD Neckdown Rules"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>SMD Neckdown Rules</b></td>
+            <td width="20%"><b>Affected Pads</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=NoError href="EditRule://6643588416"> Rule - SMDNeckDown</a><span style="color:#E5E5E5"> SMD Neck-Down Constraint (Percent=50%) (All)</span></td>
+        <td style="padding-bottom: 5">358</td> 
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="Unroutable pads"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="100%"><b>Unroutable pads</b></td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://6858454208">Error : Pad U8-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://6858462944">Error : Pad U7-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://8399421536">Error : Pad U6-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7498816160">Error : Pad U5-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7498824896">Error : Pad U4-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7830002176">Error : Pad U3-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+          <tr valign="top" class="TableRow">
+        <td style="padding-left: 2; padding-bottom: 5"><a Class=Error href="JumpTo://7830702336">Error : Pad U2-17</a>  Appears to be unroutable. Violation against <a Class=Error href="EditRule://6641924480"> Rule - Clearance_1</a><span style="color:#E5E5E5"> Clearance Constraint (Gap=10mil) (All),(All)</span> Detected.</td>
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="SMD Neckdown Width Warnings"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>SMD Neckdown Width Warnings</b></td>
+            <td width="20%"><b>Affected Pads</b></td>
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+        <a name="SMD Entry Warnings"></a>
+        <table border="0" cellpadding="1" cellspacing="3" width="100%">
+          <tr bgcolor="#4E4E4E" valign="top">
+            <td style="padding-left: 2" width="80%"><b>SMD Entry Warnings</b></td>
+            <td width="20%"><b>Affected Pads</b></td>
+          </tr>
+        </table>
+        <a href="#top">Back to top</a>
+        <p/>
+        <p/>
+    </body>
+</HTML>

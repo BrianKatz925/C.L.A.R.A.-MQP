@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=CURRENT_IN Pin=U3-19
+Change Component Designator: OldDesignator= NewDesignator=*
+Change Component Designator: OldDesignator= NewDesignator=*
+Change Component Designator: OldDesignator= NewDesignator=ContactPad
+Change Component Designator: OldDesignator= NewDesignator=MD9927
+Change Component Designator: OldDesignator= NewDesignator=R3
+Change Component Designator: OldDesignator= NewDesignator=ZXCT1010E5TA
+Added Pin To Net: NetName=CURRENT_IN Pin=U3-26
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Component_1
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Poluou motor
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ContactPad 6 Pin Contact Pad
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component MD9927
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component R3 ERA3AEB122V - 1.2 kOhm, 1/10W
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ZXCT1010E5TA

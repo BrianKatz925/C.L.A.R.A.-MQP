@@ -1,0 +1,12 @@
+Added Component: Designator=JST2(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=VM Pin=JST2-1
+Added Pin To Net: NetName=VCC Pin=JST2-2
+Added Pin To Net: NetName=GND Pin=JST2-3
+Added Pin To Net: NetName=MOSI Pin=JST2-4
+Added Pin To Net: NetName=SCK Pin=JST2-5
+Added Member To Class: ClassName=updated_sami_board Member=Component JST2 SM05B-GHS-TB(LF)(SN)

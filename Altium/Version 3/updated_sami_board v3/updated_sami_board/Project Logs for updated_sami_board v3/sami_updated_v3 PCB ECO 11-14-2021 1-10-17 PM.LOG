@@ -1,0 +1,5 @@
+Change Component Designator: OldDesignator= NewDesignator=ContactPad
+Change Component Designator: OldDesignator= NewDesignator=MD9927
+Change Component Designator: OldDesignator= NewDesignator=ZXCT1010E5TA
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ContactPad 6 Pin Contact Pad
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ZXCT1010E5TA

@@ -1,0 +1,11 @@
+Added Component: Designator=MD9927(MD9927)
+Added Pin To Net: NetName=GND Pin=MD9927-GND
+Added Pin To Net: NetName=GND Pin=MD9927-GND
+Added Pin To Net: NetName=INPUT1 Pin=MD9927-IN1
+Added Pin To Net: NetName=INPUT2 Pin=MD9927-IN2
+Added Pin To Net: NetName=INPUT3 Pin=MD9927-nSLEEP
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=MD9927-OUT1
+Added Pin To Net: NetName=M- Pin=MD9927-OUT2
+Added Pin To Net: NetName=VCC Pin=MD9927-VCC
+Added Pin To Net: NetName=VM Pin=MD9927-VM
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component MD9927

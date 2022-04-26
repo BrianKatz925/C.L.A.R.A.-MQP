@@ -1,0 +1,5 @@
+Added Component: Designator=*(UART Header Pins)
+Added Pin To Net: NetName=RX Pin=*-RX
+Added Pin To Net: NetName=TX Pin=*-TX
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Poluou motor
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Component_1

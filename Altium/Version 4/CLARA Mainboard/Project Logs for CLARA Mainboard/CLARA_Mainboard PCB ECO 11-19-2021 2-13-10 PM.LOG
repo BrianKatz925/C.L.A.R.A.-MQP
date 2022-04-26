@@ -1,0 +1,6 @@
+Added Component: Designator=*(PCBComponent_1)
+Added Pin To Net: NetName=GND Pin=*-GND
+Added Pin To Net: NetName=VBAT Pin=*-VIN
+Added Pin To Net: NetName=VCC Pin=*-VOUT
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component * Pololu D24V10F3 3.3V Buck Regulator
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component * TinyPICO

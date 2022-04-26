@@ -1,0 +1,11 @@
+Added Pin To Net: NetName=GND Pin=MD-9
+Added Pin To Net: NetName=MISO Pin=IC1-16
+Added Net: Name=MISO
+Added Pin To Net: NetName=MOSI Pin=IC1-15
+Added Pin To Net: NetName=MOSI Pin=JST-4
+Added Net: Name=MOSI
+Added Pin To Net: NetName=RESET Pin=IC1-19
+Added Net: Name=RESET
+Added Pin To Net: NetName=SCK Pin=IC1-17
+Added Pin To Net: NetName=SCK Pin=JST-5
+Added Net: Name=SCK

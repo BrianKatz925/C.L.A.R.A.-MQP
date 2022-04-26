@@ -1,0 +1,28 @@
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=-OUT1
+Removed Pin From Net: NetName=VM Pin=-VM
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=-VSENSE+
+Removed Pin From Net: NetName=M+ Pin=-VSENSE-
+Removed Pin From Net: NetName=VM Pin=C4-2
+Removed Pin From Net: NetName=M+ Pin=R1-1
+Change Component Designator: OldDesignator= NewDesignator=*
+Change Component Designator: OldDesignator= NewDesignator=*
+Change Component Designator: OldDesignator= NewDesignator=ContactPad
+Change Component Designator: OldDesignator= NewDesignator=MD9927
+Change Component Designator: OldDesignator= NewDesignator=ZXCT1010E5TA
+Added Component: Designator=R3(RESC1608X55X30ML20T20)
+Add component (AddParameter): Name = "Manufacturer"; Value = "Panasonic"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Part Number"; Value = "ERA3AEB122V"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=C4-2
+Added Pin To Net: NetName=M+ Pin=MD9927-OUT1
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=MD9927-VM
+Added Pin To Net: NetName=VM Pin=R1-1
+Added Pin To Net: NetName=GND Pin=R3-1
+Added Pin To Net: NetName=CURRENT_IN Pin=R3-2
+Added Pin To Net: NetName=VM Pin=ZXCT1010E5TA-VSENSE+
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=ZXCT1010E5TA-VSENSE-
+Change Net Name : Old Net Name=VM New Net Name=MOTOR1_IN
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Poluou motor
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ContactPad 6 Pin Contact Pad
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component MD9927
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component R3 ERA3AEB122V - 1.2 kOhm, 1/10W
+Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ZXCT1010E5TA

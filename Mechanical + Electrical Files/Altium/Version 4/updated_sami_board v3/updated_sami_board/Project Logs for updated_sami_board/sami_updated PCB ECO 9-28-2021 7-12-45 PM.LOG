@@ -1,0 +1,15 @@
+Removed Pin From Net: NetName=MISO Pin=J1-1
+Removed Pin From Net: NetName=SCK Pin=J1-2
+Removed Pin From Net: NetName=RESET Pin=J1-3
+Removed Pin From Net: NetName=VCC Pin=J1-4
+Removed Pin From Net: NetName=MOSI Pin=J1-5
+Removed Pin From Net: NetName=GND Pin=J1-6
+Removed Member From Class: ClassName=updated_sami_board Member=J1
+Added Component: Designator=ContactPad(6PinContactPad)
+Added Pin To Net: NetName=MISO Pin=ContactPad-1
+Added Pin To Net: NetName=SCK Pin=ContactPad-2
+Added Pin To Net: NetName=RESET Pin=ContactPad-3
+Added Pin To Net: NetName=VCC Pin=ContactPad-4
+Added Pin To Net: NetName=MOSI Pin=ContactPad-5
+Added Pin To Net: NetName=GND Pin=ContactPad-6
+Added Member To Class: ClassName=updated_sami_board Member=Component ContactPad 6 Pin Contact Pad

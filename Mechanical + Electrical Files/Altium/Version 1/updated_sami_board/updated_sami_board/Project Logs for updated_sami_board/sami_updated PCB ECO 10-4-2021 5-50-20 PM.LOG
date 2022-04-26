@@ -1,0 +1,32 @@
+Removed Pin From Net: NetName=PH Pin=IC1-1
+Removed Pin From Net: NetName=EN Pin=IC1-20
+Removed Pin From Net: NetName=VM Pin=MD-1
+Removed Pin From Net: NetName=CUR1_TO_OPAMP_IN+ Pin=MD-2
+Removed Pin From Net: NetName=M- Pin=MD-3
+Removed Pin From Net: NetName=GND Pin=MD-4
+Removed Pin From Net: NetName=EN Pin=MD-5
+Removed Pin From Net: NetName=PH Pin=MD-6
+Removed Pin From Net: NetName=VCC Pin=MD-7
+Removed Pin From Net: NetName=VCC Pin=MD-8
+Removed Pin From Net: NetName=GND Pin=MD-9
+Added Component: Designator=U1(DFN-8_ALM)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "A3910EEETR-T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "Allegro Microsystems Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=U1-3
+Added Pin To Net: NetName=GND Pin=U1-4
+Added Pin To Net: NetName=M- Pin=U1-5
+Added Pin To Net: NetName=GND Pin=U1-6
+Added Pin To Net: NetName=VCC Pin=U1-7
+Added Pin To Net: NetName=CUR1_TO_OPAMP_IN+ Pin=U1-8
+Added Pin To Net: NetName=GND Pin=U1-9
+Added Pin To Net: NetName=INPUT1 Pin=IC1-20
+Added Pin To Net: NetName=INPUT1 Pin=U1-1
+Added Net: Name=INPUT1
+Added Pin To Net: NetName=INPUT2 Pin=IC1-1
+Added Pin To Net: NetName=INPUT2 Pin=U1-2
+Added Net: Name=INPUT2
+Added Member To Class: ClassName=updated_sami_board Member=Component R1 100mR
+Added Member To Class: ClassName=updated_sami_board Member=Component U1 A3910EEETR-T

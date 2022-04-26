@@ -1,0 +1,36 @@
+Removed Pin From Net: NetName=VM Pin=JST2-1
+Removed Pin From Net: NetName=VCC Pin=JST2-2
+Removed Pin From Net: NetName=GND Pin=JST2-3
+Removed Pin From Net: NetName=SDA Pin=JST2-4
+Removed Pin From Net: NetName=SCL Pin=JST2-5
+Removed Pin From Net: NetName=VM Pin=JST-1
+Removed Pin From Net: NetName=VCC Pin=JST-2
+Removed Pin From Net: NetName=GND Pin=JST-3
+Removed Pin From Net: NetName=SDA Pin=JST-4
+Removed Pin From Net: NetName=SCL Pin=JST-5
+Removed Member From Class: ClassName=updated_sami_board Member=JST2
+Removed Member From Class: ClassName=updated_sami_board Member=JST
+Added Component: Designator=J1(CONN_S5B-ZR-SM4A-TF_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Component: Designator=J2(CONN_S5B-ZR-SM4A-TF_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "S5B-ZR-SM4A-TF (LF) (SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=VM Pin=J1-1
+Added Pin To Net: NetName=VCC Pin=J1-2
+Added Pin To Net: NetName=GND Pin=J1-3
+Added Pin To Net: NetName=SDA Pin=J1-4
+Added Pin To Net: NetName=SCL Pin=J1-5
+Added Pin To Net: NetName=VM Pin=J2-1
+Added Pin To Net: NetName=VCC Pin=J2-2
+Added Pin To Net: NetName=GND Pin=J2-3
+Added Pin To Net: NetName=SDA Pin=J2-4
+Added Pin To Net: NetName=SCL Pin=J2-5
+Added Member To Class: ClassName=updated_sami_board Member=Component J1 S5B-ZR-SM4A-TF (LF) (SN)
+Added Member To Class: ClassName=updated_sami_board Member=Component J2 S5B-ZR-SM4A-TF (LF) (SN)

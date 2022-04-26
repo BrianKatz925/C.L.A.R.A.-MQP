@@ -1,0 +1,16 @@
+Added Component: Designator=*(TinyPICO Board)
+Added Component: Designator=J1(CONN_SM05B-GHS-TB(LF)(SN)_JST)
+Add component (AddParameter): Name = "Copyright"; Value = "Copyright (C) 2021 Ultra Librarian. All rights reserved."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer_Part_Number"; Value = "SM05B-GHS-TB(LF)(SN)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "JST"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "DEV"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=SDA Pin=*-15
+Added Pin To Net: NetName=VM Pin=J1-1
+Added Pin To Net: NetName=VCC Pin=J1-2
+Added Pin To Net: NetName=GND Pin=J1-3
+Added Pin To Net: NetName=SDA Pin=J1-4
+Added Pin To Net: NetName=SCL Pin=J1-5
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component * TinyPICO
+Added Member To Class: ClassName=Microcontroller Schematic Member=Component J1 SM05B-GHS-TB(LF)(SN)
+Added Room: Name=Microcontroller Schematic
