@@ -1,6 +1,0 @@
-Change Component Designator: OldDesignator= NewDesignator=*
-Change Component Designator: OldDesignator= NewDesignator=ContactPad
-Change Class Name : Old Net Name=updated_sami_board_v2 New Net Name=updated_sami_board_v3
-Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Component_1
-Added Member To Class: ClassName=updated_sami_board_v3 Member=Component * Poluou motor
-Added Member To Class: ClassName=updated_sami_board_v3 Member=Component ContactPad 6 Pin Contact Pad

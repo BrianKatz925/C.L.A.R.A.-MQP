@@ -1,4 +1,0 @@
-Change Component Designator: OldDesignator=Designator4 NewDesignator=*
-Added Pin To Net: NetName=M+ Pin=*-m+
-Added Pin To Net: NetName=M- Pin=*-M-
-Added Room: Name=updated_sami_board

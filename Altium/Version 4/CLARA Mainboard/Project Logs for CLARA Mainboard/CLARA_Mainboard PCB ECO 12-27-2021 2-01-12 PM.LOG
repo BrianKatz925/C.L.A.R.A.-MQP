@@ -1,9 +1,0 @@
-Removed Pin From Net: NetName=VBAT Pin=J10-1
-Removed Pin From Net: NetName=GND Pin=J10-2
-Removed Member From Class: ClassName=Microcontroller Schematic Member=J10
-Change Component Designator: OldDesignator=* NewDesignator=BuckReg
-Added Component: Designator=PowerWires(Power Wires)
-Added Pin To Net: NetName=GND Pin=PowerWires-GND
-Added Pin To Net: NetName=VBAT Pin=PowerWires-VBAT
-Added Member To Class: ClassName=Microcontroller Schematic Member=Component BuckReg Pololu D24V10F3 3.3V Buck Regulator
-Added Member To Class: ClassName=Microcontroller Schematic Member=Component PowerWires Power Wires

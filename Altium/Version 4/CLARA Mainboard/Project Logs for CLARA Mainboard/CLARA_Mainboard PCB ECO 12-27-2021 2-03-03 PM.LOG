@@ -1,4 +1,0 @@
-Added Component: Designator=PowerWires(Power Wires)
-Added Pin To Net: NetName=GND Pin=PowerWires-GND
-Added Pin To Net: NetName=VBAT Pin=PowerWires-VBAT
-Added Member To Class: ClassName=Microcontroller Schematic Member=Component PowerWires Power Wires

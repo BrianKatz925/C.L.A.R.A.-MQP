@@ -1,2 +1,0 @@
-Removed Pin From Net: NetName=VCC Pin=*-3V3
-Added Pin To Net: NetName=VCC Pin=*-BAT
