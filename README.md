@@ -11,4 +11,5 @@ There are three main sections to the CLARA repository.
   3. The last is the [Mechanical + Electrical Files](https://github.com/BrianKatz925/C.L.A.R.A.-MQP/tree/master/Mechanical%20%2B%20Electrical%20Files) section, which includes the Solidworks parts/assemblies, STLs, DXFs, and Altium Designer project files for the PCBs. Please refer to the [README](https://github.com/BrianKatz925/C.L.A.R.A.-MQP/blob/master/Mechanical%20%2B%20Electrical%20Files/README.md) in that section for more information on organization schema of the mechanical and electrical files.
 
 Enjoy :)
+
 ![](https://github.com/BrianKatz925/C.L.A.R.A.-MQP/blob/master/Documents/img/bending%20motion.gif)
