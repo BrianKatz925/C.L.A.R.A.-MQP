@@ -19,6 +19,10 @@ This is the GitHub repository for the 2021-22 CLARA MQP.
 #### Typical Robot Operation
 Typical Robot Operation requires the use of an external Logitech Gamepad as the form of input.
 
+| ![](https://github.com/BrianKatz925/C.L.A.R.A.-MQP/blob/master/Documents/img/control%20diagram.png) | 
+|:--:| 
+| *CLARA Operation Control Diagram* |
+
 Refer to the control protocol for the Gamepad below:
 
 | Input  | WiFi Sender Command  | I2C Status Command | Smart Motor Driver Action |
